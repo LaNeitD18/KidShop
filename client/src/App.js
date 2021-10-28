@@ -7,7 +7,7 @@ const { Title } = Typography
 
 function App() {
   return (
-    <MainContainer route="admin/config">
+    <MainContainer path="admin/config">
       <Row>
         <Title>Quản lý các chuỗi</Title>
       </Row>

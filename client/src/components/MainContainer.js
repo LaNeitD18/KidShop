@@ -1,107 +1,22 @@
-import { Layout, Menu } from 'antd'
-import { useEffect, useState } from 'react'
+import { Layout, Menu, Typography } from 'antd'
+import { cloneElement, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { useResponsive } from '../components/Media'
-import { UserOutlined } from '@ant-design/icons'
 import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5'
 import { FiMenu } from 'react-icons/fi'
-import { AiOutlineApartment, AiOutlineDashboard } from 'react-icons/ai'
-import { GrGroup } from 'react-icons/gr'
-import { RiPencilRuler2Line } from 'react-icons/ri'
-import { getArrayItemByRoute, routeObject } from '../utils/object'
-import { makePath } from '../utils/string'
+import { AiOutlineDashboard } from 'react-icons/ai'
+import { getUserRoute, makePath, routingObjects } from '../utils/route'
 
-const { SubMenu } = Menu
 const { Header, Content, Sider } = Layout
+const { Title } = Typography
 
-const NAV_ITEMS = [
-  {
-    route: 'admin',
-    name: 'Quản trị',
-    menu: [
-      {
-        route: 'employee',
-        icon: <UserOutlined />,
-        name: 'Nhân viên',
-        submenu: [
-          {
-            route: 'list',
-            name: 'Danh sách',
-          },
-          {
-            route: 'create',
-            name: 'Tạo nhân viên',
-          },
-        ],
-      },
-      {
-        route: 'branch',
-        icon: <AiOutlineApartment />,
-        name: 'Các chi nhánh',
-        submenu: [
-          {
-            route: 'list',
-            name: 'Danh sách',
-          },
-          {
-            route: 'create',
-            name: 'Tạo chi nhánh',
-          },
-        ],
-      },
-      {
-        route: 'group',
-        icon: <GrGroup />,
-        name: 'Nhóm quyền',
-        submenu: [
-          {
-            route: 'list',
-            name: 'Danh sách',
-          },
-          {
-            route: 'create',
-            name: 'Tạo nhóm quyền',
-          },
-        ],
-      },
-      {
-        route: 'config',
-        icon: <RiPencilRuler2Line />,
-        name: 'Cấu hình',
-      },
-    ],
-  },
-  {
-    route: 'business',
-    name: 'Kinh doanh',
-  },
-  {
-    route: 'store',
-    name: 'Cửa hàng',
-  },
-  {
-    route: 'pos',
-    name: 'Bán hàng',
-  },
-  {
-    route: 'supply',
-    name: 'Nguồn hàng',
-  },
-  {
-    route: 'warehouse',
-    name: 'Kho',
-  },
-]
-
-export default function MainContainer({ children, route }) {
+export default function MainContainer({ children, path }) {
   const media = useResponsive()
   const [isOpenSider, setIsOpenSider] = useState(true)
   const isSiderCollapsed = !isOpenSider && !media.isLg
-  const { navRoute, menuRoute, subMenuRoute } = routeObject(route)
-  console.log(routeObject(route))
-  // TODO nav & menu items by role
-  const navItems = NAV_ITEMS
-  const menuItem = getArrayItemByRoute(navItems, navRoute).menu
+  const userRoute = getUserRoute()
+  console.log(userRoute)
+  const { navPath, menuPath, navObject } = routingObjects(path)
 
   useEffect(() => {
     if (media.isLg) {
@@ -127,18 +42,18 @@ export default function MainContainer({ children, route }) {
           />
         )}
 
-        <span className="text-white font-logo hidden xs:inline text-md sm:text-xl md:text-2xl lg:text-3xl mr-4 whitespace-nowrap">
+        <span className="text-white font-logo hidden cursor-pointer xs:inline text-md sm:text-xl md:text-2xl lg:text-3xl mr-4 whitespace-nowrap">
           KidsShop
         </span>
         <Menu
           theme="dark"
           mode="horizontal"
           className="w-full -mr-6 font-semibold"
-          defaultSelectedKeys={[navRoute]}
+          defaultSelectedKeys={[navPath]}
           onSelect
         >
-          {navItems.map((navItem) => (
-            <Menu.Item key={navItem.route}>{navItem.name}</Menu.Item>
+          {userRoute.map((nav) => (
+            <Menu.Item key={nav.key}>{nav.name}</Menu.Item>
           ))}
           <Menu.Item key="logout" className="lg:pointer-events-none">
             {!media.isLg && 'Đăng xuất'}
@@ -149,7 +64,7 @@ export default function MainContainer({ children, route }) {
           Đăng xuất
         </div>
       </Header>
-      <Layout className="">
+      <Layout>
         <Sider
           collapsedWidth="0"
           collapsible
@@ -164,37 +79,26 @@ export default function MainContainer({ children, route }) {
           <Menu
             mode="inline"
             style={{ height: '100%', borderRight: 0 }}
-            defaultSelectedKeys={[subMenuRoute || menuRoute || navRoute]}
-            defaultOpenKeys={[menuRoute || navRoute]}
+            defaultSelectedKeys={[menuPath]}
           >
-            <Menu.Item icon={<AiOutlineDashboard />} key={navRoute}>
+            <div className="w-full flex-col items-center text-center mt-5 mb-4 pr-1">
+              {cloneElement(navObject.icon, {
+                className: 'text-3xl w-full mb-1',
+              })}
+              <Title level={4}>{navObject.name}</Title>
+            </div>
+            <Menu.Divider />
+            <Menu.Item
+              icon={<AiOutlineDashboard />}
+              key={makePath(navPath, 'dashboard')}
+            >
               Bảng điều khiển
             </Menu.Item>
-            <Menu.Divider />
-            {menuItem.map((menu) =>
-              menu?.submenu ? (
-                <SubMenu
-                  key={makePath(navRoute, menu.route)}
-                  icon={menu.icon}
-                  title={menu.name}
-                >
-                  {menu.submenu.map((submenu) => (
-                    <Menu.Item
-                      key={makePath(navRoute, menu.route, submenu.route)}
-                    >
-                      {submenu.name}
-                    </Menu.Item>
-                  ))}
-                </SubMenu>
-              ) : (
-                <Menu.Item
-                  icon={menu.icon}
-                  key={makePath(navRoute, menu.route)}
-                >
-                  {menu.name}
-                </Menu.Item>
-              )
-            )}
+            {navObject.menu.map((menu) => (
+              <Menu.Item icon={menu.icon} key={makePath(navPath, menu.key)}>
+                {menu.name}
+              </Menu.Item>
+            ))}
           </Menu>
         </Sider>
         <Layout

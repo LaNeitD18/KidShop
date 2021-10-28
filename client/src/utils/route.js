@@ -1,0 +1,21 @@
+import appRoute from '../constants/appRoute'
+import { getByKey } from './get'
+
+export const getUserRoute = (group) => appRoute
+
+export const routingObjects = (pathString) => {
+  const routes = pathString.split('/')
+  const navPath = routes[0]
+  const menuPath = routes.slice(0, 2).join('/')
+  const navObject = getByKey(appRoute, navPath)
+  return {
+    navPath,
+    menuPath,
+    navObject,
+  }
+}
+
+export const makePath = (...stringArr) => {
+  const nonEmtpyStrings = stringArr.filter((s) => s)
+  return nonEmtpyStrings.join('/')
+}
