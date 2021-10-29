@@ -1,7 +1,7 @@
-import AdminBranchPage from './pages/admin/branch/AdminBranchPage'
+import BranchPage from './pages/admin/branch/BranchPage'
 
 function App() {
-  return <AdminBranchPage />
+  return <BranchPage />
 }
 
 export default App
