@@ -27,7 +27,7 @@ module.exports = {
       },
       spacing: {
         'nav-height': '64px',
-        'slider-width': '256px',
+        'sider-width': '256px',
       },
     },
   },

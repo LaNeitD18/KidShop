@@ -8,10 +8,12 @@ export const routingObjects = (pathString) => {
   const navPath = routes[0]
   const menuPath = routes.slice(0, 2).join('/')
   const navObject = getByKey(appRoute, navPath)
+  const menuObject = getByKey(navObject?.menu, routes[1])
   return {
     navPath,
     menuPath,
     navObject,
+    menuObject,
   }
 }
 

@@ -1,7 +1,7 @@
-import { Layout, Menu, Typography } from 'antd'
 import { cloneElement, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { useResponsive } from '../components/Media'
+import { Breadcrumb, Divider, Layout, Menu, Typography } from 'antd'
 import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5'
 import { FiMenu } from 'react-icons/fi'
 import { AiOutlineDashboard } from 'react-icons/ai'
@@ -10,13 +10,12 @@ import { getUserRoute, makePath, routingObjects } from '../utils/route'
 const { Header, Content, Sider } = Layout
 const { Title } = Typography
 
-export default function MainContainer({ children, path }) {
+export default function MainContainer({ children, path, className }) {
   const media = useResponsive()
-  const [isOpenSider, setIsOpenSider] = useState(true)
+  const [isOpenSider, setIsOpenSider] = useState(false)
   const isSiderCollapsed = !isOpenSider && !media.isLg
   const userRoute = getUserRoute()
-  console.log(userRoute)
-  const { navPath, menuPath, navObject } = routingObjects(path)
+  const { navPath, menuPath, navObject, menuObject } = routingObjects(path)
 
   useEffect(() => {
     if (media.isLg) {
@@ -26,7 +25,7 @@ export default function MainContainer({ children, path }) {
 
   return (
     <Layout className="select-none">
-      <Header className="flex fixed z-10 items-center min-h-nav-height w-full">
+      <Header className="flex fixed z-20 items-center min-h-nav-height w-full">
         {isSiderCollapsed ? (
           <FiMenu
             onClick={() => setIsOpenSider(true)}
@@ -71,7 +70,7 @@ export default function MainContainer({ children, path }) {
           theme="light"
           collapsed={isSiderCollapsed}
           width={256}
-          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto"
+          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10"
           style={{
             position: 'fixed',
           }}
@@ -81,7 +80,7 @@ export default function MainContainer({ children, path }) {
             style={{ height: '100%', borderRight: 0 }}
             defaultSelectedKeys={[menuPath]}
           >
-            <div className="w-full flex-col items-center text-center mt-5 mb-4 pr-1">
+            <div className="w-full flex-col items-center text-center my-5 pr-1">
               {cloneElement(navObject.icon, {
                 className: 'text-3xl w-full mb-1',
               })}
@@ -102,12 +101,26 @@ export default function MainContainer({ children, path }) {
           </Menu>
         </Sider>
         <Layout
-          className={classNames(
-            { 'ml-slider-width': !isSiderCollapsed },
-            'p-4 xs:p-6 mt-nav-height'
-          )}
+          className={classNames('p-4 pt-3 xs:p-6 xs:pt-5 mt-nav-height', {
+            'ml-sider-width': media.isLg,
+          })}
         >
-          <Content className="site-layout-background select-text">
+          <Breadcrumb>
+            <Breadcrumb.Item href="/">
+              <a href="/">{navObject.name}</a>
+            </Breadcrumb.Item>
+            {menuObject && (
+              <Breadcrumb.Item>
+                <a href="/">{menuObject.name}</a>
+              </Breadcrumb.Item>
+            )}
+          </Breadcrumb>
+          <Divider style={{ margin: '12px 0' }} />
+          <Content
+            className={classNames('site-layout-background select-text', {
+              [className]: true,
+            })}
+          >
             {children}
           </Content>
         </Layout>

@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import './index.less'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+import moment from 'moment/min/moment-with-locales'
+import Moment from 'react-moment'
+
+Moment.globalMoment = moment
+Moment.globalLocale = 'vi'
 
 ReactDOM.render(
   <React.StrictMode>
