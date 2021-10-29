@@ -1,27 +1,28 @@
-import { cloneElement, useEffect, useState } from 'react'
-import classNames from 'classnames'
-import { useResponsive } from '../components/Media'
-import { Breadcrumb, Divider, Layout, Menu, Typography } from 'antd'
-import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5'
-import { FiMenu } from 'react-icons/fi'
-import { AiOutlineDashboard } from 'react-icons/ai'
-import { getUserRoute, makePath, routingObjects } from '../utils/route'
+import { cloneElement, useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { useResponsive } from '../components/Media';
+import { Breadcrumb, Divider, Layout, Menu, Typography } from 'antd';
+import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5';
+import { FiMenu } from 'react-icons/fi';
+import { AiOutlineDashboard } from 'react-icons/ai';
+import { getUserRoute, makePath, routingObjects } from '../utils/route';
 
-const { Header, Content, Sider } = Layout
-const { Title } = Typography
+const { Header, Content, Sider } = Layout;
+const { Title } = Typography;
 
 export default function MainContainer({ children, path, className }) {
-  const media = useResponsive()
-  const [isOpenSider, setIsOpenSider] = useState(false)
-  const isSiderCollapsed = !isOpenSider && !media.isLg
-  const userRoute = getUserRoute()
-  const { navPath, menuPath, navObject, menuObject } = routingObjects(path)
+  const media = useResponsive();
+  const [isOpenSider, setIsOpenSider] = useState(false);
+  const isSiderCollapsed = !isOpenSider && !media.isLg;
+  const userRoute = getUserRoute();
+  const { navPath, menuPath, navObject, menuObject, subObject } =
+    routingObjects(path);
 
   useEffect(() => {
     if (media.isLg) {
-      setIsOpenSider(false)
+      setIsOpenSider(false);
     }
-  }, [media.isLg])
+  }, [media.isLg]);
 
   return (
     <Layout className="select-none">
@@ -101,9 +102,12 @@ export default function MainContainer({ children, path, className }) {
           </Menu>
         </Sider>
         <Layout
-          className={classNames('p-4 pt-3 xs:p-6 xs:pt-5 mt-nav-height', {
-            'ml-sider-width': media.isLg,
-          })}
+          className={classNames(
+            'pt-4 px-6 xs:pt-6 pb-6 sm:pb-0 sm:px-10 xl:px-14 mt-nav-height',
+            {
+              'ml-sider-width': media.isLg,
+            }
+          )}
         >
           <Breadcrumb>
             <Breadcrumb.Item href="/">
@@ -112,6 +116,11 @@ export default function MainContainer({ children, path, className }) {
             {menuObject && (
               <Breadcrumb.Item>
                 <a href="/">{menuObject.name}</a>
+              </Breadcrumb.Item>
+            )}
+            {subObject && (
+              <Breadcrumb.Item>
+                <a href="/">{subObject.name}</a>
               </Breadcrumb.Item>
             )}
           </Breadcrumb>
@@ -126,5 +135,5 @@ export default function MainContainer({ children, path, className }) {
         </Layout>
       </Layout>
     </Layout>
-  )
+  );
 }

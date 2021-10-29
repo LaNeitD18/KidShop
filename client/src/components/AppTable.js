@@ -160,15 +160,18 @@ export const useAppTable = (columns) => {
     };
 
     return (
-      <Table
-        dataSource={withKeys(data)}
-        columns={responsiveColumn(getColumns())}
-        rowSelection={{
-          ...rowSelection,
-        }}
-        pagination={pagination}
-        loading={loading}
-      />
+      <div>
+        <p className="">Tổng cộng: 100</p>
+        <Table
+          dataSource={withKeys(data)}
+          columns={responsiveColumn(getColumns())}
+          rowSelection={{
+            ...rowSelection,
+          }}
+          pagination={pagination}
+          loading={loading}
+        />
+      </div>
     );
   }, [data, columns, pagination, loading, media.isLg]);
 

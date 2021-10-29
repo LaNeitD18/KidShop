@@ -1,4 +1,4 @@
-const CracoLessPlugin = require('craco-less')
+const CracoLessPlugin = require('craco-less');
 
 module.exports = {
   style: {
@@ -36,6 +36,7 @@ module.exports = {
               '@height-lg': '44px',
               '@height-sm': '26px',
               '@font-size-base': '16px',
+              '@font-size-lg': '16px',
               '@font-size-sm': '14px',
               '@line-height-base': '1.643',
               '@btn-padding-horizontal-base': '16px',
@@ -47,6 +48,9 @@ module.exports = {
               '@checkbox-border-width': '2px',
               '@tag-line-height': '22px',
               '@typography-title-margin-bottom': '0',
+              '@dropdown-vertical-padding': '7px',
+              '@dropdown-line-height': '24px',
+              '@select-dropdown-height': '34px',
             },
             javascriptEnabled: true,
           },
@@ -54,4 +58,4 @@ module.exports = {
       },
     },
   ],
-}
+};

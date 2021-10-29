@@ -1,9 +1,14 @@
-import { Button } from 'antd'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { useResponsive } from './Media'
+import { Button } from 'antd';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
+import { useResponsive } from './Media';
 
-export function AddButton({ className, children, ...rest }) {
-  const media = useResponsive()
+export function AddButton({ className, children, responsive, ...rest }) {
+  const media = useResponsive();
   return (
     <Button
       type="primary"
@@ -11,13 +16,27 @@ export function AddButton({ className, children, ...rest }) {
       icon={<PlusOutlined />}
       {...rest}
     >
-      {media.isXs ? children : null}
+      {media.isXs || !responsive ? children : null}
     </Button>
-  )
+  );
 }
 
-export function DeleteButton({ className, children, ...rest }) {
-  const media = useResponsive()
+export function DoneButton({ className, children, responsive, ...rest }) {
+  const media = useResponsive();
+  return (
+    <Button
+      type="primary"
+      className={className}
+      icon={<CheckOutlined />}
+      {...rest}
+    >
+      {media.isXs || !responsive ? children : null}
+    </Button>
+  );
+}
+
+export function DeleteButton({ className, children, responsive, ...rest }) {
+  const media = useResponsive();
   return (
     <Button
       type="danger"
@@ -25,7 +44,16 @@ export function DeleteButton({ className, children, ...rest }) {
       icon={<DeleteOutlined />}
       {...rest}
     >
-      {media.isXs ? children : null}
+      {media.isXs || !responsive ? children : null}
     </Button>
-  )
+  );
+}
+
+export function CancelButton({ className, children, responsive, ...rest }) {
+  const media = useResponsive();
+  return (
+    <Button danger className={className} icon={<CloseOutlined />} {...rest}>
+      {media.isXs || !responsive ? children : null}
+    </Button>
+  );
 }

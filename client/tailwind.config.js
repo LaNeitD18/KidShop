@@ -28,6 +28,7 @@ module.exports = {
       spacing: {
         'nav-height': '64px',
         'sider-width': '256px',
+        128: '32rem',
       },
     },
   },
@@ -35,4 +36,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};

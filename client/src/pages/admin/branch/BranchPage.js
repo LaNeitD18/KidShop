@@ -69,8 +69,10 @@ export default function BranchPage() {
   return (
     <MainContainer path="admin/branch">
       <ContentHeader title="Quản lý các chi nhánh">
-        <AddButton>Thêm chi nhánh</AddButton>
-        {!!selectedRows.length && <DeleteButton>Xóa chi nhánh</DeleteButton>}
+        <AddButton responsive>Thêm chi nhánh</AddButton>
+        {!!selectedRows.length && (
+          <DeleteButton responsive>Xóa chi nhánh</DeleteButton>
+        )}
       </ContentHeader>
       <AppTable />
     </MainContainer>

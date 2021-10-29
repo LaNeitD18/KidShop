@@ -1,7 +1,7 @@
-import { UserOutlined } from '@ant-design/icons'
-import { AiOutlineApartment } from 'react-icons/ai'
-import { GrGroup, GrUserManager } from 'react-icons/gr'
-import { RiPencilRuler2Line } from 'react-icons/ri'
+import { UserOutlined } from '@ant-design/icons';
+import { AiOutlineApartment } from 'react-icons/ai';
+import { GrGroup, GrUserManager } from 'react-icons/gr';
+import { RiPencilRuler2Line } from 'react-icons/ri';
 
 const appRoute = [
   {
@@ -17,7 +17,17 @@ const appRoute = [
       {
         key: 'branch',
         icon: <AiOutlineApartment />,
-        name: 'Các chi nhánh',
+        name: 'Chi nhánh',
+        sub: [
+          {
+            key: 'add',
+            name: 'Tạo mới',
+          },
+          {
+            key: 'edit',
+            name: 'Sửa',
+          },
+        ],
       },
       {
         key: 'group',
@@ -51,6 +61,6 @@ const appRoute = [
     key: 'warehouse',
     name: 'Kho',
   },
-]
+];
 
-export default appRoute
+export default appRoute;
