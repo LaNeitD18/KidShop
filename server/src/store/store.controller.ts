@@ -118,7 +118,7 @@ export class StoreController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() res: Response) {
+  async deleteStore(@Param('id') id: string, @Res() res: Response) {
     try {
       const store = await this.storeService.findOne(id);
       if (!store) {
