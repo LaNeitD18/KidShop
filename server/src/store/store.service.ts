@@ -12,20 +12,31 @@ export class StoreService {
     private readonly storeRepository: Repository<CuaHang>,
   ) {}
 
-  create(newStore: CuaHang) {
-    return this.storeRepository.save(newStore);
+  async create(newStore: CuaHang) {
+    return await this.storeRepository.save(newStore);
   }
 
-  findAll() {
-    return this.storeRepository.find({ relations: ['chuCuaHang'] });
+  async findAll() {
+    return await this.storeRepository.find({ relations: ['chuCuaHang'] });
   }
 
-  findOne(id: string) {
-    return this.storeRepository.findOne(id);
+  async findOne(id: string) {
+    return await this.storeRepository.findOne(id, {
+      relations: ['chuCuaHang'],
+    });
   }
 
-  update(id: string, updatedStore: CuaHang) {
-    return this.storeRepository.update(id, updatedStore);
+  async update(id: string, data: CuaHang) {
+    const response = await this.storeRepository
+      .createQueryBuilder('store')
+      .update(data)
+      .where('id = :id', { id: id })
+      .returning(['id', 'diaChi', 'sdt', 'chuCuaHangId'])
+      .updateEntity(true)
+      .execute();
+
+    const updatedStore = response.raw[0] as CuaHang;
+    return updatedStore;
   }
 
   remove(id: string) {

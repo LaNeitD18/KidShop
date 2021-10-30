@@ -11,7 +11,7 @@ import {
 @Entity()
 export class CuaHang {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @ApiProperty()
   @Column()

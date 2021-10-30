@@ -105,7 +105,7 @@ export class UserController {
         });
       }
 
-      const updatedUser = await this.userService.updateUser(id, data);
+      const updatedUser = await this.userService.update(id, data);
       return res.status(HttpStatus.OK).json(updatedUser);
     } catch (error) {
       return res

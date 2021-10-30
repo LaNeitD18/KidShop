@@ -25,14 +25,13 @@ export class UserService {
       const user = await this.userRepository.findOne(id, {
         select: ['id', 'tenTaiKhoan', 'hoTen', 'diaChi', 'sdt', 'gioiTinh'],
       });
-
       return user;
     } catch (error) {
       console.log(error);
     }
   }
 
-  async updateUser(id: string, data: NguoiDung): Promise<NguoiDung> {
+  async update(id: string, data: NguoiDung): Promise<NguoiDung> {
     const response = await this.userRepository
       .createQueryBuilder('user')
       .update(data)
