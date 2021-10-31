@@ -38,6 +38,7 @@ export class StoreController {
       const storeData: CuaHang = {
         diaChi: data.diaChi,
         sdt: data.sdt,
+        // dsQuay: [],
       };
 
       const storeManager = await this.userService.findOne(data.chuCuaHangId);

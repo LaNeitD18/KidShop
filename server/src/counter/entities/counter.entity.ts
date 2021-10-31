@@ -1,32 +1,32 @@
-import { Quay } from './../../counter/entities/counter.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { CuaHang } from 'src/store/entities/store.entity';
 import { NguoiDung } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
   JoinColumn,
-  OneToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
-export class CuaHang {
+export class Quay {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
   @ApiProperty()
   @Column()
-  diaChi: string;
+  tenQuay?: string;
 
-  @ApiProperty({ required: false })
-  @Column({ nullable: true })
-  sdt?: string;
+  @ApiProperty()
+  @Column({ default: false })
+  dangSuDung: boolean;
 
   @OneToOne(() => NguoiDung)
   @JoinColumn()
-  chuCuaHang?: NguoiDung;
+  nhanVienTruc?: NguoiDung;
 
-  @OneToMany(() => Quay, (quay) => quay.cuaHang)
-  dsQuay?: Quay[];
+  @ManyToOne(() => CuaHang, (cuaHang) => cuaHang.dsQuay)
+  cuaHang: CuaHang;
 }

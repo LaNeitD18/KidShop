@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { StoreModule } from './store/store.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { SupplierModule } from './supplier/supplier.module';
+import { CounterModule } from './counter/counter.module';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import { SupplierModule } from './supplier/supplier.module';
     WarehouseModule,
 
     SupplierModule,
+
+    CounterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
