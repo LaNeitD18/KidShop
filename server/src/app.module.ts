@@ -9,6 +9,7 @@ import { WarehouseModule } from './warehouse/warehouse.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { CounterModule } from './counter/counter.module';
 import { ProductModule } from './product/product.module';
+import { ProducerModule } from './producer/producer.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { ProductModule } from './product/product.module';
     CounterModule,
 
     ProductModule,
+
+    ProducerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
