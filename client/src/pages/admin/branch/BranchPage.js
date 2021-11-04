@@ -57,10 +57,7 @@ const columns = [
 ];
 
 export default function BranchPage() {
-  const { setData, AppTable, selectedRows } = useAppTable(columns, {
-    idTitle: 'Mã cửa hàng',
-    createTime: true,
-  });
+  const { setData, AppTable, selectedRows } = useAppTable(columns);
 
   useEffect(() => {
     setData(fakeData);
