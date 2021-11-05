@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import MainContainer from '../../components/MainContainer';
+import React, { useEffect, useState } from 'react';
 import { AddButton, DeleteButton } from '../../components/Button';
 import { ContentHeader } from '../../components/Content';
-import { useAppTable } from '../../components/AppTable';
 import * as api from '../../api/supplier';
+import AppTable from '../../components/AppTable';
 
 const columns = [
   {
@@ -34,30 +33,26 @@ const columns = [
 ];
 
 export default function SupplierPage() {
-  const { setData, AppTable, selectedRows } = useAppTable(columns, {
-    idTitle: 'Mã nhà cung cấp',
-    createTime: true,
-  });
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     async function initData() {
       const suppliers = (await api.fetchAllSuppliers()).data;
-      console.log('sups', suppliers);
       setData(suppliers);
     }
     initData();
   }, []);
 
-  // TODO: change path
   return (
-    <MainContainer path="admin/branch">
+    <div>
       <ContentHeader title="Quản lý nhà cung cấp">
         <AddButton responsive>Thêm nhà cung cấp</AddButton>
         {!!selectedRows.length && (
           <DeleteButton responsive>Xóa nhà cung cấp</DeleteButton>
         )}
       </ContentHeader>
-      <AppTable />
-    </MainContainer>
+      <AppTable columns={columns} data={data} onSelectRows={setSelectedRows} />
+    </div>
   );
 }

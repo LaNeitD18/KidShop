@@ -1,25 +1,14 @@
-import appRoute from '../constants/appRoute';
-import { getByKey } from './get';
+export const pathsToStrings = (pathsArray, start, end) =>
+  pathsArray.slice(start, end).join('/');
 
-export const getUserRoute = (group) => appRoute;
-
-export const routingObjects = (pathString) => {
-  const routes = pathString.split('/');
-  const navPath = routes[0];
-  const menuPath = routes.slice(0, 2).join('/');
-  const navObject = getByKey(appRoute, navPath);
-  const menuObject = getByKey(navObject?.menu, routes[1]);
-  const subObject = getByKey(menuObject?.sub, routes[2]);
+export const stringToPaths = (pathname) => {
+  if (pathname[0] === '/') pathname = pathname.slice(1);
+  const pathsArray = pathname.split('/');
+  const stringJoin = (start, end) => pathsToStrings(pathsArray, start, end);
   return {
-    navPath,
-    menuPath,
-    navObject,
-    menuObject,
-    subObject,
+    ...pathsArray,
+    stringJoin,
+    menuString: stringJoin(1, 3),
+    subPageString: stringJoin(1, 4),
   };
-};
-
-export const makePath = (...stringArr) => {
-  const nonEmtpyStrings = stringArr.filter((s) => s);
-  return nonEmtpyStrings.join('/');
 };

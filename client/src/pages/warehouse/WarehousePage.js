@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import MainContainer from '../../components/MainContainer';
+import React, { useState } from 'react';
 import { AddButton, DeleteButton } from '../../components/Button';
 import { ContentHeader } from '../../components/Content';
-import { useAppTable } from '../../components/AppTable';
+import AppTable from '../../components/AppTable';
 
 const fakeData = [
   {
@@ -57,24 +56,21 @@ const columns = [
 ];
 
 export default function WarehousePage() {
-  const { setData, AppTable, selectedRows } = useAppTable(columns, {
-    idTitle: 'Mã Kho',
-    createTime: true,
-  });
-
-  useEffect(() => {
-    setData(fakeData);
-  }, []);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   return (
-    <MainContainer path="admin/branch">
+    <div>
       <ContentHeader title="Quản lý kho">
         <AddButton responsive>Thêm kho</AddButton>
         {!!selectedRows.length && (
           <DeleteButton responsive>Xóa kho</DeleteButton>
         )}
       </ContentHeader>
-      <AppTable />
-    </MainContainer>
+      <AppTable
+        columns={columns}
+        data={fakeData}
+        onSelectRows={setSelectedRows}
+      />
+    </div>
   );
 }

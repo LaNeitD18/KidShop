@@ -5,24 +5,120 @@ import { Breadcrumb, Divider, Layout, Menu, Typography } from 'antd';
 import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5';
 import { FiMenu } from 'react-icons/fi';
 import { AiOutlineDashboard } from 'react-icons/ai';
-import { getUserRoute, makePath, routingObjects } from '../utils/route';
+import { stringToPaths, pathsToStrings } from '../utils/route';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { UserOutlined } from '@ant-design/icons';
+import { AiOutlineApartment } from 'react-icons/ai';
+import { GrGroup, GrUserManager } from 'react-icons/gr';
+import { RiPencilRuler2Line } from 'react-icons/ri';
+import { arrayFind } from '../utils/array';
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
 
-export default function MainContainer({ children, path, className }) {
-  const media = useResponsive();
+const navMenu = [
+  {
+    path: 'admin',
+    title: 'Quản trị',
+    icon: <GrUserManager />,
+    children: [
+      {
+        path: 'employee',
+        title: 'QL Nhân Viên',
+        icon: <UserOutlined />,
+      },
+      {
+        path: 'branch',
+        title: 'QL Chi Nhánh',
+        icon: <AiOutlineApartment />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+      {
+        path: 'group',
+        title: 'QL Nhóm Quyền',
+        icon: <GrGroup />,
+      },
+      {
+        path: 'config',
+        title: 'Cài Đặt Cấu Hình',
+        icon: <RiPencilRuler2Line />,
+      },
+    ],
+  },
+  {
+    path: 'business',
+    title: 'Kinh doanh',
+  },
+  {
+    path: 'store',
+    title: 'Cửa hàng',
+  },
+  {
+    path: 'pos',
+    title: 'Bán hàng',
+  },
+  {
+    path: 'supply',
+    title: 'Nguồn hàng',
+    children: [
+      {
+        path: 'supplier',
+        title: 'QL Nhà Cung Cấp',
+      },
+    ],
+  },
+  {
+    path: 'storage',
+    title: 'Trữ hàng',
+    children: [
+      {
+        path: 'warehouse',
+        title: 'QL Các Kho',
+      },
+    ],
+  },
+  {
+    path: 'warehouse',
+    title: 'Kho',
+  },
+];
+
+export default function MainContainer() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const paths = stringToPaths(pathname);
+  const nav = arrayFind(navMenu, paths[1], 'path') || {};
+  const menu = arrayFind(nav?.children, paths[2], 'path');
+  const subPage = arrayFind(menu?.children, paths[3], 'path');
+
   const [isOpenSider, setIsOpenSider] = useState(false);
+
+  const media = useResponsive();
   const isSiderCollapsed = !isOpenSider && !media.isLg;
-  const userRoute = getUserRoute();
-  const { navPath, menuPath, navObject, menuObject, subObject } =
-    routingObjects(path);
 
   useEffect(() => {
     if (media.isLg) {
       setIsOpenSider(false);
     }
   }, [media.isLg]);
+
+  const handleSelectNav = ({ key }) => {
+    navigate(key);
+  };
+
+  const handleSelectMenu = ({ key }) => {
+    navigate(key);
+  };
 
   return (
     <Layout className="select-none">
@@ -49,11 +145,11 @@ export default function MainContainer({ children, path, className }) {
           theme="dark"
           mode="horizontal"
           className="w-full -mr-6 font-semibold"
-          defaultSelectedKeys={[navPath]}
-          onSelect
+          selectedKeys={[nav?.path]}
+          onSelect={handleSelectNav}
         >
-          {userRoute.map((nav) => (
-            <Menu.Item key={nav.key}>{nav.name}</Menu.Item>
+          {navMenu?.map((value) => (
+            <Menu.Item key={value.path}>{value.title}</Menu.Item>
           ))}
           <Menu.Item key="logout" className="lg:pointer-events-none">
             {!media.isLg && 'Đăng xuất'}
@@ -79,31 +175,36 @@ export default function MainContainer({ children, path, className }) {
           <Menu
             mode="inline"
             style={{ height: '100%', borderRight: 0 }}
-            defaultSelectedKeys={[menuPath]}
+            selectedKeys={[paths.menuString]}
+            onSelect={handleSelectMenu}
           >
             <div className="w-full flex-col items-center text-center my-5 pr-1">
-              {cloneElement(navObject.icon, {
-                className: 'text-3xl w-full mb-1',
-              })}
-              <Title level={4}>{navObject.name}</Title>
+              {nav.icon &&
+                cloneElement(nav.icon, {
+                  className: 'text-3xl w-full mb-1',
+                })}
+              <Title level={4}>{nav.title}</Title>
             </div>
             <Menu.Divider />
             <Menu.Item
               icon={<AiOutlineDashboard />}
-              key={makePath(navPath, 'dashboard')}
+              key={pathsToStrings([nav.path, 'dashboard'])}
             >
               Bảng điều khiển
             </Menu.Item>
-            {navObject.menu.map((menu) => (
-              <Menu.Item icon={menu.icon} key={makePath(navPath, menu.key)}>
-                {menu.name}
+            {nav?.children?.map((value) => (
+              <Menu.Item
+                icon={value.icon}
+                key={pathsToStrings([nav.path, value.path])}
+              >
+                {value.title}
               </Menu.Item>
             ))}
           </Menu>
         </Sider>
         <Layout
           className={classNames(
-            'pt-4 px-6 xs:pt-6 pb-6 sm:pb-0 sm:px-10 xl:px-14 mt-nav-height',
+            'pt-4 px-6 xs:pt-6 pb-6 sm:pb-0 sm:px-10 mt-nav-height',
             {
               'ml-sider-width': media.isLg,
             }
@@ -111,26 +212,22 @@ export default function MainContainer({ children, path, className }) {
         >
           <Breadcrumb>
             <Breadcrumb.Item href="/">
-              <a href="/">{navObject.name}</a>
+              <a href="/">{nav.title}</a>
             </Breadcrumb.Item>
-            {menuObject && (
+            {menu && (
               <Breadcrumb.Item>
-                <a href="/">{menuObject.name}</a>
+                <a href="/">{menu.title}</a>
               </Breadcrumb.Item>
             )}
-            {subObject && (
+            {subPage && (
               <Breadcrumb.Item>
-                <a href="/">{subObject.name}</a>
+                <a href="/">{subPage.title}</a>
               </Breadcrumb.Item>
             )}
           </Breadcrumb>
           <Divider style={{ margin: '12px 0' }} />
-          <Content
-            className={classNames('site-layout-background select-text', {
-              [className]: true,
-            })}
-          >
-            {children}
+          <Content className="site-layout-background select-text">
+            <Outlet />
           </Content>
         </Layout>
       </Layout>

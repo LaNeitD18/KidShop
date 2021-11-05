@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import MainContainer from '../../../components/MainContainer';
+import React, { useState } from 'react';
 import { AddButton, DeleteButton } from '../../../components/Button';
 import { ContentHeader } from '../../../components/Content';
-import { useAppTable } from '../../../components/AppTable';
+import AppTable from '../../../components/AppTable';
 
 const fakeData = [
   {
@@ -57,21 +56,20 @@ const columns = [
 ];
 
 export default function BranchPage() {
-  const { setData, AppTable, selectedRows } = useAppTable(columns);
-
-  useEffect(() => {
-    setData(fakeData);
-  }, []);
-
+  const [selectedRows, setSelectedRows] = useState([]);
   return (
-    <MainContainer path="admin/branch">
+    <div>
       <ContentHeader title="Quản lý các chi nhánh">
         <AddButton responsive>Thêm chi nhánh</AddButton>
         {!!selectedRows.length && (
           <DeleteButton responsive>Xóa chi nhánh</DeleteButton>
         )}
       </ContentHeader>
-      <AppTable />
-    </MainContainer>
+      <AppTable
+        columns={columns}
+        data={fakeData}
+        onSelectRows={setSelectedRows}
+      />
+    </div>
   );
 }

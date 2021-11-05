@@ -1,5 +1,4 @@
-import { BACKEND_URL } from './../constants/config';
 import axios from 'axios';
 
-const API = axios.create({ baseURL: BACKEND_URL });
+const API = axios.create({ baseURL: 'abcxyz' });
 export default API;

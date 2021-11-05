@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, Button, Checkbox, Select } from 'antd';
-import MainContainer from '../../../components/MainContainer';
+import { Form, Input, Select } from 'antd';
 import {
   CancelButton,
   DeleteButton,
@@ -68,19 +67,15 @@ export default function EditBranchPage({ mode }) {
     }
   }, [map]);
 
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
+  const onFinish = (values) => {};
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const onFinishFailed = (errorInfo) => {};
 
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
   return (
-    <MainContainer path="admin/branch/add">
+    <div>
       <ContentHeader title={byModes.title}>
         <CancelButton responsive>Hủy bỏ</CancelButton>
       </ContentHeader>
@@ -165,6 +160,6 @@ export default function EditBranchPage({ mode }) {
           </Form>
         </div>
       </div>
-    </MainContainer>
+    </div>
   );
 }

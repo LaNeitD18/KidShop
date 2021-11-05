@@ -5,13 +5,16 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import moment from 'moment/min/moment-with-locales';
 import Moment from 'react-moment';
+import { BrowserRouter } from 'react-router-dom';
 
 Moment.globalMoment = moment;
 Moment.globalLocale = 'vi';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
