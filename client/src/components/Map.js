@@ -85,5 +85,5 @@ export default function Map({
   }, []);
 
   // useEffect(() => {}, [map, onChangeMapLocation]);
-  return <div ref={mapElement} className="h-96 md:h-128" />;
+  return <div ref={mapElement} className="h-96 md:h-128 shadow-xl" />;
 }

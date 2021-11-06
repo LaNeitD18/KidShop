@@ -123,7 +123,7 @@ export default function MainContainer() {
 
   return (
     <Layout className="select-none">
-      <Header className="flex fixed z-20 items-center min-h-nav-height w-full">
+      <Header className="flex fixed z-20 items-center min-h-nav-height w-full shadow-lg">
         {isSiderCollapsed ? (
           <FiMenu
             onClick={() => setIsOpenSider(true)}
@@ -168,7 +168,7 @@ export default function MainContainer() {
           theme="light"
           collapsed={isSiderCollapsed}
           width={256}
-          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10"
+          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 shadow-xl"
           style={{
             position: 'fixed',
           }}

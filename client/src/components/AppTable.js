@@ -160,6 +160,7 @@ export default function AppTable({ columns, data, onSelectRows }) {
     <div>
       <p className="">Tổng cộng: 100</p>
       <Table
+        bordered
         dataSource={withKeys(data)}
         columns={responsiveColumn(getColumns())}
         rowSelection={{
