@@ -22,7 +22,7 @@ module.exports = {
               '@normal-color': '#F6F8FA',
               '@text-selection-bg': '#60A5FA',
               '@layout-body-background': '#F6F8FA',
-              '@layout-header-background': '#353B48',
+              '@layout-header-background': '#1F2937',
               '@text-color': '#24292f',
               '@layout-header-padding': '0 32px',
               '@border-color-base': '#D0D7DE',

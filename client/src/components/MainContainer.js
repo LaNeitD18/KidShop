@@ -1,5 +1,5 @@
 import { cloneElement, useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { arrayFind } from '../utils/array';
 import { stringToPaths, pathsToStrings } from '../utils/route';
@@ -179,7 +179,7 @@ export default function MainContainer() {
             selectedKeys={[paths.menuString]}
             onSelect={handleSelectMenu}
           >
-            <div className="w-full flex-col items-center text-center my-5 pr-1">
+            <div className="w-full flex-col items-center text-center mb-5 mt-7 pr-1">
               {nav.icon &&
                 cloneElement(nav.icon, {
                   className: 'text-3xl w-full mb-1',
@@ -213,18 +213,18 @@ export default function MainContainer() {
         >
           <Breadcrumb>
             <Breadcrumb.Item href="/">
-              <a href="/">{nav.title}</a>
+              {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
             </Breadcrumb.Item>
             {menu && (
               <Breadcrumb.Item>
-                <a href="/">{menu.title}</a>
+                {subPage ? (
+                  <Link to={paths.menuString}>{menu.title}</Link>
+                ) : (
+                  menu.title
+                )}
               </Breadcrumb.Item>
             )}
-            {subPage && (
-              <Breadcrumb.Item>
-                <a href="/">{subPage.title}</a>
-              </Breadcrumb.Item>
-            )}
+            {subPage && <Breadcrumb.Item>{subPage.title}</Breadcrumb.Item>}
           </Breadcrumb>
           <Divider style={{ margin: '12px 0' }} />
           <Content className="site-layout-background select-text">
