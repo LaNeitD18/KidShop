@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Select } from 'antd';
-import {
-  CancelButton,
-  DeleteButton,
-  DoneButton,
-} from '../../../components/Button';
+import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import * as tt from '@tomtom-international/web-sdk-maps';
@@ -77,7 +73,9 @@ export default function EditBranchPage({ mode }) {
   return (
     <div>
       <ContentHeader title={byModes.title}>
-        <CancelButton responsive>Hủy bỏ</CancelButton>
+        <AppButton type="cancel" responsive>
+          Hủy bỏ
+        </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
         <div ref={mapElement} className="h-96 md:h-128" />
@@ -145,15 +143,20 @@ export default function EditBranchPage({ mode }) {
 
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
-                <DoneButton className="w-full" htmlType="submit" size="large">
+                <AppButton
+                  type="done"
+                  className="w-full"
+                  htmlType="submit"
+                  size="large"
+                >
                   {byModes.okText}
-                </DoneButton>
+                </AppButton>
               </Form.Item>
               {!!isEdit && (
                 <Form.Item className="flex-1">
-                  <DeleteButton className="w-full" size="large">
+                  <AppButton type="delete" className="w-full" size="large">
                     Xóa chi nhánh
-                  </DeleteButton>
+                  </AppButton>
                 </Form.Item>
               )}
             </div>

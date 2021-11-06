@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AddButton, DeleteButton } from '../../components/Button';
+import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
 import * as api from '../../api/supplier';
 import AppTable from '../../components/AppTable';
@@ -47,9 +47,13 @@ export default function SupplierPage() {
   return (
     <div>
       <ContentHeader title="Quản lý nhà cung cấp">
-        <AddButton responsive>Thêm nhà cung cấp</AddButton>
+        <AppButton type="add" responsive>
+          Thêm nhà cung cấp
+        </AppButton>
         {!!selectedRows.length && (
-          <DeleteButton responsive>Xóa nhà cung cấp</DeleteButton>
+          <AppButton type="delete" responsive>
+            Xóa nhà cung cấp
+          </AppButton>
         )}
       </ContentHeader>
       <AppTable columns={columns} data={data} onSelectRows={setSelectedRows} />

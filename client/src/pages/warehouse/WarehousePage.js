@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AddButton, DeleteButton } from '../../components/Button';
+import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
 import AppTable from '../../components/AppTable';
 
@@ -61,9 +61,13 @@ export default function WarehousePage() {
   return (
     <div>
       <ContentHeader title="Quản lý kho">
-        <AddButton responsive>Thêm kho</AddButton>
+        <AppButton type="add" responsive>
+          Thêm kho
+        </AppButton>
         {!!selectedRows.length && (
-          <DeleteButton responsive>Xóa kho</DeleteButton>
+          <AppButton type="delete" responsive>
+            Xóa kho
+          </AppButton>
         )}
       </ContentHeader>
       <AppTable

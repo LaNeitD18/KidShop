@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AddButton, DeleteButton } from '../../../components/Button';
+import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import AppTable from '../../../components/AppTable';
 
@@ -60,9 +60,13 @@ export default function BranchPage() {
   return (
     <div>
       <ContentHeader title="Quản lý các chi nhánh">
-        <AddButton responsive>Thêm chi nhánh</AddButton>
+        <AppButton type="add" link="add" responsive>
+          Thêm chi nhánh
+        </AppButton>
         {!!selectedRows.length && (
-          <DeleteButton responsive>Xóa chi nhánh</DeleteButton>
+          <AppButton type="delete" responsive>
+            Xóa chi nhánh
+          </AppButton>
         )}
       </ContentHeader>
       <AppTable
