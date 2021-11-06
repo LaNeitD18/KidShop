@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from 'antd';
 import {
   PlusOutlined,
@@ -7,7 +8,6 @@ import {
 } from '@ant-design/icons';
 import { useResponsive } from './Media';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 const mapType = {
   add: {
@@ -42,7 +42,7 @@ const mapType = {
   },
 };
 
-const AppButton = ({
+export default function AppButton({
   type,
   className,
   children,
@@ -51,7 +51,7 @@ const AppButton = ({
   linkOptions,
   onClick = () => {},
   ...rest
-}) => {
+}) {
   const media = useResponsive();
   const navigate = useNavigate();
 
@@ -71,10 +71,4 @@ const AppButton = ({
       {media.isXs || !responsive ? children : null}
     </Button>
   );
-};
-
-AppButton.propTypes = {
-  type: PropTypes.oneOf(Object.keys(mapType)),
-};
-
-export default AppButton;
+}
