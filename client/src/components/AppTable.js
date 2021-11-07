@@ -4,6 +4,7 @@ import Moment from 'react-moment';
 import { withKeys } from '../utils/array';
 import { SearchOutlined } from '@ant-design/icons';
 import { useResponsive } from './Media';
+import { idString } from '../utils/string';
 
 export default function AppTable({ columns, data, onSelectRows }) {
   const media = useResponsive();
@@ -28,6 +29,7 @@ export default function AppTable({ columns, data, onSelectRows }) {
   const getColumns = () => {
     const getProps = ({
       id,
+      idFormat,
       createdTime,
       searchable,
       sortable,
@@ -40,7 +42,11 @@ export default function AppTable({ columns, data, onSelectRows }) {
         dataIndex = dataIndex || 'id';
         render = render
           ? render
-          : (id) => <a className="font-semibold">{id}</a>;
+          : (id) => (
+              <a className="font-semibold">
+                {idFormat ? idString(id, idFormat[0], idFormat[1]) : id}
+              </a>
+            );
       }
       if (createdTime) {
         title = title || 'Ngày tạo';

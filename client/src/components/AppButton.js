@@ -50,6 +50,7 @@ export default function AppButton({
   link,
   linkOptions,
   onClick = () => {},
+  loading,
   ...rest
 }) {
   const media = useResponsive();
@@ -65,6 +66,7 @@ export default function AppButton({
     <Button
       className={className}
       onClick={handleClick}
+      loading={loading}
       {...mapType[type].buttonProps}
       {...rest}
     >

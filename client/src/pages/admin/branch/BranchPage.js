@@ -5,21 +5,21 @@ import AppTable from '../../../components/AppTable';
 
 const fakeData = [
   {
-    id: 'CH0001',
+    id: 1,
     address: '331, KP 10, P. An Bình, Biên Hòa, Đồng Nai',
     phone: '0987654321',
     owner: 'Ngô Công Hậu',
     createdTime: '28082021',
   },
   {
-    id: 'CH0002',
+    id: 2,
     address: '420, KP 69, Quận Thủ Đức, TP HCM',
     phone: '0123456789',
     owner: 'Phan Huy Tiến',
     createdTime: '12022001',
   },
   {
-    id: 'CH0003',
+    id: 3,
     address: '69, KP 69, Quận Thủ Đức, TP HCM',
     phone: '0123456789',
     owner: 'Phan Huy Sanh',
@@ -31,6 +31,7 @@ const columns = [
   {
     title: 'Mã cửa hàng',
     id: true,
+    idFormat: ['CH', 4],
     searchable: true,
     sortable: true,
   },
