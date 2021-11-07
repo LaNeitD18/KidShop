@@ -35,22 +35,22 @@ export class StoreController {
     }
 
     try {
-      const storeData: CuaHang = {
-        diaChi: data.diaChi,
-        sdt: data.sdt,
-        // dsQuay: [],
-      };
+      const {maChuCuaHang, ...restData} = data;
 
-      const storeManager = await this.userService.findOne(data.chuCuaHangId);
+      const storeManager = await this.userService.findOne(maChuCuaHang);
       if (!storeManager) {
         return res
           .status(HttpStatus.NOT_FOUND)
           .send(
-            `Can not find user with id ${data.chuCuaHangId} to set store manager`,
+            `Can not find user with id ${maChuCuaHang} to set store manager`,
           );
       }
-      storeData.chuCuaHang = storeManager;
 
+      const storeData: CuaHang = {
+        ...restData,
+        chuCuaHang: storeManager,
+      }
+      
       const newStore = await this.storeService.create(storeData);
       return res.status(HttpStatus.CREATED).json(newStore);
     } catch (error) {

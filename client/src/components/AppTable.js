@@ -4,9 +4,14 @@ import Moment from 'react-moment';
 import { withKeys } from '../utils/array';
 import { SearchOutlined } from '@ant-design/icons';
 import { useResponsive } from './Media';
-import { idString } from '../utils/string';
+import { extractNumber, idString } from '../utils/string';
+import { Link } from 'react-router-dom';
 
-export default function AppTable({ columns, data, onSelectRows }) {
+export default function AppTable({
+  columns = [],
+  data = [],
+  onSelectRows = () => {},
+}) {
   const media = useResponsive();
 
   const [pagination, setPagination] = useState({
@@ -15,8 +20,6 @@ export default function AppTable({ columns, data, onSelectRows }) {
     total: 100,
   });
   const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef();
 
@@ -29,6 +32,7 @@ export default function AppTable({ columns, data, onSelectRows }) {
   const getColumns = () => {
     const getProps = ({
       id,
+      link,
       idFormat,
       createdTime,
       searchable,
@@ -43,9 +47,9 @@ export default function AppTable({ columns, data, onSelectRows }) {
         render = render
           ? render
           : (id) => (
-              <a className="font-semibold">
+              <Link to={link || `edit/${id}`} className="font-semibold">
                 {idFormat ? idString(id, idFormat[0], idFormat[1]) : id}
-              </a>
+              </Link>
             );
       }
       if (createdTime) {
@@ -57,6 +61,15 @@ export default function AppTable({ columns, data, onSelectRows }) {
               <Moment parse="DDMMYYYY" fromNow>
                 {createdTime}
               </Moment>
+            );
+      }
+      if (link && !id && !createdTime) {
+        render = render
+          ? render
+          : (value) => (
+              <Link to={link} className="font-semibold">
+                {value}
+              </Link>
             );
       }
       let searchProps = {};
@@ -71,13 +84,10 @@ export default function AppTable({ columns, data, onSelectRows }) {
           }) => {
             const handleSearch = (selectedKeys, confirm, dataIndex) => {
               confirm();
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
             };
 
             const handleReset = (clearFilters) => {
               clearFilters();
-              setSearchText('');
             };
 
             return (
@@ -87,10 +97,12 @@ export default function AppTable({ columns, data, onSelectRows }) {
                     searchInput.current = node;
                   }}
                   placeholder={`Tìm kiếm ${dataIndex}`}
-                  value={selectedKeys[0]}
-                  onChange={(e) =>
-                    setSelectedKeys(e.target.value ? [e.target.value] : [])
+                  value={
+                    idFormat ? extractNumber(selectedKeys[0]) : selectedKeys[0]
                   }
+                  onChange={(e) => {
+                    setSelectedKeys(e.target.value ? [e.target.value] : []);
+                  }}
                   onPressEnter={() => {
                     handleSearch(selectedKeys, confirm, dataIndex);
                   }}

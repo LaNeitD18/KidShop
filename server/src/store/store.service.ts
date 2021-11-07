@@ -31,7 +31,7 @@ export class StoreService {
       .createQueryBuilder('store')
       .update(data)
       .where('id = :id', { id: id })
-      .returning(['id', 'diaChi', 'sdt', 'chuCuaHangId'])
+      .returning(['id', 'diaChi', 'sdt', 'maChuCuaHang'])
       .updateEntity(true)
       .execute();
 

@@ -49,7 +49,7 @@ export default function AppButton({
   responsive,
   link,
   linkOptions,
-  onClick = () => {},
+  onClick,
   loading,
   ...rest
 }) {
@@ -57,9 +57,12 @@ export default function AppButton({
   const navigate = useNavigate();
 
   const handleClick = (e) => {
-    onClick(e);
-    if (!link) link = mapType[type].linkProps?.link;
-    if (link) navigate(link, { ...linkOptions });
+    if (onClick) {
+      onClick(e);
+    } else {
+      link = link || mapType[type].linkProps?.link;
+      if (link) navigate(link, { ...linkOptions });
+    }
   };
 
   return (

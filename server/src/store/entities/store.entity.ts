@@ -12,20 +12,32 @@ import {
 
 @Entity()
 export class CuaHang {
-  @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  @PrimaryGeneratedColumn('increment')
+  id?: number;
 
   @ApiProperty()
   @Column()
   diaChi: string;
 
-  @ApiProperty({ required: false })
-  @Column({ nullable: true })
-  sdt?: string;
+  @ApiProperty()
+  @Column()
+  kinhDo: number;
+
+  @ApiProperty()
+  @Column()
+  viDo: number;
+
+  @ApiProperty()
+  @Column()
+  sdt: string;
+
+  @ApiProperty()
+  @Column()
+  viTri: string;
 
   @OneToOne(() => NguoiDung)
   @JoinColumn()
-  chuCuaHang?: NguoiDung;
+  chuCuaHang: NguoiDung;
 
   @OneToMany(() => Quay, (quay) => quay.cuaHang)
   dsQuay?: Quay[];

@@ -1,3 +1,4 @@
+
 export const arrayFind = (array, value, key = 'key') => {
   return array?.find((item) => item[key] === value);
 };

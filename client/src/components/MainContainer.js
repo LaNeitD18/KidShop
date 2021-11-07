@@ -64,7 +64,7 @@ const navMenu = [
     title: 'Cửa hàng',
   },
   {
-    path: 'pos',
+    path: 'counter',
     title: 'Bán hàng',
   },
   {

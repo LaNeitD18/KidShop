@@ -4,9 +4,19 @@ export class CreateStoreDto {
   @ApiProperty()
   diaChi: string;
 
-  @ApiProperty({ required: false })
-  sdt?: string;
+  @ApiProperty()
+  kinhDo: number;
 
-  @ApiProperty({ required: false })
-  chuCuaHangId?: string;
+  @ApiProperty()
+  viDo: number;
+
+  @ApiProperty()
+  viTri: string;
+
+  @ApiProperty()
+  sdt: string;
+
+  @ApiProperty()
+  maChuCuaHang?: string;
+
 }
