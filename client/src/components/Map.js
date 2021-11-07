@@ -64,7 +64,7 @@ export default function Map({
         maker.togglePopup();
         console.log(geoResponse);
         onChangeMapLocation({
-          coordinate: [pos.lng, pos.lat],
+          coordinates: [pos.lng, pos.lat],
           address: geoResponse.addresses[0].address.freeformAddress,
         });
       }

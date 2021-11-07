@@ -33,7 +33,7 @@ export default function AppTable({
     const getProps = ({
       id,
       link,
-      idFormat,
+      idFormat = [],
       createdTime,
       searchable,
       sortable,
@@ -48,7 +48,7 @@ export default function AppTable({
           ? render
           : (id) => (
               <Link to={link || `edit/${id}`} className="font-semibold">
-                {idFormat ? idString(id, idFormat[0], idFormat[1]) : id}
+                {idFormat ? idString(id, idFormat) : id}
               </Link>
             );
       }

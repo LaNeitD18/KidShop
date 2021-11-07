@@ -17,8 +17,8 @@ function App() {
             <Route index element={<Navigate to="branch" replace />} />
             <Route path="branch">
               <Route index element={<BranchPage />} />
-              <Route path="edit/:id" element={<EditBranchPage />} />
-              <Route path="add" element={<EditBranchPage />} />
+              <Route path="edit/:id" element={<EditBranchPage mode="edit" />} />
+              <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
           <Route path="supply">

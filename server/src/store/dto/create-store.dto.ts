@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Column } from 'typeorm';
 
 export class CreateStoreDto {
   @ApiProperty()
@@ -17,6 +18,5 @@ export class CreateStoreDto {
   sdt: string;
 
   @ApiProperty()
-  maChuCuaHang?: string;
-
+  maChuCuaHang: string;
 }

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, message, Select } from 'antd';
 import { ContentHeader } from '../../../components/Content';
 import Map from '../../../components/Map';
-
-const { Option } = Select;
+import { postStore } from '../../../api/store';
+import { getUserList } from '../../../api/user';
+import SelectInput from '../../../components/SelectInput';
+import useLoading from '../../../hooks/useApiResult';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -17,18 +19,35 @@ const editConsts = {
 };
 
 export default function EditBranchPage({ mode }) {
+  const { apiCall, loading } = useLoading();
+  const [users, setUsers] = useState([]);
   const [mapLocation, setMapLocation] = useState({
-    coordinates: [106.8045253, 10.8710132],
+    coordinates: [106.80452, 10.871013],
     address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
   });
-  const onFinish = (values) => {
-    console.log('form', values);
-  };
 
-  const onFinishFailed = (errorInfo) => {};
+  useEffect(() => {
+    getUserList().then((res) => {
+      setUsers(res.data);
+    });
+  }, []);
 
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
+
+  const onFinish = (values) => {
+    apiCall(
+      postStore({
+        diaChi: values.address,
+        kinhDo: mapLocation.coordinates[0],
+        viDo: mapLocation.coordinates[1],
+        viTri: mapLocation.address,
+        maChuCuaHang: values.owner,
+      }),
+      (res) => console.log('res', res),
+      (err) => console.log('err', err)
+    );
+  };
 
   return (
     <div>
@@ -44,7 +63,6 @@ export default function EditBranchPage({ mode }) {
             name="create-branch"
             layout="vertical"
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item
@@ -80,11 +98,7 @@ export default function EditBranchPage({ mode }) {
                 },
               ]}
             >
-              <Select size="large" showSearch placeholder="Chọn...">
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="tom">Tom</Option>
-              </Select>
+              <SelectInput data={users} />
             </Form.Item>
 
             <Form.Item
@@ -104,6 +118,7 @@ export default function EditBranchPage({ mode }) {
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
+                  loading={loading}
                   type="done"
                   className="w-full"
                   htmlType="submit"
@@ -114,7 +129,12 @@ export default function EditBranchPage({ mode }) {
               </Form.Item>
               {!!isEdit && (
                 <Form.Item className="flex-1">
-                  <AppButton type="delete" className="w-full" size="large">
+                  <AppButton
+                    type="delete"
+                    className="w-full"
+                    size="large"
+                    loading={loading}
+                  >
                     Xóa chi nhánh
                   </AppButton>
                 </Form.Item>

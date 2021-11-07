@@ -35,7 +35,7 @@ export class StoreController {
     }
 
     try {
-      const {maChuCuaHang, ...restData} = data;
+      const { maChuCuaHang, ...restData } = data;
 
       const storeManager = await this.userService.findOne(maChuCuaHang);
       if (!storeManager) {
@@ -49,8 +49,8 @@ export class StoreController {
       const storeData: CuaHang = {
         ...restData,
         chuCuaHang: storeManager,
-      }
-      
+      };
+
       const newStore = await this.storeService.create(storeData);
       return res.status(HttpStatus.CREATED).json(newStore);
     } catch (error) {

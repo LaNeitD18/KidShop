@@ -6,7 +6,7 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -20,11 +20,9 @@ export class CuaHang {
   diaChi: string;
 
   @ApiProperty()
-  @Column()
   kinhDo: number;
 
   @ApiProperty()
-  @Column()
   viDo: number;
 
   @ApiProperty()
@@ -35,7 +33,7 @@ export class CuaHang {
   @Column()
   viTri: string;
 
-  @OneToOne(() => NguoiDung)
+  @ManyToOne(() => NguoiDung)
   @JoinColumn()
   chuCuaHang: NguoiDung;
 
