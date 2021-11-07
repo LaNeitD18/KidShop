@@ -158,7 +158,7 @@ export default function AppTable({ columns, data, onSelectRows }) {
 
   return (
     <div>
-      <p className="">Tổng cộng: 100</p>
+      <p className="">Tổng cộng: {data.length}</p>
       <Table
         dataSource={withKeys(data)}
         columns={responsiveColumn(getColumns())}

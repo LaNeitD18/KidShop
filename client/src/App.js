@@ -1,5 +1,6 @@
 import BranchPage from './pages/admin/branch/BranchPage';
 import EditBranchPage from './pages/admin/branch/EditBranchPage';
+import EditSupplierPage from './pages/supplier/EditSupplierPage';
 import SupplierPage from './pages/supplier/SupplierPage';
 import WarehousePage from './pages/warehouse/WarehousePage';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -25,6 +26,11 @@ function App() {
             <Route index element={<Navigate to="supplier" replace />} />
             <Route path="supplier">
               <Route index element={<SupplierPage />} />
+              <Route
+                path="edit/:id"
+                element={<EditSupplierPage mode="edit" />}
+              />
+              <Route path="add" element={<EditSupplierPage />} />
             </Route>
           </Route>
           <Route path="storage">

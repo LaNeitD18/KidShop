@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import moment from 'moment/min/moment-with-locales';
 import Moment from 'react-moment';
 import { BrowserRouter } from 'react-router-dom';
+import { SupplierProvider } from './context/SupplierContext';
 
 Moment.globalMoment = moment;
 Moment.globalLocale = 'vi';
@@ -13,7 +14,9 @@ Moment.globalLocale = 'vi';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <SupplierProvider>
+        <App />
+      </SupplierProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
