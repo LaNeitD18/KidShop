@@ -6,6 +6,7 @@ import WarehousePage from './pages/warehouse/WarehousePage';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainContainer from './components/MainContainer';
 import ErrorPage from './pages/ErrorPage';
+import EditWarehousePage from './pages/warehouse/EditWarehousePage';
 
 function App() {
   return (
@@ -37,6 +38,11 @@ function App() {
             <Route index element={<Navigate to="warehouse" replace />} />
             <Route path="warehouse">
               <Route index element={<WarehousePage />} />
+              <Route
+                path="edit/:id"
+                element={<EditWarehousePage mode="edit" />}
+              />
+              <Route path="add" element={<EditWarehousePage />} />
             </Route>
           </Route>
         </Route>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, InputNumber, Select } from 'antd';
 import {
   CancelButton,
   DeleteButton,
@@ -8,64 +8,64 @@ import {
 import { ContentHeader } from '../../components/Content';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import CommonString from '../../constants/string';
-import * as api from '../../api/supplier';
-import { SupplierContext } from '../../context/SupplierContext';
+import * as api from '../../api/warehouse';
+import { WarehouseContext } from '../../context';
 import { useLocation, useNavigate } from 'react-router';
 
 const addConsts = {
-  title: CommonString.SUPPLIER_ADD,
+  title: CommonString.WAREHOUSE_ADD,
   okText: CommonString.FINISH_ADD,
 };
 
 const editConsts = {
-  title: CommonString.SUPPLIER_EDIT,
+  title: CommonString.WAREHOUSE_EDIT,
   okText: CommonString.FINISH_EDIT,
 };
 
-export default function EditSupplierPage({ mode }) {
+export default function EditWarehousePage({ mode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [listSuppliers] = useContext(SupplierContext);
-  const selectedSupplier = location.state ?? {
-    tenNCC: '',
+  const [listWarehouses] = useContext(WarehouseContext);
+  const selectedWarehouse = location.state ?? {
     diaChi: '',
     sdt: '',
   };
 
-  const handleCreateSupplier = async (values) => {
+  const handleCreateWarehouse = async (values) => {
     try {
       const data = {
-        tenNCC: values.name,
         diaChi: values.address,
         sdt: values.phone ?? null,
       };
 
-      const newSupplier = await api
-        .createSupplier(data)
+      const newWarehouse = await api
+        .createWarehouse(data)
         .catch((err) => console.log(err));
-      alert(CommonString.SUPPLIER_ADD_SUCCESS);
-      listSuppliers.push(newSupplier);
+      alert(CommonString.WAREHOUSE_ADD_SUCCESS);
+      listWarehouses.push(newWarehouse);
       navigate(-1);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEditSupplier = async (values) => {
+  const handleEditWarehouse = async (values) => {
     try {
       const data = {
-        tenNCC: values.name,
         diaChi: values.address,
         sdt: values.phone ?? null,
       };
 
-      const supplierIndex = listSuppliers.findIndex(
-        (sup) => sup.id === selectedSupplier.id
+      const warehouseIndex = listWarehouses.findIndex(
+        (item) => item.id === selectedWarehouse.id
       );
-      const updatedSupplier = await api.editSupplier(selectedSupplier.id, data);
-      listSuppliers[supplierIndex] = updatedSupplier;
-      alert(CommonString.SUPPLIER_EDIT_SUCCESS);
+      const updatedWarehouse = await api.editWarehouse(
+        selectedWarehouse.id,
+        data
+      );
+      listWarehouses[warehouseIndex] = updatedWarehouse;
+      alert(CommonString.WAREHOUSE_EDIT_SUCCESS);
       navigate(-1);
     } catch (error) {
       console.log(error);
@@ -74,9 +74,9 @@ export default function EditSupplierPage({ mode }) {
 
   const onFinish = async (values) => {
     if (mode === 'edit') {
-      await handleEditSupplier(values);
+      await handleEditWarehouse(values);
     } else {
-      await handleCreateSupplier(values);
+      await handleCreateWarehouse(values);
     }
     console.log('Success:', values);
   };
@@ -96,54 +96,41 @@ export default function EditSupplierPage({ mode }) {
         </CancelButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
+        {/* <div ref={mapElement} className="h-96 md:h-128" /> */}
         <div>
           <Form
-            name="create-supplier"
+            name="create-branch"
             layout="vertical"
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item
-              label={CommonString.SUPPLIER_NAME}
-              requiredMark="optional"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: CommonString.SUPPLIER_ADDRESS_EMPTY,
-                },
-              ]}
-              initialValue={selectedSupplier.tenNCC}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item
-              label={CommonString.SUPPLIER_ADDRESS}
+              label={CommonString.WAREHOUSE_ADDRESS}
               requiredMark="optional"
               name="address"
               rules={[
                 {
                   required: true,
-                  message: CommonString.SUPPLIER_ADDRESS_EMPTY,
+                  message: CommonString.WAREHOUSE_ADDRESS_EMPTY,
                 },
               ]}
-              initialValue={selectedSupplier.diaChi}
+              initialValue={selectedWarehouse.diaChi}
             >
               <Input size="large" />
             </Form.Item>
 
             <Form.Item
-              label={CommonString.SUPPLIER_PHONE}
+              label={CommonString.WAREHOUSE_PHONE}
               name="phone"
               requiredMark="optional"
-              initialValue={selectedSupplier.sdt}
+              initialValue={selectedWarehouse.sdt}
               rules={[
                 {
                   pattern: new RegExp(
                     /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g
                   ),
-                  message: CommonString.SUPPLIER_PHONE_NAN,
+                  message: CommonString.WAREHOUSE_PHONE_NAN,
                 },
               ]}
             >
@@ -159,7 +146,7 @@ export default function EditSupplierPage({ mode }) {
               {!!isEdit && (
                 <Form.Item className="flex-1">
                   <DeleteButton className="w-full" size="large">
-                    {CommonString.SUPPLIER_DELETE}
+                    {CommonString.WAREHOUSE_DELETE}
                   </DeleteButton>
                 </Form.Item>
               )}
