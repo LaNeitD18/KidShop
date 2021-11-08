@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
-import { Form, Input, message, Select } from 'antd';
+import { Form, Input } from 'antd';
 import { ContentHeader } from '../../../components/Content';
 import Map from '../../../components/Map';
 import { postStore } from '../../../api/store';
 import { getUserList } from '../../../api/user';
 import SelectInput from '../../../components/SelectInput';
 import useLoading from '../../../hooks/useApiResult';
+import { useNavigate } from 'react-router-dom';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -18,13 +19,18 @@ const editConsts = {
   okText: 'Lưu thay đổi',
 };
 
+const defaultMapLocation = {
+  coordinates: [106.80452, 10.871013],
+  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+};
+
 export default function EditBranchPage({ mode }) {
+  const [form] = Form.useForm();
+
+  const [mapLocation, setMapLocation] = useState(defaultMapLocation);
+
   const { apiCall, loading } = useLoading();
   const [users, setUsers] = useState([]);
-  const [mapLocation, setMapLocation] = useState({
-    coordinates: [106.80452, 10.871013],
-    address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
-  });
 
   useEffect(() => {
     getUserList().then((res) => {
@@ -42,10 +48,18 @@ export default function EditBranchPage({ mode }) {
         kinhDo: mapLocation.coordinates[0],
         viDo: mapLocation.coordinates[1],
         viTri: mapLocation.address,
+        sdt: values.phone,
         maChuCuaHang: values.owner,
       }),
-      (res) => console.log('res', res),
-      (err) => console.log('err', err)
+      (res, feedback) => {
+        feedback({
+          name: 'Tạo chi nhánh thành công',
+          onContinue: () => {
+            form.resetFields();
+            setMapLocation(defaultMapLocation);
+          },
+        });
+      }
     );
   };
 
@@ -60,6 +74,7 @@ export default function EditBranchPage({ mode }) {
         <Map mapLocation={mapLocation} onChangeMapLocation={setMapLocation} />
         <div>
           <Form
+            form={form}
             name="create-branch"
             layout="vertical"
             onFinish={onFinish}

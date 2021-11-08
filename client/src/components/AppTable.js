@@ -47,7 +47,7 @@ export default function AppTable({
         render = render
           ? render
           : (id) => (
-              <Link to={link || `edit/${id}`} className="font-semibold">
+              <Link to={link || `./edit/${id}`} className="font-semibold">
                 {idFormat ? idString(id, idFormat) : id}
               </Link>
             );

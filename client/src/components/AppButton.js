@@ -37,7 +37,7 @@ const mapType = {
       icon: <CloseOutlined />,
     },
     linkProps: {
-      link: -1,
+      link: '../',
     },
   },
 };
