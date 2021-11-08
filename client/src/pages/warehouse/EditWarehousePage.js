@@ -1,10 +1,6 @@
-import React, { useContext, useEffect } from 'react';
-import { Form, Input, InputNumber, Select } from 'antd';
-import {
-  CancelButton,
-  DeleteButton,
-  DoneButton,
-} from '../../components/Button';
+import React, { useContext } from 'react';
+import { Form, Input } from 'antd';
+import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import CommonString from '../../constants/string';
@@ -91,9 +87,9 @@ export default function EditWarehousePage({ mode }) {
   return (
     <div>
       <ContentHeader title={byModes.title}>
-        <CancelButton onClick={() => navigate(-1)} responsive>
+        <AppButton type="cancel" onClick={() => navigate(-1)} responsive>
           {CommonString.CANCEL}
-        </CancelButton>
+        </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
         {/* <div ref={mapElement} className="h-96 md:h-128" /> */}
@@ -139,15 +135,20 @@ export default function EditWarehousePage({ mode }) {
 
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
-                <DoneButton className="w-full" htmlType="submit" size="large">
+                <AppButton
+                  type="done"
+                  className="w-full"
+                  htmlType="submit"
+                  size="large"
+                >
                   {byModes.okText}
-                </DoneButton>
+                </AppButton>
               </Form.Item>
               {!!isEdit && (
                 <Form.Item className="flex-1">
-                  <DeleteButton className="w-full" size="large">
+                  <AppButton type="delete" className="w-full" size="large">
                     {CommonString.WAREHOUSE_DELETE}
-                  </DeleteButton>
+                  </AppButton>
                 </Form.Item>
               )}
             </div>

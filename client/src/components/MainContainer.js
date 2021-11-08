@@ -74,6 +74,16 @@ const navMenu = [
       {
         path: 'supplier',
         title: 'QL Nhà Cung Cấp',
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
       },
     ],
   },
@@ -84,12 +94,18 @@ const navMenu = [
       {
         path: 'warehouse',
         title: 'QL Các Kho',
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
       },
     ],
-  },
-  {
-    path: 'warehouse',
-    title: 'Kho',
   },
 ];
 

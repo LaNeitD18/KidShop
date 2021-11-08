@@ -58,7 +58,7 @@ export default function useApiFeedback() {
       const feedback = ({ type = 'modal', message = '', name = '' }) => {
         switch (type) {
           case 'modal': {
-            fireErrorModal({ name, message } || err);
+            fireErrorModal(err);
             break;
           }
           case 'message': {

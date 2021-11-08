@@ -1,16 +1,14 @@
-import React, { useContext, useEffect } from 'react';
-import { Form, Input, Select } from 'antd';
-import {
-  CancelButton,
-  DeleteButton,
-  DoneButton,
-} from '../../components/Button';
+import React, { useContext, useState } from 'react';
+import { Form, Input } from 'antd';
+import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import CommonString from '../../constants/string';
 import * as api from '../../api/supplier';
 import { SupplierContext } from '../../context/SupplierContext';
 import { useLocation, useNavigate } from 'react-router';
+import { fireErrorModal, useFireSuccessModal } from '../../utils/feedback';
+import Map from '../../components/Map';
 
 const addConsts = {
   title: CommonString.SUPPLIER_ADD,
@@ -22,9 +20,19 @@ const editConsts = {
   okText: CommonString.FINISH_EDIT,
 };
 
+const defaultMapLocation = {
+  coordinates: [106.80452, 10.871013],
+  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+};
+
 export default function EditSupplierPage({ mode }) {
+  const fireSuccessModal = useFireSuccessModal();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [form] = Form.useForm();
+
+  const [mapLocation, setMapLocation] = useState(defaultMapLocation);
 
   const [listSuppliers] = useContext(SupplierContext);
   const selectedSupplier = location.state ?? {
@@ -44,11 +52,20 @@ export default function EditSupplierPage({ mode }) {
       const newSupplier = await api
         .createSupplier(data)
         .catch((err) => console.log(err));
-      alert(CommonString.SUPPLIER_ADD_SUCCESS);
       listSuppliers.push(newSupplier);
-      navigate(-1);
+      fireSuccessModal(
+        'Tạo nhà cung cấp thành công',
+        null,
+        () => {
+          form.resetFields();
+        },
+        null,
+        () => {
+          navigate('../');
+        }
+      );
     } catch (error) {
-      console.log(error);
+      fireErrorModal(error);
     }
   };
 
@@ -91,13 +108,15 @@ export default function EditSupplierPage({ mode }) {
   return (
     <div>
       <ContentHeader title={byModes.title}>
-        <CancelButton onClick={() => navigate(-1)} responsive>
+        <AppButton type="cancel" onClick={() => navigate(-1)} responsive>
           {CommonString.CANCEL}
-        </CancelButton>
+        </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
+        <Map mapLocation={mapLocation} onChangeMapLocation={setMapLocation} />
         <div>
           <Form
+            form={form}
             name="create-supplier"
             layout="vertical"
             onFinish={onFinish}
@@ -152,15 +171,20 @@ export default function EditSupplierPage({ mode }) {
 
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
-                <DoneButton className="w-full" htmlType="submit" size="large">
+                <AppButton
+                  type="done"
+                  className="w-full"
+                  htmlType="submit"
+                  size="large"
+                >
                   {byModes.okText}
-                </DoneButton>
+                </AppButton>
               </Form.Item>
               {!!isEdit && (
                 <Form.Item className="flex-1">
-                  <DeleteButton className="w-full" size="large">
+                  <AppButton type="delete" className="w-full" size="large">
                     {CommonString.SUPPLIER_DELETE}
-                  </DeleteButton>
+                  </AppButton>
                 </Form.Item>
               )}
             </div>

@@ -1,9 +1,4 @@
 const CommonString = {
-  // common
-  FINISH_ADD: 'Hoàn tất',
-  FINISH_EDIT: 'Lưu thay đổi',
-  CANCEL: 'Hủy bỏ',
-
   // supplier
   SUPPLIER_TITLE: 'Quản lý nhà cung cấp',
   SUPPLIER_NAME: 'Tên nhà cung cấp',

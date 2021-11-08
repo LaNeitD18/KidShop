@@ -14,6 +14,7 @@ const mapType = {
     buttonProps: {
       type: 'primary',
       icon: <PlusOutlined />,
+      children: 'Tạo mới',
     },
     linkProps: {
       link: 'add',
@@ -23,18 +24,21 @@ const mapType = {
     buttonProps: {
       type: 'primary',
       icon: <CheckOutlined />,
+      children: 'Hoàn tất',
     },
   },
   delete: {
     buttonProps: {
       type: 'danger',
       icon: <DeleteOutlined />,
+      children: 'Xóa',
     },
   },
   cancel: {
     buttonProps: {
       danger: true,
       icon: <CloseOutlined />,
+      children: 'Hủy bỏ',
     },
     linkProps: {
       link: '../',
@@ -73,7 +77,9 @@ export default function AppButton({
       {...mapType[type].buttonProps}
       {...rest}
     >
-      {media.isXs || !responsive ? children : null}
+      {media.isXs || !responsive
+        ? children || mapType[type]?.buttonProps?.children
+        : null}
     </Button>
   );
 }

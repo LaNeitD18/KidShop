@@ -2,8 +2,6 @@ import { Collapse, message, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { errorString } from './string';
 
-const { Panel } = Collapse;
-
 export function fireErrorModal(err) {
   const { code, codeName, message } = errorString(err);
   Modal.error({
