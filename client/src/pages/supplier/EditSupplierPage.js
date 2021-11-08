@@ -53,17 +53,13 @@ export default function EditSupplierPage({ mode }) {
         .createSupplier(data)
         .catch((err) => console.log(err));
       listSuppliers.push(newSupplier);
-      fireSuccessModal(
-        'Tạo nhà cung cấp thành công',
-        null,
-        () => {
+      fireSuccessModal({
+        title: 'Tạo nhà cung cấp thành công',
+        onOk: () => {
           form.resetFields();
         },
-        null,
-        () => {
-          navigate('../');
-        }
-      );
+        onCancel: () => navigate('../'),
+      });
     } catch (error) {
       fireErrorModal(error);
     }

@@ -34,7 +34,7 @@ export function fireErrorModal(err) {
 
 export function useFireSuccessModal() {
   const navigate = useNavigate();
-  return (title, message, onOk, okText, onCancel, cancelText) =>
+  return ({ title, message, onOk, okText, onCancel, cancelText }) =>
     Modal.success({
       title: title || 'Hoàn tất',
       content: message || 'Bạn có muốn tiếp tục?',

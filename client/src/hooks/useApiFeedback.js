@@ -39,7 +39,11 @@ export default function useApiFeedback() {
         }
         switch (type) {
           case 'modal': {
-            fireSuccessModal(name, message, onContinue);
+            fireSuccessModal({
+              title: name,
+              message: message,
+              onOk: onContinue,
+            });
             break;
           }
           case 'message': {
@@ -55,7 +59,7 @@ export default function useApiFeedback() {
     } catch (err) {
       setLoading(false);
       setError(err);
-      const feedback = ({ type = 'modal', message = '', name = '' }) => {
+      const feedback = ({ type = 'modal', message = '' }) => {
         switch (type) {
           case 'modal': {
             fireErrorModal(err);

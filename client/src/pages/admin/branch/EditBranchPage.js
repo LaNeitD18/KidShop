@@ -68,7 +68,7 @@ export default function EditBranchPage({ mode }) {
         ...values,
         kinhDo: mapLocation.coordinates[0],
         viDo: mapLocation.coordinates[1],
-        // viTri: mapLocation.address,
+        viTri: mapLocation.address,
       }),
       (feedback) => {
         feedback({
