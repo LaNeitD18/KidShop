@@ -91,7 +91,7 @@ export default function AppTable({
                   ref={(node) => {
                     searchInput.current = node;
                   }}
-                  placeholder={`Tìm kiếm ${dataIndex}`}
+                  placeholder={`Tìm kiếm ${title}`}
                   value={
                     idFormat ? extractNumber(selectedKeys[0]) : selectedKeys[0]
                   }
