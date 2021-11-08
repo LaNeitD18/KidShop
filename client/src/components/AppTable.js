@@ -12,7 +12,7 @@ export default function AppTable({
   data = [],
   onSelectRows = () => {},
   loading,
-  pageSize = 7,
+  itemName = 'dòng',
 }) {
   const media = useResponsive();
 
@@ -49,14 +49,10 @@ export default function AppTable({
       }
       if (createdTime) {
         title = title || 'Ngày tạo';
-        dataIndex = dataIndex || 'createdTime';
+        dataIndex = dataIndex || 'taoLuc';
         render = render
           ? render
-          : (createdTime) => (
-              <Moment parse="DDMMYYYY" fromNow>
-                {createdTime}
-              </Moment>
-            );
+          : (createdTime) => <Moment fromNow>{createdTime}</Moment>;
       }
       if (link && !id && !createdTime) {
         render = render
@@ -147,8 +143,6 @@ export default function AppTable({
         };
       }
 
-      const sortByType = (a, b) => {};
-
       return {
         title,
         dataIndex,
@@ -184,6 +178,8 @@ export default function AppTable({
         pagination={{
           defaultPageSize: 7,
           pageSizeOptions: [7, 15, 20, 50],
+          showTotal: (total, range) =>
+            `${range[0]} đến ${range[1]} trong ${total} ${itemName}`,
         }}
       />
     </div>

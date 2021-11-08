@@ -8,7 +8,7 @@ export default function SelectInput({
   idField = 'id',
   onSelect,
   idFormat,
-  allowClear,
+  allowClear = true,
   ...rest
 }) {
   const ownerOptions = data.map((d) => ({
@@ -20,7 +20,7 @@ export default function SelectInput({
       size="large"
       showSearch
       placeholder="Chọn..."
-      optionFilterProp="title"
+      optionFilterProp="label"
       options={ownerOptions}
       onSelect={onSelect}
       allowClear={allowClear}

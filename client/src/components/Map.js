@@ -16,16 +16,17 @@ export default function Map({
   icon = 'store',
 }) {
   const { coordinates, address } = mapLocation;
+  const [long, lat] = coordinates;
   const mapElement = useRef();
 
   useEffect(() => {
     let map = tt.map({
       key: MAP_API_KEY,
       container: mapElement.current,
-      center: coordinates,
+      center: [parseFloat(long), parseFloat(lat)],
       zoom: mapZoom,
     });
-    const initCoordinates = coordinates;
+    const initCoordinates = [parseFloat(long), parseFloat(lat)];
     let maker;
     function createMaker(markerCoordinates, popup) {
       const markerElement = document.createElement('div');

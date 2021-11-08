@@ -8,6 +8,8 @@ import {
   OneToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -39,4 +41,10 @@ export class CuaHang {
 
   @OneToMany(() => Quay, (quay) => quay.cuaHang)
   dsQuay?: Quay[];
+
+  @CreateDateColumn()
+  taoLuc?: Date;
+
+  @UpdateDateColumn()
+  suaLuc?: Date;
 }

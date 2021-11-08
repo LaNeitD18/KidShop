@@ -61,6 +61,7 @@ export default function BranchPage() {
         columns={columns}
         data={result?.data}
         onSelectRows={setSelectedRows}
+        itemName="chi nhánh"
       />
     </div>
   );

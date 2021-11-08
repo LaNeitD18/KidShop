@@ -10,8 +10,8 @@ export default function useApiFeedback() {
 
   const apiCall = async (
     apiPromise,
-    onSuccess = (feedback) => {},
-    onError = (feedback) => {}
+    onSuccess = (feedback, res) => {},
+    onError = (feedback, err) => {}
   ) => {
     try {
       setLoading(true);
@@ -51,7 +51,7 @@ export default function useApiFeedback() {
         }
       };
 
-      onSuccess(feedback);
+      onSuccess(feedback, res);
     } catch (err) {
       setLoading(false);
       setError(err);
@@ -69,7 +69,7 @@ export default function useApiFeedback() {
           }
         }
       };
-      onError(feedback);
+      onError(feedback, err);
     }
   };
 

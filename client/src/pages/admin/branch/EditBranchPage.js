@@ -3,10 +3,11 @@ import AppButton from '../../../components/AppButton';
 import { Form, Input } from 'antd';
 import { ContentHeader } from '../../../components/Content';
 import Map from '../../../components/Map';
-import { postStore } from '../../../api/store';
+import { getStore, postStore } from '../../../api/store';
 import { getUserList } from '../../../api/user';
 import SelectInput from '../../../components/SelectInput';
 import useLoading from '../../../hooks/useApiFeedback';
+import { useParams } from 'react-router-dom';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -24,34 +25,54 @@ const defaultMapLocation = {
 };
 
 export default function EditBranchPage({ mode }) {
+  const { id } = useParams();
+
   const [form] = Form.useForm();
 
   const [mapLocation, setMapLocation] = useState(defaultMapLocation);
 
-  const { apiCall, loading, result } = useLoading();
+  const { apiCall: postCall, loading: postLoad } = useLoading();
+  const { apiCall: getCall, loading: getLoad, result } = useLoading();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     getUserList().then((res) => {
       setUsers(res.data);
     });
+    if (mode === 'edit') {
+      getCall(getStore(id), (feedback, { data }) => {
+        form.setFieldsValue({
+          ...data,
+          idChuCuaHang: data?.chuCuaHang?.id,
+        });
+        console.log('kinh vi', data?.kinhDo, data?.viDo);
+        setMapLocation({
+          coordinates: [data?.kinhDo, data?.viDo],
+          address: data?.viTri,
+        });
+      });
+    }
   }, []);
 
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
   const onFinish = (values) => {
-    apiCall(
+    console.log({
+      kinhDo: mapLocation.coordinates[0],
+      viDo: mapLocation.coordinates[1],
+      viTri: mapLocation.address,
+    });
+    postCall(
       postStore({
-        diaChi: values.address,
+        ...values,
         kinhDo: mapLocation.coordinates[0],
         viDo: mapLocation.coordinates[1],
         viTri: mapLocation.address,
-        sdt: values.phone,
-        maChuCuaHang: values.owner,
       }),
       (feedback) => {
         feedback({
+          type: 'modal',
           name: 'Tạo chi nhánh thành công',
           onContinue: () => {
             form.resetFields();
@@ -82,7 +103,7 @@ export default function EditBranchPage({ mode }) {
             <Form.Item
               label="Địa chỉ"
               requiredMark="optional"
-              name="address"
+              name="diaChi"
               rules={[
                 {
                   required: true,
@@ -103,7 +124,7 @@ export default function EditBranchPage({ mode }) {
 
             <Form.Item
               label="Chủ cửa hàng"
-              name="owner"
+              name="idChuCuaHang"
               requiredMark="optional"
               rules={[
                 {
@@ -117,7 +138,7 @@ export default function EditBranchPage({ mode }) {
 
             <Form.Item
               label="Số điện thoại"
-              name="phone"
+              name="sdt"
               requiredMark="optional"
               rules={[
                 {
@@ -132,7 +153,7 @@ export default function EditBranchPage({ mode }) {
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
-                  loading={loading}
+                  loading={postLoad}
                   type="done"
                   className="w-full"
                   htmlType="submit"
@@ -147,7 +168,7 @@ export default function EditBranchPage({ mode }) {
                     type="delete"
                     className="w-full"
                     size="large"
-                    loading={loading}
+                    loading={postLoad}
                   >
                     Xóa chi nhánh
                   </AppButton>
