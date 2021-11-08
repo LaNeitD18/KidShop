@@ -5,25 +5,28 @@ import { message as antdMessage } from 'antd';
 export default function useApiFeedback() {
   const [loading, setLoading] = useState(false);
   const fireSuccessModal = useFireSuccessModal();
+  const [result, setResult] = useState({});
+  const [error, setError] = useState({});
 
   const apiCall = async (
     apiPromise,
-    onSuccess = (res, feedback) => {},
-    onError = (error, feedback) => {}
+    onSuccess = (feedback) => {},
+    onError = (feedback) => {}
   ) => {
     try {
       setLoading(true);
-      const result = await apiPromise;
+      const res = await apiPromise;
       setLoading(false);
+      setResult(res);
       const feedback = ({
-        type = 'modal',
+        type = '',
         message = '',
         name = '',
         onContinue = () => {},
       }) => {
         let mess = message;
         if (!mess) {
-          switch (result.status) {
+          switch (res.status) {
             case 200:
               mess = 'Thực hiện thành công';
               break;
@@ -34,26 +37,41 @@ export default function useApiFeedback() {
               mess = 'Hoàn tất';
           }
         }
-        if (type === 'modal') {
-          fireSuccessModal(name, message, onContinue);
-        } else {
-          antdMessage.success(mess);
+        switch (type) {
+          case 'modal': {
+            fireSuccessModal(name, message, onContinue);
+            break;
+          }
+          case 'message': {
+            antdMessage.success(mess);
+            break;
+          }
+          default: {
+          }
         }
       };
 
-      onSuccess(result, feedback);
-    } catch (error) {
+      onSuccess(feedback);
+    } catch (err) {
       setLoading(false);
+      setError(err);
       const feedback = ({ type = 'modal', message = '', name = '' }) => {
-        if (type === 'modal') {
-          fireErrorModal({ name, message } || error);
-        } else {
-          antdMessage.success(message);
+        switch (type) {
+          case 'modal': {
+            fireErrorModal({ name, message } || err);
+            break;
+          }
+          case 'message': {
+            antdMessage.success(message);
+            break;
+          }
+          default: {
+          }
         }
       };
-      onError(error, feedback);
+      onError(feedback);
     }
   };
 
-  return { apiCall, loading };
+  return { apiCall, loading, result, error };
 }

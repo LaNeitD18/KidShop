@@ -1,31 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import AppTable from '../../../components/AppTable';
-
-const fakeData = [
-  {
-    id: 1,
-    address: '331, KP 10, P. An Bình, Biên Hòa, Đồng Nai',
-    phone: '0987654321',
-    owner: 'Ngô Công Hậu',
-    createdTime: '28082021',
-  },
-  {
-    id: 2,
-    address: '420, KP 69, Quận Thủ Đức, TP HCM',
-    phone: '0123456789',
-    owner: 'Phan Huy Tiến',
-    createdTime: '12022001',
-  },
-  {
-    id: 3,
-    address: '69, KP 69, Quận Thủ Đức, TP HCM',
-    phone: '0123456789',
-    owner: 'Phan Huy Sanh',
-    createdTime: '12022001',
-  },
-];
+import useApiFeedback from '../../../hooks/useApiFeedback';
+import { getStoreList } from '../../../api/store';
 
 const columns = [
   {
@@ -37,17 +15,17 @@ const columns = [
   },
   {
     title: 'Địa chỉ',
-    dataIndex: 'address',
+    dataIndex: 'diaChi',
     searchable: true,
   },
   {
     title: 'SDT',
-    dataIndex: 'phone',
+    dataIndex: 'sdt',
     searchable: true,
   },
   {
     title: 'Chủ cửa hàng',
-    dataIndex: 'owner',
+    dataIndex: ['chuCuaHang', 'hoTen'],
     searchable: true,
   },
   {
@@ -58,6 +36,14 @@ const columns = [
 
 export default function BranchPage() {
   const [selectedRows, setSelectedRows] = useState([]);
+  const { loading, apiCall, result } = useApiFeedback();
+
+  useEffect(() => {
+    apiCall(getStoreList());
+  }, []);
+
+  console.log(result?.data);
+
   return (
     <div>
       <ContentHeader title="Quản lý các chi nhánh">
@@ -71,8 +57,9 @@ export default function BranchPage() {
         )}
       </ContentHeader>
       <AppTable
+        loading={loading}
         columns={columns}
-        data={fakeData}
+        data={result?.data}
         onSelectRows={setSelectedRows}
       />
     </div>

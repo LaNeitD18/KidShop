@@ -1,7 +1,7 @@
 import { Table, Input, Button } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import Moment from 'react-moment';
-import { withKeys } from '../utils/array';
+import { autoSorter, withKeys } from '../utils/array';
 import { SearchOutlined } from '@ant-design/icons';
 import { useResponsive } from './Media';
 import { extractNumber, idString } from '../utils/string';
@@ -11,15 +11,10 @@ export default function AppTable({
   columns = [],
   data = [],
   onSelectRows = () => {},
+  loading,
+  pageSize = 7,
 }) {
   const media = useResponsive();
-
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 8,
-    total: 100,
-  });
-  const [loading, setLoading] = useState(false);
 
   const searchInput = useRef();
 
@@ -152,12 +147,14 @@ export default function AppTable({
         };
       }
 
+      const sortByType = (a, b) => {};
+
       return {
         title,
         dataIndex,
         render,
         sorter: sortable
-          ? (a, b) => a[dataIndex].toString().localeCompare(b[dataIndex])
+          ? (a, b) => autoSorter(a[dataIndex], b[dataIndex])
           : undefined,
         ...searchProps,
       };
@@ -176,7 +173,6 @@ export default function AppTable({
 
   return (
     <div>
-      <p className="">Tổng cộng: 100</p>
       <Table
         bordered
         dataSource={withKeys(data)}
@@ -184,8 +180,11 @@ export default function AppTable({
         rowSelection={{
           ...rowSelection,
         }}
-        pagination={pagination}
         loading={loading}
+        pagination={{
+          defaultPageSize: 7,
+          pageSizeOptions: [7, 15, 20, 50],
+        }}
       />
     </div>
   );

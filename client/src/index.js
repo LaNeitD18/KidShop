@@ -6,6 +6,8 @@ import * as serviceWorker from './serviceWorker';
 import moment from 'moment/min/moment-with-locales';
 import Moment from 'react-moment';
 import { BrowserRouter } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
+import vi_VN from 'antd/lib/locale/vi_VN';
 
 Moment.globalMoment = moment;
 Moment.globalLocale = 'vi';
@@ -13,7 +15,9 @@ Moment.globalLocale = 'vi';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ConfigProvider locale={vi_VN}>
+        <App />
+      </ConfigProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

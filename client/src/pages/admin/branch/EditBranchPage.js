@@ -6,8 +6,7 @@ import Map from '../../../components/Map';
 import { postStore } from '../../../api/store';
 import { getUserList } from '../../../api/user';
 import SelectInput from '../../../components/SelectInput';
-import useLoading from '../../../hooks/useApiResult';
-import { useNavigate } from 'react-router-dom';
+import useLoading from '../../../hooks/useApiFeedback';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -29,7 +28,7 @@ export default function EditBranchPage({ mode }) {
 
   const [mapLocation, setMapLocation] = useState(defaultMapLocation);
 
-  const { apiCall, loading } = useLoading();
+  const { apiCall, loading, result } = useLoading();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function EditBranchPage({ mode }) {
         sdt: values.phone,
         maChuCuaHang: values.owner,
       }),
-      (res, feedback) => {
+      (feedback) => {
         feedback({
           name: 'Tạo chi nhánh thành công',
           onContinue: () => {

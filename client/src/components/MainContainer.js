@@ -205,7 +205,7 @@ export default function MainContainer() {
         </Sider>
         <Layout
           className={classNames(
-            'pt-4 px-6 xs:pt-6 pb-6 sm:pb-0 sm:px-10 mt-nav-height',
+            'pt-4 px-6 pb-6 sm:pb-0 sm:px-10 mt-nav-height',
             {
               'ml-sider-width': media.isLg,
             }
