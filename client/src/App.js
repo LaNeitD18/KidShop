@@ -1,10 +1,12 @@
 import BranchPage from './pages/admin/branch/BranchPage';
 import EditBranchPage from './pages/admin/branch/EditBranchPage';
+import EditSupplierPage from './pages/supplier/EditSupplierPage';
 import SupplierPage from './pages/supplier/SupplierPage';
 import WarehousePage from './pages/warehouse/WarehousePage';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainContainer from './components/MainContainer';
 import ErrorPage from './pages/ErrorPage';
+import EditWarehousePage from './pages/warehouse/EditWarehousePage';
 
 function App() {
   return (
@@ -25,12 +27,22 @@ function App() {
             <Route index element={<Navigate to="supplier" replace />} />
             <Route path="supplier">
               <Route index element={<SupplierPage />} />
+              <Route
+                path="edit/:id"
+                element={<EditSupplierPage mode="edit" />}
+              />
+              <Route path="add" element={<EditSupplierPage />} />
             </Route>
           </Route>
           <Route path="storage">
             <Route index element={<Navigate to="warehouse" replace />} />
             <Route path="warehouse">
               <Route index element={<WarehousePage />} />
+              <Route
+                path="edit/:id"
+                element={<EditWarehousePage mode="edit" />}
+              />
+              <Route path="add" element={<EditWarehousePage />} />
             </Route>
           </Route>
         </Route>

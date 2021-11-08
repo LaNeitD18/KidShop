@@ -28,7 +28,7 @@ export default function AppTable({
     const getProps = ({
       id,
       link,
-      idFormat = [],
+      idFormat,
       createdTime,
       searchable,
       sortable,
