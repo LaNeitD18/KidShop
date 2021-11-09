@@ -90,6 +90,7 @@ export default function EditBranchPage({ mode }) {
           onOk: () => {
             form.resetFields();
             setMapLocation(defaultMapLct);
+            setMapCenter(defaultMapLct.coordinates);
           },
           onCancel: () => {
             navigate('../');

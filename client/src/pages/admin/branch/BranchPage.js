@@ -39,6 +39,7 @@ const columns = [
 export default function BranchPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
+  const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
 
   function fetchStore() {
     apiCall(getStoreList());
@@ -48,17 +49,19 @@ export default function BranchPage() {
     fetchStore();
   }, []);
 
-  async function handleDelete() {
-    await Promise.all(
-      selectedRows.map((row) => {
-        return deleteStore(row);
-      })
-    )
-      .then(() => {
+  function handleDelete() {
+    deleteCall(
+      Promise.all(
+        selectedRows.map((row) => {
+          return deleteStore(row);
+        })
+      ),
+      () => {
         message.success('Xóa thành công');
-        selectedRows([]);
-      })
-      .catch((err) => fireErrorModal(err[0]));
+        setSelectedRows([]);
+        fetchStore();
+      }
+    );
   }
 
   return (
@@ -68,7 +71,12 @@ export default function BranchPage() {
           Thêm chi nhánh
         </AppButton>
         {!!selectedRows.length && (
-          <AppButton type="delete" responsive onClick={handleDelete}>
+          <AppButton
+            type="delete"
+            responsive
+            onClick={handleDelete}
+            loading={deleteLoading}
+          >
             Xóa chi nhánh
           </AppButton>
         )}

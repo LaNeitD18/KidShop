@@ -1,8 +1,9 @@
-import { Collapse, message, Modal } from 'antd';
+import { Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { errorString } from './string';
 
 export function fireErrorModal(err) {
+  if (Array.isArray(err)) err = err[0];
   const { code, codeName, message } = errorString(err);
   Modal.error({
     title: codeName,
