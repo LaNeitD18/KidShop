@@ -6,10 +6,10 @@ export function fireErrorModal(err) {
   if (Array.isArray(err)) err = err[0];
   const { code, codeName, message } = errorString(err);
   Modal.error({
-    title: codeName,
+    title: codeName || 'Đã xảy ra lỗi',
     content: (
       <div>
-        {message}
+        {message || 'Vui lòng thử lại sau'}
         {!!code && (
           <>
             <br />
