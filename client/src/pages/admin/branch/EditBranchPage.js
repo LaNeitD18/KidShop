@@ -45,7 +45,6 @@ export default function EditBranchPage({ mode }) {
           ...data,
           idChuCuaHang: data?.chuCuaHang?.id,
         });
-        console.log('kinh vi', data?.kinhDo, data?.viDo);
         setMapLocation({
           coordinates: [data?.kinhDo, data?.viDo],
           address: data?.viTri,
@@ -58,15 +57,10 @@ export default function EditBranchPage({ mode }) {
   const byModes = isEdit ? editConsts : addConsts;
 
   const onFinish = (values) => {
-    console.log({
-      kinhDo: mapLocation.coordinates[0],
-      viDo: mapLocation.coordinates[1],
-      viTri: mapLocation.address,
-    });
     postCall(
       postStore({
         ...values,
-        kinhDo: mapLocation.coordinates[0],
+        // kinhDo: mapLocation.coordinates[0],
         viDo: mapLocation.coordinates[1],
         viTri: mapLocation.address,
       }),
@@ -79,9 +73,6 @@ export default function EditBranchPage({ mode }) {
             setMapLocation(defaultMapLocation);
           },
         });
-      },
-      (errFeedback, error) => {
-        errFeedback({ type: 'modal', ...error });
       }
     );
   };

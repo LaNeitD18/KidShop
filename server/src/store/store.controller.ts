@@ -35,14 +35,14 @@ export class StoreController {
     }
 
     try {
-      const { maChuCuaHang, ...restData } = data;
+      const { idChuCuaHang, ...restData } = data;
 
-      const storeManager = await this.userService.findOne(maChuCuaHang);
+      const storeManager = await this.userService.findOne(idChuCuaHang);
       if (!storeManager) {
         return res
           .status(HttpStatus.NOT_FOUND)
           .send(
-            `Can not find user with id ${maChuCuaHang} to set store manager`,
+            `Can not find user with id ${idChuCuaHang} to set store manager`,
           );
       }
 

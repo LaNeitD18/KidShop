@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { fireErrorModal, useFireSuccessModal } from '../utils/feedback';
 import { message as antdMessage } from 'antd';
+import { errorString } from '../utils/string';
 
 export default function useApiFeedback() {
   const [loading, setLoading] = useState(false);
@@ -8,22 +9,21 @@ export default function useApiFeedback() {
   const [result, setResult] = useState({});
   const [error, setError] = useState({});
 
-  const apiCall = async (
-    apiPromise,
-    onSuccess = (feedback, res) => {},
-    onError = (feedback, err) => {}
-  ) => {
+  const apiCall = async (apiPromise, onSuccess, onError) => {
     try {
       setLoading(true);
       const res = await apiPromise;
       setLoading(false);
       setResult(res);
-      const feedback = ({
-        type = '',
-        message = '',
-        name = '',
-        onContinue = () => {},
-      }) => {
+      const feedback = (
+        options = {
+          type: '',
+          message: '',
+          name: '',
+          onContinue: () => {},
+        }
+      ) => {
+        const { type, message, name, onContinue } = options;
         let mess = message;
         if (!mess) {
           switch (res.status) {
@@ -54,26 +54,29 @@ export default function useApiFeedback() {
           }
         }
       };
-
-      onSuccess(feedback, res);
+      onSuccess ? onSuccess(feedback, res) : feedback();
     } catch (err) {
       setLoading(false);
       setError(err);
-      const feedback = ({ type = 'modal', message = '' }) => {
+      const autoErr = errorString(err);
+      const feedback = (options = { type: '', message: '' }) => {
+        const { type, message } = options;
         switch (type) {
           case 'modal': {
             fireErrorModal(err);
             break;
           }
           case 'message': {
-            antdMessage.success(message);
+            antdMessage.error(message || autoErr.message);
             break;
           }
           default: {
+            antdMessage.error(message || autoErr.message);
+            break;
           }
         }
       };
-      onError(feedback, err);
+      onError ? onError(feedback, err) : feedback();
     }
   };
 

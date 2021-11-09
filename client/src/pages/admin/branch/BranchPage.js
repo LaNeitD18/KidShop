@@ -42,8 +42,6 @@ export default function BranchPage() {
     apiCall(getStoreList());
   }, []);
 
-  console.log(result?.data);
-
   return (
     <div>
       <ContentHeader title="Quản lý các chi nhánh">

@@ -18,5 +18,5 @@ export class CreateStoreDto {
   sdt: string;
 
   @ApiProperty()
-  maChuCuaHang: string;
+  idChuCuaHang: string;
 }

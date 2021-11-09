@@ -22,9 +22,11 @@ export class CuaHang {
   diaChi: string;
 
   @ApiProperty()
+  @Column({ type: 'float', default: 0.0 })
   kinhDo: number;
 
   @ApiProperty()
+  @Column({ type: 'float', default: 0.0 })
   viDo: number;
 
   @ApiProperty()
