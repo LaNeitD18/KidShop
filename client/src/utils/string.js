@@ -19,5 +19,16 @@ export function errorString(err) {
     err?.response?.data?.message ||
     err?.message ||
     'Yêu cầu của bạn đã không được thực hiện';
-  return { code, name, message, codeName: `${code} ${name}` };
+  return {
+    code,
+    name,
+    message,
+    codeName: `${code} ${name}`,
+    combine: `${code} ${name} ${name && message ? ':' : ''} ${message}`,
+  };
 }
+
+export const inputRuleNaN = (message = 'Vui lòng chỉ nhập số') => ({
+  pattern: new RegExp(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g),
+  message: message,
+});

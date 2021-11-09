@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { useResponsive } from './Media';
 import { useNavigate } from 'react-router-dom';
+import { fireConfirmModal } from '../utils/feedback';
 
 const mapType = {
   add: {
@@ -54,6 +55,7 @@ export default function AppButton({
   link,
   linkOptions,
   onClick,
+  confirm,
   loading,
   ...rest
 }) {
@@ -61,11 +63,21 @@ export default function AppButton({
   const navigate = useNavigate();
 
   const handleClick = (e) => {
-    if (onClick) {
-      onClick(e);
+    const getOnClick = () => {
+      if (onClick) {
+        return onClick;
+      } else {
+        link = link || mapType[type].linkProps?.link;
+        if (link) return () => navigate(link, { ...linkOptions });
+      }
+    };
+    if (confirm || type === 'delete') {
+      fireConfirmModal({ ...confirm, onOk: getOnClick() });
     } else {
-      link = link || mapType[type].linkProps?.link;
-      if (link) navigate(link, { ...linkOptions });
+      const onClickRes = getOnClick();
+      if (onClickRes) {
+        onClickRes();
+      }
     }
   };
 

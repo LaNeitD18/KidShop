@@ -92,7 +92,7 @@ export class StoreController {
   @Patch(':id')
   async updateStore(
     @Param('id') id: string,
-    @Body() data: CuaHang,
+    @Body() data: CreateStoreDto,
     @Res() res: Response,
   ) {
     if (!data) {
@@ -109,7 +109,23 @@ export class StoreController {
         });
       }
 
-      const updatedStore = await this.storeService.update(id, data);
+      const { idChuCuaHang, ...restData } = data;
+
+      const storeManager = await this.userService.findOne(idChuCuaHang);
+      if (!storeManager) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send(
+            `Can not find user with id ${idChuCuaHang} to set store manager`,
+          );
+      }
+
+      const storeData: CuaHang = {
+        ...restData,
+        chuCuaHang: storeManager,
+      };
+
+      const updatedStore = await this.storeService.update(id, storeData);
       return res.status(HttpStatus.OK).json(updatedStore);
     } catch (error) {
       return res

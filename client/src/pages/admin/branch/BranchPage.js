@@ -3,7 +3,9 @@ import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
-import { getStoreList } from '../../../api/store';
+import { deleteStore, getStoreList } from '../../../api/store';
+import { message } from 'antd';
+import { fireErrorModal } from '../../../utils/feedback';
 
 const columns = [
   {
@@ -38,11 +40,26 @@ export default function BranchPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
 
+  function fetchStore() {
+    apiCall(getStoreList());
+  }
+
   useEffect(() => {
-    apiCall(getStoreList(), (fb, res) => {
-      console.log(res);
-    });
+    fetchStore();
   }, []);
+
+  async function handleDelete() {
+    await Promise.all(
+      selectedRows.map((row) => {
+        return deleteStore(row);
+      })
+    )
+      .then(() => {
+        message.success('Xóa thành công');
+        selectedRows([]);
+      })
+      .catch((err) => fireErrorModal(err[0]));
+  }
 
   return (
     <div>
@@ -51,7 +68,7 @@ export default function BranchPage() {
           Thêm chi nhánh
         </AppButton>
         {!!selectedRows.length && (
-          <AppButton type="delete" responsive>
+          <AppButton type="delete" responsive onClick={handleDelete}>
             Xóa chi nhánh
           </AppButton>
         )}

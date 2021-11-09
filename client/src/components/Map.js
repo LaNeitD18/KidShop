@@ -93,5 +93,7 @@ export default function Map({
     return () => map.current.remove();
   }, [center]);
 
-  return <div ref={mapElement} className="h-96 md:h-128 shadow-xl" />;
+  return (
+    <div ref={mapElement} className="h-96 md:h-128 shadow-lg rounded-lg-soft" />
+  );
 }

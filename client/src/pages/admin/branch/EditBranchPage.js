@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
-import { Form, Input } from 'antd';
+import { Form, Input, message } from 'antd';
 import { ContentHeader } from '../../../components/Content';
 import Map from '../../../components/Map';
-import { getStore, postStore } from '../../../api/store';
+import {
+  deleteStore,
+  editStore,
+  getStore,
+  postStore,
+} from '../../../api/store';
 import { getUserList } from '../../../api/user';
 import SelectInput from '../../../components/SelectInput';
-import useLoading from '../../../hooks/useApiFeedback';
-import { useParams } from 'react-router-dom';
+import useApiFeedback from '../../../hooks/useApiFeedback';
+import { useNavigate, useParams } from 'react-router-dom';
+import { inputRuleNaN } from '../../../utils/string';
+import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -25,15 +32,21 @@ const defaultMapLct = {
 };
 
 export default function EditBranchPage({ mode }) {
+  const isEdit = mode === 'edit';
+  const byModes = isEdit ? editConsts : addConsts;
+
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
   const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
   const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const { apiCall: postCall, loading: postLoad } = useLoading();
-  const { apiCall: getCall, loading: getLoad, result } = useLoading();
+  const { apiCall: getCall } = useApiFeedback();
+  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
+  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
+  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -43,8 +56,8 @@ export default function EditBranchPage({ mode }) {
   }, []);
 
   useEffect(() => {
-    if (mode === 'edit') {
-      getCall(getStore(id), (feedback, { data }) => {
+    if (isEdit) {
+      getCall(getStore(id), ({ data }) => {
         form.setFieldsValue({
           ...data,
           idChuCuaHang: data?.chuCuaHang?.id,
@@ -58,29 +71,40 @@ export default function EditBranchPage({ mode }) {
     }
   }, []);
 
-  const isEdit = mode === 'edit';
-  const byModes = isEdit ? editConsts : addConsts;
-
   const onFinish = (values) => {
-    postCall(
-      postStore({
-        ...values,
-        kinhDo: mapLocation?.coordinates[0],
-        viDo: mapLocation?.coordinates[1],
-        viTri: mapLocation?.address,
-      }),
-      (feedback) => {
-        feedback({
-          type: 'modal',
-          name: 'Tạo chi nhánh thành công',
-          onContinue: () => {
+    const dto = {
+      ...values,
+      kinhDo: mapLocation?.coordinates[0],
+      viDo: mapLocation?.coordinates[1],
+      viTri: mapLocation?.address,
+    };
+    console.log(dto);
+    if (isEdit) {
+      editCall(editStore(id, dto), () => {
+        message.success('Đã lưu thay đổi thành công');
+      });
+    } else {
+      postCall(postStore(dto), () => {
+        fireSuccessModal({
+          title: 'Tạo chi nhánh thành công',
+          onOk: () => {
             form.resetFields();
             setMapLocation(defaultMapLct);
           },
+          onCancel: () => {
+            navigate('../');
+          },
         });
-      }
-    );
+      });
+    }
   };
+
+  function handleDelete() {
+    deleteCall(deleteStore(id), () => {
+      message.success('Đã xóa thành công');
+      navigate('../');
+    });
+  }
 
   return (
     <div>
@@ -148,6 +172,7 @@ export default function EditBranchPage({ mode }) {
                   required: true,
                   message: 'Vui lòng nhập số điện thoại!',
                 },
+                inputRuleNaN(),
               ]}
             >
               <Input size="large" />
@@ -156,7 +181,7 @@ export default function EditBranchPage({ mode }) {
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
-                  loading={postLoad}
+                  loading={postLoad || editLoad}
                   type="done"
                   className="w-full"
                   htmlType="submit"
@@ -168,10 +193,14 @@ export default function EditBranchPage({ mode }) {
               {!!isEdit && (
                 <Form.Item className="flex-1">
                   <AppButton
+                    onClick={handleDelete}
                     type="delete"
                     className="w-full"
                     size="large"
-                    loading={postLoad}
+                    loading={deleteLoad}
+                    confirm={{
+                      title: 'Bạn có muốn xóa chi nhánh này?',
+                    }}
                   >
                     Xóa chi nhánh
                   </AppButton>

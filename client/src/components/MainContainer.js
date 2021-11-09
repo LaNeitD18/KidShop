@@ -220,30 +220,29 @@ export default function MainContainer() {
           </Menu>
         </Sider>
         <Layout
-          className={classNames(
-            'pt-4 px-6 pb-6 sm:pb-0 sm:px-10 mt-nav-height',
-            {
-              'ml-sider-width': media.isLg,
-            }
-          )}
+          className={classNames('pb-6 sm:pb-0 mt-nav-height', {
+            'ml-sider-width': media.isLg,
+          })}
         >
-          <Breadcrumb>
-            <Breadcrumb.Item href="/">
-              {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
-            </Breadcrumb.Item>
-            {menu && (
-              <Breadcrumb.Item>
-                {subPage ? (
-                  <Link to={paths.menuString}>{menu.title}</Link>
-                ) : (
-                  menu.title
-                )}
+          <div className="bg-normal pt-4 pb-3 pl-6 border-b">
+            <Breadcrumb>
+              <Breadcrumb.Item href="/">
+                {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
               </Breadcrumb.Item>
-            )}
-            {subPage && <Breadcrumb.Item>{subPage.title}</Breadcrumb.Item>}
-          </Breadcrumb>
-          <Divider style={{ margin: '12px 0' }} />
-          <Content className="site-layout-background select-text">
+              {menu && (
+                <Breadcrumb.Item>
+                  {subPage ? (
+                    <Link to={paths.menuString}>{menu.title}</Link>
+                  ) : (
+                    menu.title
+                  )}
+                </Breadcrumb.Item>
+              )}
+              {subPage && <Breadcrumb.Item>{subPage.title}</Breadcrumb.Item>}
+            </Breadcrumb>
+          </div>
+          {/* <Divider style={{ margin: '12px 0' }} /> */}
+          <Content className="site-layout-background select-text px-6 sm:px-10 pt-3">
             <Outlet />
           </Content>
         </Layout>
