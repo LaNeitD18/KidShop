@@ -19,7 +19,7 @@ const editConsts = {
   okText: 'Lưu thay đổi',
 };
 
-const defaultMapLocation = {
+const defaultMapLct = {
   coordinates: [106.80452, 10.871013],
   address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
 };
@@ -29,7 +29,8 @@ export default function EditBranchPage({ mode }) {
 
   const [form] = Form.useForm();
 
-  const [mapLocation, setMapLocation] = useState(defaultMapLocation);
+  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
+  const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
   const { apiCall: postCall, loading: postLoad } = useLoading();
   const { apiCall: getCall, loading: getLoad, result } = useLoading();
@@ -39,6 +40,9 @@ export default function EditBranchPage({ mode }) {
     getUserList().then((res) => {
       setUsers(res.data);
     });
+  }, []);
+
+  useEffect(() => {
     if (mode === 'edit') {
       getCall(getStore(id), (feedback, { data }) => {
         form.setFieldsValue({
@@ -49,6 +53,7 @@ export default function EditBranchPage({ mode }) {
           coordinates: [data?.kinhDo, data?.viDo],
           address: data?.viTri,
         });
+        setMapCenter([data?.kinhDo, data?.viDo]);
       });
     }
   }, []);
@@ -60,9 +65,9 @@ export default function EditBranchPage({ mode }) {
     postCall(
       postStore({
         ...values,
-        // kinhDo: mapLocation.coordinates[0],
-        viDo: mapLocation.coordinates[1],
-        viTri: mapLocation.address,
+        kinhDo: mapLocation?.coordinates[0],
+        viDo: mapLocation?.coordinates[1],
+        viTri: mapLocation?.address,
       }),
       (feedback) => {
         feedback({
@@ -70,7 +75,7 @@ export default function EditBranchPage({ mode }) {
           name: 'Tạo chi nhánh thành công',
           onContinue: () => {
             form.resetFields();
-            setMapLocation(defaultMapLocation);
+            setMapLocation(defaultMapLct);
           },
         });
       }
@@ -85,7 +90,11 @@ export default function EditBranchPage({ mode }) {
         </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
-        <Map mapLocation={mapLocation} onChangeMapLocation={setMapLocation} />
+        <Map
+          center={mapCenter}
+          mapLocation={mapLocation}
+          onChangeMapLocation={setMapLocation}
+        />
         <div>
           <Form
             form={form}
@@ -111,7 +120,7 @@ export default function EditBranchPage({ mode }) {
               <Input
                 size="large"
                 disabled
-                value={mapLocation.address}
+                value={mapLocation?.address}
                 name="map-location"
               />
             </Form.Item>

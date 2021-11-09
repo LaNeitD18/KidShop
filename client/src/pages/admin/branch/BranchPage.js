@@ -39,7 +39,9 @@ export default function BranchPage() {
   const { loading, apiCall, result } = useApiFeedback();
 
   useEffect(() => {
-    apiCall(getStoreList());
+    apiCall(getStoreList(), (fb, res) => {
+      console.log(res);
+    });
   }, []);
 
   return (
