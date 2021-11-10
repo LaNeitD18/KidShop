@@ -5,7 +5,6 @@ import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { deleteStore, getStoreList } from '../../../api/store';
 import { message } from 'antd';
-import { fireErrorModal } from '../../../utils/feedback';
 
 const columns = [
   {

@@ -32,6 +32,7 @@ module.exports = {
       },
       colors: {
         normal: '#F6F8FA',
+        primary: '#1DA57A',
       },
       boxShadow: {
         'lg-soft':
