@@ -2,8 +2,9 @@ import { RowJustifyBetween } from '../components/Layout';
 import { BsBarChartLine } from 'react-icons/bs';
 import { MdPointOfSale } from 'react-icons/md';
 import { GiPlainCircle } from 'react-icons/gi';
-import { Card, Skeleton } from 'antd';
+import { Card } from 'antd';
 import classNames from 'classnames';
+import { SingleLineSkeleton } from './Skeleton';
 
 export function CounterCard({ active, employeeName }) {
   return (
@@ -30,7 +31,7 @@ export function CounterCard({ active, employeeName }) {
       }
       extra={
         <a className="font-semibold" href="#">
-          Chỉnh sửa
+          Sửa
         </a>
       }
       actions={[
@@ -64,7 +65,7 @@ export function CounterCard({ active, employeeName }) {
           {active ? (
             <span className="font-semibold">{employeeName}</span>
           ) : (
-            <div className="w-32 h-4 bg-gray-100 rounded" />
+            <SingleLineSkeleton />
           )}
         </RowJustifyBetween>
       </div>

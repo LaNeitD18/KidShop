@@ -4,9 +4,12 @@ import { GiPlainCircle } from 'react-icons/gi';
 export function StatusBar({ children, className }) {
   return (
     <div
-      className={classNames('bg-normal py-2 px-4 border rounded', {
-        [className]: true,
-      })}
+      className={classNames(
+        'bg-normal py-2 px-4 border rounded flex items-center flex-wrap',
+        {
+          [className]: true,
+        }
+      )}
     >
       {children}
     </div>

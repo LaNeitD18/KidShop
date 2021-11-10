@@ -85,7 +85,7 @@ export default function CounterPage() {
           </AppButton>
         )}
       </ContentHeader>
-      <StatusBar className="-mt-1 flex items-center gap-5 mb-5">
+      <StatusBar className="-mt-1 gap-x-5 gap-y-2 mb-5">
         <ActiveItem active number={2} text="đang hoạt động" />
         <ActiveItem number={1} text="đang đóng" />
       </StatusBar>
