@@ -178,7 +178,7 @@ export default function MainContainer() {
 
   return (
     <Layout className="select-none">
-      <Header className="flex fixed z-20 items-center min-h-nav-height w-full shadow-lg">
+      <Header className="flex fixed z-20 items-center min-h-nav-height w-full shadow-md">
         {isSiderCollapsed ? (
           <FiMenu
             onClick={() => setIsOpenSider(true)}
@@ -223,7 +223,7 @@ export default function MainContainer() {
           theme="light"
           collapsed={isSiderCollapsed}
           width={256}
-          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 shadow-xl"
+          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 border-r"
           style={{
             position: 'fixed',
           }}
@@ -240,7 +240,7 @@ export default function MainContainer() {
                   className: 'text-3xl w-full mb-1',
                 })}
               <Title level={4}>{nav.title}</Title>
-              {hasMavContext && (
+              {!!hasMavContext && (
                 <Select
                   style={{
                     color: theme.color.primary,
