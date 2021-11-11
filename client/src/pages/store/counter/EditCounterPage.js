@@ -15,9 +15,11 @@ import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../../utils/string';
 import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
+import { FormGrid } from '../../../components/Grid';
+import { useCurrentUser } from '../../../context/CurrentUserProvider';
 
 const addConsts = {
-  title: 'Tạo chi nhánh',
+  title: 'Tạo quầy',
   okText: 'Hoàn tất',
 };
 
@@ -35,6 +37,8 @@ export default function EditCounterPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
+  const [currentUser, setCurrentUser] = useCurrentUser();
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -47,13 +51,6 @@ export default function EditCounterPage({ mode }) {
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
   const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    getUserList().then((res) => {
-      setUsers(res.data);
-    });
-  }, []);
 
   useEffect(() => {
     if (isEdit) {
@@ -69,6 +66,14 @@ export default function EditCounterPage({ mode }) {
         setMapCenter([data?.kinhDo, data?.viDo]);
       });
     }
+  }, []);
+
+  useEffect(() => {
+    setCurrentUser((prev) => ({
+      ...prev,
+      storeList: [1, 3, 5],
+      currentStore: 3,
+    }));
   }, []);
 
   const onFinish = (values) => {
@@ -108,18 +113,13 @@ export default function EditCounterPage({ mode }) {
   }
 
   return (
-    <div>
+    <FormGrid>
       <ContentHeader title={byModes.title}>
         <AppButton type="cancel" responsive>
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
-        <Map
-          center={mapCenter}
-          mapLocation={mapLocation}
-          onChangeMapLocation={setMapLocation}
-        />
+      <div className="gap-6 md:gap-10 xl:gap-14 mt-7">
         <div>
           <Form
             form={form}
@@ -129,56 +129,70 @@ export default function EditCounterPage({ mode }) {
             autoComplete="off"
           >
             <Form.Item
-              label="Địa chỉ"
+              label="Cửa hàng"
               requiredMark="optional"
-              name="diaChi"
+              name="idCuaHang"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: 'Vui lòng ',
                 },
               ]}
             >
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item label="Vị trí (chọn trên bản đồ)">
-              <Input
-                size="large"
-                disabled
-                value={mapLocation?.address}
-                name="map-location"
+              <SelectInput
+                labelField="label"
+                data={[{ label: 'CH0001', id: 1 }]}
               />
             </Form.Item>
-
             <Form.Item
-              label="Chủ cửa hàng"
-              name="idChuCuaHang"
+              label="Tên quầy"
               requiredMark="optional"
+              name="tenQuay"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng chọn chủ cửa hàng',
+                  message: 'Vui lòng nhập tên quầy',
                 },
-              ]}
-            >
-              <SelectInput data={users} />
-            </Form.Item>
-
-            <Form.Item
-              label="Số điện thoại"
-              name="sdt"
-              requiredMark="optional"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
-                },
-                inputRuleNaN(),
               ]}
             >
               <Input size="large" />
             </Form.Item>
-
+            {isEdit && (
+              <Form.Item
+                label="Trạng thái"
+                requiredMark="optional"
+                name="trangThai"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập địa chỉ',
+                  },
+                ]}
+              >
+                <SelectInput
+                  data={[
+                    { label: 'Đang đóng', id: 0 },
+                    { label: 'Đang hoạt động', id: 1 },
+                  ]}
+                  showId={false}
+                  allowClear={false}
+                  showSearch={false}
+                />
+              </Form.Item>
+            )}
+            {isEdit && (
+              <Form.Item label="Nhân viên trực" name="idNhanVienTruc">
+                <SelectInput
+                  data={[
+                    { label: 'Đang đóng', id: 0 },
+                    { label: 'Đang hoạt động', id: 1 },
+                  ]}
+                  showId={false}
+                  allowClear={false}
+                  showSearch={false}
+                />
+              </Form.Item>
+            )}
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
@@ -211,6 +225,6 @@ export default function EditCounterPage({ mode }) {
           </Form>
         </div>
       </div>
-    </div>
+    </FormGrid>
   );
 }

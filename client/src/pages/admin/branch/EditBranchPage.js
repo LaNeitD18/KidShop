@@ -115,7 +115,7 @@ export default function EditBranchPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid>
+      <FormGrid column={2}>
         <Map
           center={mapCenter}
           mapLocation={mapLocation}
@@ -162,7 +162,7 @@ export default function EditBranchPage({ mode }) {
                 },
               ]}
             >
-              <SelectInput data={users} />
+              <SelectInput data={users} labelField="hoTen" />
             </Form.Item>
 
             <Form.Item

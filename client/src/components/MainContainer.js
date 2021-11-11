@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import { arrayFind } from '../utils/array';
 import { stringToPaths, pathsToStrings } from '../utils/route';
 import { useResponsive } from '../components/Media';
-import { Breadcrumb, Divider, Layout, Menu, Typography } from 'antd';
+import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from 'antd';
+import theme from '../constants/theme';
 
 import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5';
 import { FiMenu } from 'react-icons/fi';
@@ -14,6 +15,9 @@ import { AiOutlineApartment } from 'react-icons/ai';
 import { GrGroup, GrUserManager } from 'react-icons/gr';
 import { RiPencilRuler2Line } from 'react-icons/ri';
 import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
+import { GoChevronDown } from 'react-icons/go';
+import { useFeature } from '../context/FeatureContext';
+import { idString } from '../utils/string';
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -64,6 +68,8 @@ const navMenu = [
     path: 'store',
     title: 'Cửa hàng',
     icon: <MdOutlineStore />,
+    context: 'store',
+    idFormat: ['CH', 4],
     children: [
       {
         path: 'counter',
@@ -131,11 +137,14 @@ const navMenu = [
 export default function MainContainer() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
   const paths = stringToPaths(pathname);
+
+  const [feature] = useFeature();
+
   const nav = arrayFind(navMenu, paths[1], 'path') || {};
-  const menu = arrayFind(nav?.children, paths[2], 'path');
-  const subPage = arrayFind(menu?.children, paths[3], 'path');
+  const hasMavContext = arrayFind(navMenu, paths[1], 'context') ? 1 : 0;
+  const menu = arrayFind(nav?.children, paths[hasMavContext + 2], 'path');
+  const subPage = arrayFind(menu?.children, paths[hasMavContext + 3], 'path');
 
   const [isOpenSider, setIsOpenSider] = useState(false);
 
@@ -155,6 +164,17 @@ export default function MainContainer() {
   const handleSelectMenu = ({ key }) => {
     navigate(key);
   };
+
+  const navContextOptions = feature[nav?.context]?.map((v) => ({
+    value: v,
+    label: idString(v, nav?.idFormat),
+  }));
+
+  const navContext = arrayFind(navContextOptions, paths[2], 'value');
+
+  if (navContextOptions && !navContext) {
+    navigate('/error/403', { replace: true });
+  }
 
   return (
     <Layout className="select-none">
@@ -211,7 +231,7 @@ export default function MainContainer() {
           <Menu
             mode="inline"
             style={{ height: '100%', borderRight: 0 }}
-            selectedKeys={[paths.menuString]}
+            selectedKeys={[paths[1], paths[2], paths[3]].join('/')}
             onSelect={handleSelectMenu}
           >
             <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
@@ -220,18 +240,50 @@ export default function MainContainer() {
                   className: 'text-3xl w-full mb-1',
                 })}
               <Title level={4}>{nav.title}</Title>
+              {hasMavContext && (
+                <Select
+                  style={{
+                    color: theme.color.primary,
+                    fontWeight: 600,
+                    fontSize: '1.125rem',
+                  }}
+                  options={navContextOptions}
+                  value={navContext}
+                  labelInValue
+                  bordered={false}
+                  suffixIcon={
+                    <GoChevronDown
+                      style={{ marginTop: 1, marginLeft: -8 }}
+                      className=" text-primary"
+                    />
+                  }
+                  onSelect={(option) => {
+                    let tempPaths = [...paths];
+                    tempPaths[2] = option?.value;
+                    navigate(['', ...tempPaths].join('/'));
+                  }}
+                />
+              )}
             </div>
             <Menu.Divider />
             <Menu.Item
               icon={<AiOutlineDashboard />}
-              key={pathsToStrings([nav.path, 'dashboard'])}
+              key={pathsToStrings(
+                navContext
+                  ? [nav.path, navContext.value, 'dashboard']
+                  : [nav.path, 'dashboard']
+              )}
             >
               Bảng điều khiển
             </Menu.Item>
             {nav?.children?.map((value) => (
               <Menu.Item
                 icon={value.icon}
-                key={pathsToStrings([nav.path, value.path])}
+                key={pathsToStrings(
+                  navContext
+                    ? [nav.path, navContext.value, value.path]
+                    : [nav.path, value.path]
+                )}
               >
                 {value.title}
               </Menu.Item>
@@ -243,7 +295,7 @@ export default function MainContainer() {
             'ml-sider-width': media.isLg,
           })}
         >
-          <div className="bg-normal pt-4 pb-3 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
+          <div className="bg-white pt-4 pb-3 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
             <Breadcrumb>
               <Breadcrumb.Item href="/">
                 {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
@@ -251,7 +303,9 @@ export default function MainContainer() {
               {menu && (
                 <Breadcrumb.Item>
                   {subPage ? (
-                    <Link to={paths.menuString}>{menu.title}</Link>
+                    <Link to={[paths[1], paths[2], paths[3]].join('/')}>
+                      {menu.title}
+                    </Link>
                   ) : (
                     menu.title
                   )}

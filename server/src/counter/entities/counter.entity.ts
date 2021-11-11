@@ -19,10 +19,6 @@ export class Quay {
   @Column()
   tenQuay?: string;
 
-  @ApiProperty()
-  @Column({ default: false })
-  dangSuDung: boolean;
-
   @OneToOne(() => NguoiDung)
   @JoinColumn()
   nhanVienTruc?: NguoiDung;

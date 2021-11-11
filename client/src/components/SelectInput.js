@@ -4,24 +4,28 @@ const { Option } = Select;
 
 export default function SelectInput({
   data,
-  labelField = 'hoTen',
+  labelField = 'label',
   idField = 'id',
   onSelect,
   idFormat,
   allowClear = true,
+  showSearch = true,
+  showId = true,
   ...rest
 }) {
-  const ownerOptions = data.map((d) => ({
-    label: `${d[labelField]} (${idString(d[idField], idFormat)})`,
+  const options = data.map((d) => ({
+    label: showId
+      ? `${d[labelField]} (${idString(d[idField], idFormat)})`
+      : d[labelField],
     value: d[idField],
   }));
   return (
     <Select
       size="large"
-      showSearch
+      showSearch={showSearch}
       placeholder="Chọn..."
       optionFilterProp="label"
-      options={ownerOptions}
+      options={options}
       onSelect={onSelect}
       allowClear={allowClear}
       {...rest}

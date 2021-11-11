@@ -21,7 +21,7 @@ module.exports = {
               '@warning-color': '#FBBF24',
               '@normal-color': '#F6F8FA',
               '@text-selection-bg': '#60A5FA',
-              '@layout-body-background': '#FFFFFF',
+              '@layout-body-background': '#F6F8FA',
               '@layout-header-background': '#282A3A',
               '@text-color': '#24292f',
               '@background-color-light': '#F9FAFB',

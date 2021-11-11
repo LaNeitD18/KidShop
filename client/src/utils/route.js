@@ -4,11 +4,8 @@ export const pathsToStrings = (pathsArray, start, end) =>
 export const stringToPaths = (pathname) => {
   if (pathname[0] === '/') pathname = pathname.slice(1);
   const pathsArray = pathname.split('/');
-  const stringJoin = (start, end) => pathsToStrings(pathsArray, start, end);
-  return {
-    ...pathsArray,
-    stringJoin,
-    menuString: stringJoin(1, 3),
-    subPageString: stringJoin(1, 4),
-  };
+  return pathsArray;
+  if (pathname[0] === '/') pathname = pathname.slice(1);
+  // const pathsArray = pathname.split('/');
+  return pathsArray;
 };

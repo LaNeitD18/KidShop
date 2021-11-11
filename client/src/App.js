@@ -9,8 +9,15 @@ import ErrorPage from './pages/ErrorPage';
 import EditWarehousePage from './pages/warehouse/EditWarehousePage';
 import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
+import { useFeature } from './context/FeatureContext';
+import { useEffect } from 'react';
 
 function App() {
+  const [feature, setFeature] = useFeature();
+  useEffect(() => {
+    setFeature((prev) => ({ ...prev, store: [2, 4, 5] }));
+  }, []);
+
   return (
     <Routes>
       <Route path="/">
@@ -25,7 +32,20 @@ function App() {
               <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
-          <Route path="store">
+          <Route
+            path="store"
+            element={
+              <Navigate
+                to={
+                  feature['store']
+                    ? feature['store'][0].toString()
+                    : '/error/403'
+                }
+                replace
+              />
+            }
+          />
+          <Route path="store/:id">
             <Route index element={<Navigate to="counter" replace />} />
             <Route path="counter">
               <Route index element={<CounterPage />} />

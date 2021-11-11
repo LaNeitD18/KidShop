@@ -5,11 +5,5 @@ export class CreateCounterDto {
   tenQuay?: string;
 
   @ApiProperty()
-  dangSuDung: boolean;
-
-  @ApiProperty()
-  nhanVienTrucId?: string;
-
-  @ApiProperty()
   cuaHangId: string;
 }

@@ -9,6 +9,9 @@ import { SingleLineSkeleton } from './Skeleton';
 export function CounterCard({ active, employeeName }) {
   return (
     <Card
+      headStyle={{
+        backgroundColor: '#F9FAFB',
+      }}
       className="hover:shadow-lg-soft transition-all"
       style={
         active
