@@ -7,7 +7,7 @@ import CommonString from '../../constants/string';
 import * as api from '../../api/supplier';
 import { SupplierContext } from '../../context/SupplierContext';
 import { useLocation, useNavigate } from 'react-router';
-import { fireErrorModal, useFireSuccessModal } from '../../utils/feedback';
+import { fireError, useFireSuccessModal } from '../../utils/feedback';
 import Map from '../../components/Map';
 
 const addConsts = {
@@ -61,7 +61,7 @@ export default function EditSupplierPage({ mode }) {
         onCancel: () => navigate('../'),
       });
     } catch (error) {
-      fireErrorModal(error);
+      fireError(error);
     }
   };
 

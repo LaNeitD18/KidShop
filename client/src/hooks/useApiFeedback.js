@@ -1,5 +1,6 @@
+import { message } from 'antd';
 import { useState } from 'react';
-import { fireErrorModal } from '../utils/feedback';
+import { fireError } from '../utils/feedback';
 
 export default function useApiFeedback() {
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ export default function useApiFeedback() {
       if (onError) {
         onError(err);
       } else {
-        fireErrorModal(err);
+        fireError(err);
       }
     }
   };
