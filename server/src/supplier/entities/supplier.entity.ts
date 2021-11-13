@@ -33,8 +33,8 @@ export class NhaCungCap {
   viDo: number;
 
   @ApiProperty()
-  @Column()
-  viTri: string;
+  @Column({ default: '' })
+  viTri?: string;
 
   @CreateDateColumn()
   taoLuc?: Date;

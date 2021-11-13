@@ -190,6 +190,8 @@ export default function MainContainer() {
     navigate('/error/403', { replace: true });
   }
 
+  console.log(pathsToStrings([paths[1], paths[2], paths[3]]));
+
   return (
     <Layout className="select-none">
       <Header className="flex fixed z-20 items-center min-h-nav-height w-full shadow-md">
@@ -245,7 +247,7 @@ export default function MainContainer() {
           <Menu
             mode="inline"
             style={{ height: '100%', borderRight: 0 }}
-            selectedKeys={[paths[1], paths[2], paths[3]].join('/')}
+            selectedKeys={pathsToStrings([paths[1], paths[2], paths[3]])}
             onSelect={handleSelectMenu}
           >
             <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
