@@ -1,73 +1,74 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
-import * as api from '../../api/supplier';
 import AppTable from '../../components/AppTable';
-import CommonString from '../../constants/string';
-import { useLocation, useNavigate } from 'react-router';
-import { SupplierContext } from '../../context/SupplierContext';
 import useApiFeedback from '../../hooks/useApiFeedback';
+import { deleteProducer, fetchProducers } from '../../api/producer';
 import { message } from 'antd';
 import { fireErrorModal } from '../../utils/feedback';
 
 const columns = [
   {
-    title: 'Mã NCC',
+    title: 'Mã nhà sản xuất',
     id: true,
-    idFormat: ['NCC', 4],
+    idFormat: ['NSX', 4],
     searchable: true,
     sortable: true,
   },
   {
-    title: CommonString.SUPPLIER_NAME,
-    dataIndex: 'tenNCC',
+    title: 'Tên nhà sản xuất',
+    dataIndex: ['tenNSX'],
     searchable: true,
   },
   {
-    title: CommonString.SUPPLIER_ADDRESS,
+    title: 'Địa chỉ',
     dataIndex: 'diaChi',
     searchable: true,
   },
   {
-    title: CommonString.SUPPLIER_PHONE,
+    title: 'SDT',
     dataIndex: 'sdt',
     searchable: true,
   },
+  {
+    createdTime: true,
+    sortable: true,
+  },
 ];
 
-export default function SupplierPage() {
+export default function ProducerPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
 
-  const fetchListSuppliers = () => {
-    apiCall(api.fetchAllSuppliers());
+  const fetchListProducers = () => {
+    apiCall(fetchProducers());
   };
 
   useEffect(() => {
-    fetchListSuppliers();
+    fetchListProducers();
   }, []);
 
-  const handleDelete = async () => {
+  async function handleDelete() {
     deleteCall(
       Promise.all(
         selectedRows.map((row) => {
-          return api.deleteSupplier(row);
+          return deleteProducer(row);
         })
       ),
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchListSuppliers();
+        fetchListProducers();
       }
     );
-  };
+  }
 
   return (
     <div>
-      <ContentHeader title="Quản lý nhà cung cấp">
+      <ContentHeader title="Quản lý nhà sản xuất">
         <AppButton type="add" link="add" responsive>
-          Thêm nhà cung cấp
+          Thêm nhà sản xuất
         </AppButton>
         {!!selectedRows.length && (
           <AppButton
@@ -76,7 +77,7 @@ export default function SupplierPage() {
             onClick={handleDelete}
             loading={deleteLoading}
           >
-            Xóa nhà cung cấp
+            Xóa nhà sản xuất
           </AppButton>
         )}
       </ContentHeader>
@@ -85,7 +86,7 @@ export default function SupplierPage() {
         columns={columns}
         data={result?.data}
         onSelectRows={setSelectedRows}
-        itemName="nhà cung cấp"
+        itemName="nhà sản xuất"
       />
     </div>
   );

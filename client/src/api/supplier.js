@@ -1,6 +1,7 @@
 import API from '.';
 
 export const fetchAllSuppliers = () => API.get('/supplier');
+export const fetchASupplier = (id) => API.get(`/supplier/${id}`);
 export const createSupplier = (newSupplier) =>
   API.post('/supplier', newSupplier);
 export const editSupplier = (id, data) => API.patch(`/supplier/${id}`, data);

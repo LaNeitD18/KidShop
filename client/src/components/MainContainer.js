@@ -110,6 +110,20 @@ const navMenu = [
           },
         ],
       },
+      {
+        path: 'producer',
+        title: 'QL Nhà Sản Xuất',
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
     ],
   },
   {

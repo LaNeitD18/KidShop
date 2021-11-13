@@ -1,35 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import AppButton from '../../components/AppButton';
 import { Form, Input, message } from 'antd';
 import { ContentHeader } from '../../components/Content';
-import Map from '../../components/Map';
 import {
-  deleteSupplier,
-  editSupplier,
-  fetchASupplier,
-  createSupplier,
-} from '../../api/supplier';
+  deleteProducer,
+  editProducer,
+  fetchAProducer,
+  createProducer,
+} from '../../api/producer';
 import useApiFeedback from '../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../utils/string';
-import { fireSuccessModal } from '../../utils/feedback';
+import { fireSuccessModal, useFireSuccessModal } from '../../utils/feedback';
 
 const addConsts = {
-  title: 'Tạo nhà cung cấp',
+  title: 'Tạo nhà sản xuất',
   okText: 'Hoàn tất',
 };
 
 const editConsts = {
-  title: 'Sửa nhà cung cấp',
+  title: 'Sửa nhà sản xuất',
   okText: 'Lưu thay đổi',
 };
 
-const defaultMapLct = {
-  coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
-};
-
-export default function EditSupplierPage({ mode }) {
+export default function EditProducerPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
@@ -38,9 +32,6 @@ export default function EditSupplierPage({ mode }) {
 
   const [form] = Form.useForm();
 
-  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
-  const [mapLocation, setMapLocation] = useState(defaultMapLct);
-
   const { apiCall: getCall } = useApiFeedback();
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
@@ -48,36 +39,23 @@ export default function EditSupplierPage({ mode }) {
 
   useEffect(() => {
     if (isEdit) {
-      getCall(fetchASupplier(id), ({ data }) => {
+      getCall(fetchAProducer(id), ({ data }) => {
         form.setFieldsValue(data);
-        setMapLocation({
-          coordinates: [data?.kinhDo, data?.viDo],
-          address: data?.viTri,
-        });
-        setMapCenter([data?.kinhDo, data?.viDo]);
       });
     }
   }, []);
 
   const onFinish = (values) => {
-    const dto = {
-      ...values,
-      kinhDo: mapLocation?.coordinates[0],
-      viDo: mapLocation?.coordinates[1],
-      viTri: mapLocation?.address,
-    };
-    console.log(dto);
     if (isEdit) {
-      editCall(editSupplier(id, dto), () => {
+      editCall(editProducer(id, values), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
-      postCall(createSupplier(dto), () => {
+      postCall(createProducer(values), () => {
         fireSuccessModal({
           title: 'Tạo nhà sản xuất thành công',
           onOk: () => {
             form.resetFields();
-            setMapLocation(defaultMapLct);
           },
           onCancel: () => {
             navigate('../');
@@ -88,7 +66,7 @@ export default function EditSupplierPage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteSupplier(id), () => {
+    deleteCall(deleteProducer(id), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });
@@ -102,11 +80,6 @@ export default function EditSupplierPage({ mode }) {
         </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
-        <Map
-          center={mapCenter}
-          mapLocation={mapLocation}
-          onChangeMapLocation={setMapLocation}
-        />
         <div>
           <Form
             form={form}
@@ -116,8 +89,8 @@ export default function EditSupplierPage({ mode }) {
             autoComplete="off"
           >
             <Form.Item
-              label="Tên nhà cung cấp"
-              name="tenNCC"
+              label="Tên nhà sản xuất"
+              name="tenNSX"
               rules={[
                 {
                   required: true,
@@ -140,15 +113,6 @@ export default function EditSupplierPage({ mode }) {
             >
               <Input size="large" />
             </Form.Item>
-            <Form.Item label="Vị trí (chọn trên bản đồ)">
-              <Input
-                size="large"
-                disabled
-                value={mapLocation?.address}
-                name="map-location"
-              />
-            </Form.Item>
-
             <Form.Item
               label="Số điện thoại"
               name="sdt"
@@ -185,10 +149,10 @@ export default function EditSupplierPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: 'Bạn có muốn xóa nhà sản xuất này?',
                     }}
                   >
-                    Xóa nhà cung cấp
+                    Xóa nhà sản xuất
                   </AppButton>
                 </Form.Item>
               )}

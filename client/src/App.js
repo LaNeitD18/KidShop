@@ -7,6 +7,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import MainContainer from './components/MainContainer';
 import ErrorPage from './pages/ErrorPage';
 import EditWarehousePage from './pages/warehouse/EditWarehousePage';
+import ProducerPage from './pages/producer/ProducerPage';
+import EditProducerPage from './pages/producer/EditProducerPage';
 import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
 import { useFeature } from './context/FeatureContext';
@@ -69,6 +71,14 @@ function App() {
                 element={<EditSupplierPage mode="edit" />}
               />
               <Route path="add" element={<EditSupplierPage />} />
+            </Route>
+            <Route path="producer">
+              <Route index element={<ProducerPage />} />
+              <Route
+                path="edit/:id"
+                element={<EditProducerPage mode="edit" />}
+              />
+              <Route path="add" element={<EditProducerPage />} />
             </Route>
           </Route>
           <Route path="storage">
