@@ -11,10 +11,9 @@ export function LoginPage() {
   return (
     <div className="h-screen bg-kidshop bg-cover bg-no-repeat bg-center flex flex-col justify-center items-center p-4">
       <div className="bg-white w-full max-w-md border rounded-lg pb-8 pt-12 px-6 sm:px-10 flex flex-col hover:shadow-lg-soft">
-        <FaUserCircle size={96} className="self-center text-primary" />
-        <Title level={3} className="self-center mt-2">
-          Đăng nhập
-        </Title>
+        <span className="text-primary font-logo whitespace-nowrap self-center text-5xl mb-6">
+          KidsShop
+        </span>
         <div className="mt-4">
           <Form
             form={form}
