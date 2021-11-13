@@ -6,6 +6,9 @@ import AppTable from '../../components/AppTable';
 import CommonString from '../../constants/string';
 import { useLocation, useNavigate } from 'react-router';
 import { SupplierContext } from '../../context/SupplierContext';
+import useApiFeedback from '../../hooks/useApiFeedback';
+import { message } from 'antd';
+import { fireErrorModal } from '../../utils/feedback';
 
 const columns = [
   {
@@ -33,53 +36,44 @@ const columns = [
 ];
 
 export default function SupplierPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [listSuppliers, setListSuppliers] = useContext(SupplierContext);
   const [selectedRows, setSelectedRows] = useState([]);
+  const { loading, apiCall, result } = useApiFeedback();
 
   useEffect(() => {
-    async function initData() {
-      const suppliers = (await api.fetchAllSuppliers()).data;
-      setListSuppliers(suppliers);
-    }
-    initData();
+    apiCall(api.fetchAllSuppliers());
   }, []);
 
   const handleDelete = async () => {
-    const answer = window.confirm(
-      'Bạn có muốn xóa những nhà cung cấp này không?'
-    );
-
-    if (answer) {
-      let newList = listSuppliers;
-      for (const id of selectedRows) {
-        await api.deleteSupplier(id);
-        newList = newList.filter((sup) => sup.id !== id);
-      }
-      setListSuppliers(newList);
-    }
+    await Promise.all(
+      selectedRows.map((row) => {
+        return api.deleteSupplier(row);
+      })
+    )
+      .then(() => {
+        message.success('Xóa thành công');
+        setSelectedRows([]);
+      })
+      .catch((err) => fireErrorModal(err[0]));
   };
 
   return (
     <div>
       <ContentHeader title="Quản lý nhà cung cấp">
-        {selectedRows.length < 2 && (
-          <AppButton type="add" responsive>
-            Thêm nhà cung cấp
-          </AppButton>
-        )}
+        <AppButton type="add" link="add" responsive>
+          Thêm nhà cung cấp
+        </AppButton>
         {!!selectedRows.length && (
-          <AppButton type="delete" onClick={handleDelete} responsive>
-            {CommonString.SUPPLIER_DELETE}
+          <AppButton type="delete" responsive onClick={handleDelete}>
+            Xóa nhà cung cấp
           </AppButton>
         )}
       </ContentHeader>
       <AppTable
+        loading={loading}
         columns={columns}
-        data={listSuppliers}
+        data={result?.data}
         onSelectRows={setSelectedRows}
+        itemName="nhà cung cấp"
       />
     </div>
   );

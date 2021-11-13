@@ -44,7 +44,6 @@ export default function ProducerPage() {
     apiCall(fetchProducers());
   }, []);
 
-  console.log(result?.data);
   async function handleDelete() {
     await Promise.all(
       selectedRows.map((row) => {

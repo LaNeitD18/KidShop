@@ -20,11 +20,11 @@ export class SupplierService {
     return this.supplierRepository.find();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.supplierRepository.findOne(id);
   }
 
-  async update(id: string, data: NhaCungCap) {
+  async update(id: number, data: NhaCungCap) {
     const response = await this.supplierRepository
       .createQueryBuilder('supplier')
       .update(data)
@@ -37,7 +37,7 @@ export class SupplierService {
     return updatedSupplier;
   }
 
-  delete(id: string) {
+  delete(id: number) {
     return this.supplierRepository.delete(id);
   }
 }

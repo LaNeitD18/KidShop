@@ -50,7 +50,7 @@ export class SupplierController {
   }
 
   @Get(':id')
-  async fetchASupplier(@Param('id') id: string, @Res() res: Response) {
+  async fetchASupplier(@Param('id') id: number, @Res() res: Response) {
     try {
       const supplier = await this.supplierService.findOne(id);
       if (!supplier) {
@@ -68,7 +68,7 @@ export class SupplierController {
 
   @Patch(':id')
   async updateSupplier(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() data: NhaCungCap,
     @Res() res: Response,
   ) {
@@ -96,7 +96,7 @@ export class SupplierController {
   }
 
   @Delete(':id')
-  async deleteSupplier(@Param('id') id: string, @Res() res: Response) {
+  async deleteSupplier(@Param('id') id: number, @Res() res: Response) {
     try {
       const supplier = await this.supplierService.findOne(id);
       if (!supplier) {

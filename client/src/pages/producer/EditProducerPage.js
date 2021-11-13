@@ -23,11 +23,6 @@ const editConsts = {
   okText: 'Lưu thay đổi',
 };
 
-const defaultMapLct = {
-  coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
-};
-
 export default function EditProducerPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;

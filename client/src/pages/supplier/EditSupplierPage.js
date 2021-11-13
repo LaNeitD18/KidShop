@@ -1,163 +1,165 @@
-import React, { useContext, useState } from 'react';
-import { Form, Input } from 'antd';
+import React, { useEffect, useState } from 'react';
 import AppButton from '../../components/AppButton';
+import { Form, Input, message } from 'antd';
 import { ContentHeader } from '../../components/Content';
-import '@tomtom-international/web-sdk-maps/dist/maps.css';
-import CommonString from '../../constants/string';
-import * as api from '../../api/supplier';
-import { SupplierContext } from '../../context/SupplierContext';
-import { useLocation, useNavigate } from 'react-router';
-import { fireErrorModal, useFireSuccessModal } from '../../utils/feedback';
 import Map from '../../components/Map';
+import {
+  deleteSupplier,
+  editSupplier,
+  fetchASupplier,
+  createSupplier,
+} from '../../api/supplier';
+import SelectInput from '../../components/SelectInput';
+import useApiFeedback from '../../hooks/useApiFeedback';
+import { useNavigate, useParams } from 'react-router-dom';
+import { inputRuleNaN } from '../../utils/string';
+import { fireSuccessModal, useFireSuccessModal } from '../../utils/feedback';
 
 const addConsts = {
-  title: CommonString.SUPPLIER_ADD,
-  okText: CommonString.FINISH_ADD,
+  title: 'Tạo nhà cung cấp',
+  okText: 'Hoàn tất',
 };
 
 const editConsts = {
-  title: CommonString.SUPPLIER_EDIT,
-  okText: CommonString.FINISH_EDIT,
+  title: 'Sửa nhà cung cấp',
+  okText: 'Lưu thay đổi',
 };
 
-const defaultMapLocation = {
+const defaultMapLct = {
   coordinates: [106.80452, 10.871013],
   address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
 };
 
 export default function EditSupplierPage({ mode }) {
-  const fireSuccessModal = useFireSuccessModal();
+  const isEdit = mode === 'edit';
+  const byModes = isEdit ? editConsts : addConsts;
+
+  const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [form] = Form.useForm();
 
-  const [mapLocation, setMapLocation] = useState(defaultMapLocation);
+  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
+  const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const [listSuppliers] = useContext(SupplierContext);
-  const selectedSupplier = location.state ?? {
-    tenNCC: '',
-    diaChi: '',
-    sdt: '',
-  };
+  const { apiCall: getCall } = useApiFeedback();
+  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
+  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
+  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
 
-  const handleCreateSupplier = async (values) => {
-    try {
-      const data = {
-        tenNCC: values.name,
-        diaChi: values.address,
-        sdt: values.phone ?? null,
-      };
-
-      const newSupplier = await api
-        .createSupplier(data)
-        .catch((err) => console.log(err));
-      listSuppliers.push(newSupplier);
-      fireSuccessModal({
-        title: 'Tạo nhà cung cấp thành công',
-        onOk: () => {
-          form.resetFields();
-        },
-        onCancel: () => navigate('../'),
+  useEffect(() => {
+    if (isEdit) {
+      getCall(fetchASupplier(id), ({ data }) => {
+        form.setFieldsValue(data);
+        setMapLocation({
+          coordinates: [data?.kinhDo, data?.viDo],
+          address: data?.viTri,
+        });
+        setMapCenter([data?.kinhDo, data?.viDo]);
       });
-    } catch (error) {
-      fireErrorModal(error);
     }
-  };
+  }, []);
 
-  const handleEditSupplier = async (values) => {
-    try {
-      const data = {
-        tenNCC: values.name,
-        diaChi: values.address,
-        sdt: values.phone ?? null,
-      };
-
-      const supplierIndex = listSuppliers.findIndex(
-        (sup) => sup.id === selectedSupplier.id
-      );
-      const updatedSupplier = await api.editSupplier(selectedSupplier.id, data);
-      listSuppliers[supplierIndex] = updatedSupplier;
-      alert(CommonString.SUPPLIER_EDIT_SUCCESS);
-      navigate(-1);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onFinish = async (values) => {
-    if (mode === 'edit') {
-      await handleEditSupplier(values);
+  const onFinish = (values) => {
+    const dto = {
+      ...values,
+      kinhDo: mapLocation?.coordinates[0],
+      viDo: mapLocation?.coordinates[1],
+      viTri: mapLocation?.address,
+    };
+    console.log(dto);
+    if (isEdit) {
+      editCall(editSupplier(id, dto), () => {
+        message.success('Đã lưu thay đổi thành công');
+      });
     } else {
-      await handleCreateSupplier(values);
+      postCall(createSupplier(dto), () => {
+        fireSuccessModal({
+          title: 'Tạo nhà sản xuất thành công',
+          onOk: () => {
+            form.resetFields();
+            setMapLocation(defaultMapLct);
+          },
+          onCancel: () => {
+            navigate('../');
+          },
+        });
+      });
     }
-    console.log('Success:', values);
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const isEdit = mode === 'edit';
-  const byModes = isEdit ? editConsts : addConsts;
+  function handleDelete() {
+    deleteCall(deleteSupplier(id), () => {
+      message.success('Đã xóa thành công');
+      navigate('../');
+    });
+  }
 
   return (
     <div>
       <ContentHeader title={byModes.title}>
-        <AppButton type="cancel" onClick={() => navigate(-1)} responsive>
-          {CommonString.CANCEL}
+        <AppButton type="cancel" responsive>
+          Hủy bỏ
         </AppButton>
       </ContentHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
-        <Map mapLocation={mapLocation} onChangeMapLocation={setMapLocation} />
+        <Map
+          center={mapCenter}
+          mapLocation={mapLocation}
+          onChangeMapLocation={setMapLocation}
+        />
         <div>
           <Form
             form={form}
-            name="create-supplier"
+            name="create-branch"
             layout="vertical"
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item
-              label={CommonString.SUPPLIER_NAME}
-              requiredMark="optional"
-              name="name"
+              label="Tên nhà cung cấp"
+              name="tenNCC"
               rules={[
                 {
                   required: true,
-                  message: CommonString.SUPPLIER_ADDRESS_EMPTY,
+                  message: 'Vui lòng nhập tên nhà sản xuất',
                 },
               ]}
-              initialValue={selectedSupplier.tenNCC}
             >
               <Input size="large" />
             </Form.Item>
             <Form.Item
-              label={CommonString.SUPPLIER_ADDRESS}
+              label="Địa chỉ"
               requiredMark="optional"
-              name="address"
+              name="diaChi"
               rules={[
                 {
                   required: true,
-                  message: CommonString.SUPPLIER_ADDRESS_EMPTY,
+                  message: 'Vui lòng nhập địa chỉ',
                 },
               ]}
-              initialValue={selectedSupplier.diaChi}
             >
               <Input size="large" />
+            </Form.Item>
+            <Form.Item label="Vị trí (chọn trên bản đồ)">
+              <Input
+                size="large"
+                disabled
+                value={mapLocation?.address}
+                name="map-location"
+              />
             </Form.Item>
 
             <Form.Item
-              label={CommonString.SUPPLIER_PHONE}
-              name="phone"
+              label="Số điện thoại"
+              name="sdt"
               requiredMark="optional"
-              initialValue={selectedSupplier.sdt}
               rules={[
                 {
-                  pattern: new RegExp(CommonString.REGEX_PHONE_NUMBER),
-                  message: CommonString.SUPPLIER_PHONE_NAN,
+                  required: true,
+                  message: 'Vui lòng nhập số điện thoại!',
                 },
+                inputRuleNaN(),
               ]}
             >
               <Input size="large" />
@@ -166,6 +168,7 @@ export default function EditSupplierPage({ mode }) {
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
+                  loading={postLoad || editLoad}
                   type="done"
                   className="w-full"
                   htmlType="submit"
@@ -176,8 +179,17 @@ export default function EditSupplierPage({ mode }) {
               </Form.Item>
               {!!isEdit && (
                 <Form.Item className="flex-1">
-                  <AppButton type="delete" className="w-full" size="large">
-                    {CommonString.SUPPLIER_DELETE}
+                  <AppButton
+                    onClick={handleDelete}
+                    type="delete"
+                    className="w-full"
+                    size="large"
+                    loading={deleteLoad}
+                    confirm={{
+                      title: 'Bạn có muốn xóa chi nhánh này?',
+                    }}
+                  >
+                    Xóa nhà cung cấp
                   </AppButton>
                 </Form.Item>
               )}

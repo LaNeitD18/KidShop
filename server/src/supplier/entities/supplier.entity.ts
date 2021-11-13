@@ -24,6 +24,18 @@ export class NhaCungCap {
   @Column({ nullable: true })
   sdt?: string;
 
+  @ApiProperty()
+  @Column({ type: 'float', default: 0.0 })
+  kinhDo: number;
+
+  @ApiProperty()
+  @Column({ type: 'float', default: 0.0 })
+  viDo: number;
+
+  @ApiProperty()
+  @Column()
+  viTri: string;
+
   @CreateDateColumn()
   taoLuc?: Date;
 
