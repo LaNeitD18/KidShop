@@ -57,6 +57,7 @@ export default function AppButton({
   onClick,
   confirm,
   loading,
+  icon,
   ...rest
 }) {
   const media = useResponsive();

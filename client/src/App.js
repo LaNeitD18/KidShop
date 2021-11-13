@@ -15,6 +15,7 @@ import ProducerPage from './pages/producer/ProducerPage';
 import EditProducerPage from './pages/producer/EditProducerPage';
 import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
+import { LoginPage } from './pages/LoginPage';
 
 function App() {
   const [feature, setFeature] = useFeature();
@@ -23,6 +24,8 @@ function App() {
       setFeature((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
     });
   }, []);
+
+  // return <LoginPage />;
 
   return (
     <Routes>

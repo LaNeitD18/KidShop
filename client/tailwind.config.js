@@ -38,6 +38,9 @@ module.exports = {
         'lg-soft':
           '0 10px 15px -3px rgba(0, 0, 0, 0.075), 0 4px 6px -2px rgba(0, 0, 0, 0.0375)',
       },
+      backgroundImage: {
+        kidshop: "url('https://iili.io/5hYLtR.jpg')",
+      },
     },
   },
   variants: {
