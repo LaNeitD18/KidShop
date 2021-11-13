@@ -156,9 +156,9 @@ export default function MainContainer() {
   const [feature] = useFeature();
 
   const nav = arrayFind(navMenu, paths[1], 'path') || {};
-  const hasMavContext = nav?.context ? 1 : 0;
-  const menu = arrayFind(nav?.children, paths[hasMavContext + 2], 'path');
-  const subPage = arrayFind(menu?.children, paths[hasMavContext + 3], 'path');
+  const hasNavContext = nav?.context ? 1 : 0;
+  const menu = arrayFind(nav?.children, paths[hasNavContext + 2], 'path');
+  const subPage = arrayFind(menu?.children, paths[hasNavContext + 3], 'path');
 
   const [isOpenSider, setIsOpenSider] = useState(false);
 
@@ -189,8 +189,6 @@ export default function MainContainer() {
   if (navContextOptions && !navContext) {
     navigate('/error/403', { replace: true });
   }
-
-  console.log(pathsToStrings([paths[1], paths[2], paths[3]]));
 
   return (
     <Layout className="select-none">
@@ -247,7 +245,11 @@ export default function MainContainer() {
           <Menu
             mode="inline"
             style={{ height: '100%', borderRight: 0 }}
-            selectedKeys={pathsToStrings([paths[1], paths[2], paths[3]])}
+            selectedKeys={
+              hasNavContext
+                ? pathsToStrings([paths[1], paths[2], paths[3]])
+                : pathsToStrings([paths[1], paths[2]])
+            }
             onSelect={handleSelectMenu}
           >
             <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
@@ -256,7 +258,7 @@ export default function MainContainer() {
                   className: 'text-3xl w-full mb-1',
                 })}
               <Title level={4}>{nav.title}</Title>
-              {!!hasMavContext && (
+              {!!hasNavContext && (
                 <Select
                   style={{
                     color: theme.color.primary,
@@ -319,7 +321,13 @@ export default function MainContainer() {
               {menu && (
                 <Breadcrumb.Item>
                   {subPage ? (
-                    <Link to={[paths[1], paths[2], paths[3]].join('/')}>
+                    <Link
+                      to={
+                        hasNavContext
+                          ? [paths[1], paths[2], paths[3]].join('/')
+                          : [paths[1], paths[2]].join('/')
+                      }
+                    >
                       {menu.title}
                     </Link>
                   ) : (
