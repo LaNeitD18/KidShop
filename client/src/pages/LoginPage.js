@@ -1,9 +1,6 @@
-import { Checkbox, Form, Input, Typography } from 'antd';
-import { FaUserCircle } from 'react-icons/fa';
+import { Checkbox, Form, Input } from 'antd';
 import { IoLogInOutline } from 'react-icons/io5';
 import AppButton from '../components/AppButton';
-
-const { Title } = Typography;
 
 export function LoginPage() {
   const [form] = Form.useForm();
