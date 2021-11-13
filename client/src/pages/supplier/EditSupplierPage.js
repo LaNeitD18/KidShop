@@ -155,9 +155,7 @@ export default function EditSupplierPage({ mode }) {
               initialValue={selectedSupplier.sdt}
               rules={[
                 {
-                  pattern: new RegExp(
-                    /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g
-                  ),
+                  pattern: new RegExp(CommonString.REGEX_PHONE_NUMBER),
                   message: CommonString.SUPPLIER_PHONE_NAN,
                 },
               ]}

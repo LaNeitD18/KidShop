@@ -123,9 +123,7 @@ export default function EditWarehousePage({ mode }) {
               initialValue={selectedWarehouse.sdt}
               rules={[
                 {
-                  pattern: new RegExp(
-                    /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g
-                  ),
+                  pattern: new RegExp(CommonString.REGEX_PHONE_NUMBER),
                   message: CommonString.WAREHOUSE_PHONE_NAN,
                 },
               ]}

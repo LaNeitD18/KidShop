@@ -1,10 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class NhaCungCap {
-  @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  @PrimaryGeneratedColumn('increment')
+  id?: number;
 
   @ApiProperty()
   @Column()
@@ -17,4 +23,10 @@ export class NhaCungCap {
   @ApiProperty({ required: false })
   @Column({ nullable: true })
   sdt?: string;
+
+  @CreateDateColumn()
+  taoLuc?: Date;
+
+  @UpdateDateColumn()
+  suaLuc?: Date;
 }

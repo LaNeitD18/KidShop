@@ -1,4 +1,12 @@
 const CommonString = {
+  // common
+  FINISH_ADD: 'Hoàn tất',
+  FINISH_EDIT: 'Lưu thay đổi',
+  CANCEL: 'Hủy bỏ',
+
+  // regex
+  REGEX_PHONE_NUMBER: /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[\s\./0-9]*$/g,
+
   // supplier
   SUPPLIER_TITLE: 'Quản lý nhà cung cấp',
   SUPPLIER_NAME: 'Tên nhà cung cấp',
