@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import AppButton from '../../../components/AppButton';
 import { Form, Input, message } from 'antd';
 import { ContentHeader } from '../../../components/Content';
-import { createCounter, editCounter, getCounter } from '../../../api/counter';
+import {
+  createCounter,
+  editCounter,
+  getCounter,
+  deleteCounter,
+} from '../../../api/counter';
 import SelectInput from '../../../components/SelectInput';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
-import { idString, inputRuleNaN } from '../../../utils/string';
+import { idString } from '../../../utils/string';
 import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 import { useFeature } from '../../../context/FeatureContext';
@@ -49,7 +54,6 @@ export default function EditCounterPage({ mode }) {
     });
   }, [storeId]);
 
-  // edit
   useEffect(() => {
     if (!isEdit) return;
     getCall(getCounter(counterId), ({ data }) => {
@@ -70,8 +74,8 @@ export default function EditCounterPage({ mode }) {
     if (isEdit) {
       editCall(
         editCounter(counterId, {
-          // idCuaHang: values.idCuaHang,
-          // tenQuay: values.tenQuay,
+          idCuaHang: values.idCuaHang,
+          tenQuay: values.tenQuay,
         }),
         () => {
           message.success('Lưu thay đổi thành công');
@@ -97,7 +101,12 @@ export default function EditCounterPage({ mode }) {
     }
   };
 
-  function handleDelete() {}
+  function handleDelete() {
+    deleteCall(deleteCounter(counterId), () => {
+      message.success('Xóa quầy thành công');
+      navigate('../');
+    });
+  }
 
   return (
     <FormGrid>
