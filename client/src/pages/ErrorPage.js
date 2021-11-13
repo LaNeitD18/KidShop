@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Result, Button } from 'antd';
+import { Result, Button, Typography } from 'antd';
 import { stringToPaths } from '../utils/route';
+
+const { Title } = Typography;
 
 export default function ErrorPage() {
   const navigate = useNavigate();
@@ -34,7 +36,16 @@ export default function ErrorPage() {
     <div className="h-screen flex justify-center items-center">
       <Result
         status={status().code}
-        title={`${status().code} - ${status().title}`}
+        title={
+          <Title
+            style={{
+              fontWeight: 700,
+              marginBottom: 16,
+            }}
+          >
+            {status().code} {status().title}
+          </Title>
+        }
         subTitle={status().subTitle}
         extra={
           <div className="gap-6 flex flex-wrap justify-center mb-16">

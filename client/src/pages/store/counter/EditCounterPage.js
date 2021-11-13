@@ -35,14 +35,14 @@ export default function EditCounterPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const [feature, setFeature] = useFeature();
+  const [feature] = useFeature();
 
   const { storeId, counterId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
-  const { apiCall: getCall, getResult } = useApiFeedback();
+  const { apiCall: getCall } = useApiFeedback();
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
   const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
