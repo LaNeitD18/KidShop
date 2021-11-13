@@ -1,19 +1,20 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useFeature } from './context/FeatureContext';
+import { getStoreList } from './api/store';
+
+import ErrorPage from './pages/ErrorPage';
 import BranchPage from './pages/admin/branch/BranchPage';
 import EditBranchPage from './pages/admin/branch/EditBranchPage';
 import EditSupplierPage from './pages/supplier/EditSupplierPage';
 import SupplierPage from './pages/supplier/SupplierPage';
 import WarehousePage from './pages/warehouse/WarehousePage';
-import { Routes, Route, Navigate } from 'react-router-dom';
 import MainContainer from './components/MainContainer';
-import ErrorPage from './pages/ErrorPage';
 import EditWarehousePage from './pages/warehouse/EditWarehousePage';
 import ProducerPage from './pages/producer/ProducerPage';
 import EditProducerPage from './pages/producer/EditProducerPage';
 import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
-import { useFeature } from './context/FeatureContext';
-import { useEffect } from 'react';
-import { getStoreList } from './api/store';
 
 function App() {
   const [feature, setFeature] = useFeature();
@@ -75,7 +76,7 @@ function App() {
             <Route path="producer">
               <Route index element={<ProducerPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:producerId"
                 element={<EditProducerPage mode="edit" />}
               />
               <Route path="add" element={<EditProducerPage />} />

@@ -33,7 +33,7 @@ export default function EditSupplierPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { id } = useParams();
+  const { supplierId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -48,7 +48,7 @@ export default function EditSupplierPage({ mode }) {
 
   useEffect(() => {
     if (isEdit) {
-      getCall(fetchASupplier(id), ({ data }) => {
+      getCall(fetchASupplier(supplierId), ({ data }) => {
         form.setFieldsValue(data);
         setMapLocation({
           coordinates: [data?.kinhDo, data?.viDo],
@@ -68,7 +68,7 @@ export default function EditSupplierPage({ mode }) {
     };
     console.log(dto);
     if (isEdit) {
-      editCall(editSupplier(id, dto), () => {
+      editCall(editSupplier(supplierId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
@@ -88,7 +88,7 @@ export default function EditSupplierPage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteSupplier(id), () => {
+    deleteCall(deleteSupplier(supplierId), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });

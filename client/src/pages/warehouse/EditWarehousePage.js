@@ -6,7 +6,7 @@ import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import CommonString from '../../constants/string';
 import * as api from '../../api/warehouse';
 import { WarehouseContext } from '../../context';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const addConsts = {
   title: CommonString.WAREHOUSE_ADD,

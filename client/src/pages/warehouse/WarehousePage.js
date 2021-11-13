@@ -4,7 +4,7 @@ import AppButton from '../../components/AppButton';
 import { ContentHeader } from '../../components/Content';
 import AppTable from '../../components/AppTable';
 import CommonString from '../../constants/string';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { WarehouseContext } from '../../context';
 import * as api from '../../api/warehouse';
 
