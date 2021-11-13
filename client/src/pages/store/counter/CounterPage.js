@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
-import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { deleteStore, getStoreList } from '../../../api/store';
+import { ActiveItem, StatusBar } from '../../../components/StatusBar';
+
+import { Grid } from '../../../components/Grid';
 import { message } from 'antd';
+import { CounterCard } from '../../../components/Card';
 
 const columns = [
   {
@@ -35,7 +38,9 @@ const columns = [
   },
 ];
 
-export default function BranchPage() {
+const sample = [1, 2, 3, 4, 5, 6, 7, 8];
+
+export default function CounterPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
@@ -64,10 +69,10 @@ export default function BranchPage() {
   }
 
   return (
-    <div>
-      <ContentHeader title="Quản lý các chi nhánh">
+    <div className="pb-16">
+      <ContentHeader title="Quản lý các quầy" className="mb-1">
         <AppButton type="add" link="add" responsive>
-          Thêm chi nhánh
+          Thêm quầy
         </AppButton>
         {!!selectedRows.length && (
           <AppButton
@@ -76,17 +81,20 @@ export default function BranchPage() {
             onClick={handleDelete}
             loading={deleteLoading}
           >
-            Xóa chi nhánh
+            Xóa quầy đã chọn
           </AppButton>
         )}
       </ContentHeader>
-      <AppTable
-        loading={loading}
-        columns={columns}
-        data={result?.data}
-        onSelectRows={setSelectedRows}
-        itemName="chi nhánh"
-      />
+      <StatusBar className="-mt-1 gap-x-5 gap-y-2 mb-5">
+        <ActiveItem active number={2} text="đang hoạt động" />
+        <ActiveItem number={1} text="đang đóng" />
+      </StatusBar>
+
+      <Grid>
+        {sample.map((i) => (
+          <CounterCard active={i % 2} />
+        ))}
+      </Grid>
     </div>
   );
 }

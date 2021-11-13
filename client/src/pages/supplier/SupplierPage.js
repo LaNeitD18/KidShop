@@ -38,22 +38,29 @@ const columns = [
 export default function SupplierPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
+  const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
+
+  const fetchListSuppliers = () => {
+    apiCall(api.fetchAllSuppliers());
+  };
 
   useEffect(() => {
-    apiCall(api.fetchAllSuppliers());
+    fetchListSuppliers();
   }, []);
 
   const handleDelete = async () => {
-    await Promise.all(
-      selectedRows.map((row) => {
-        return api.deleteSupplier(row);
-      })
-    )
-      .then(() => {
+    deleteCall(
+      Promise.all(
+        selectedRows.map((row) => {
+          return api.deleteSupplier(row);
+        })
+      ),
+      () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-      })
-      .catch((err) => fireErrorModal(err[0]));
+        fetchListSuppliers();
+      }
+    );
   };
 
   return (
@@ -63,7 +70,12 @@ export default function SupplierPage() {
           Thêm nhà cung cấp
         </AppButton>
         {!!selectedRows.length && (
-          <AppButton type="delete" responsive onClick={handleDelete}>
+          <AppButton
+            type="delete"
+            responsive
+            onClick={handleDelete}
+            loading={deleteLoading}
+          >
             Xóa nhà cung cấp
           </AppButton>
         )}

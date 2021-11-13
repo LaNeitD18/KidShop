@@ -13,6 +13,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { AiOutlineApartment } from 'react-icons/ai';
 import { GrGroup, GrUserManager } from 'react-icons/gr';
 import { RiPencilRuler2Line } from 'react-icons/ri';
+import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -62,6 +63,24 @@ const navMenu = [
   {
     path: 'store',
     title: 'Cửa hàng',
+    icon: <MdOutlineStore />,
+    children: [
+      {
+        path: 'counter',
+        title: 'QL Quầy',
+        icon: <MdPointOfSale />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'counter',
@@ -209,7 +228,7 @@ export default function MainContainer() {
             selectedKeys={[paths.menuString]}
             onSelect={handleSelectMenu}
           >
-            <div className="w-full flex-col items-center text-center mb-5 mt-7 pr-1">
+            <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
               {nav.icon &&
                 cloneElement(nav.icon, {
                   className: 'text-3xl w-full mb-1',
@@ -238,7 +257,7 @@ export default function MainContainer() {
             'ml-sider-width': media.isLg,
           })}
         >
-          <div className="bg-normal pt-4 pb-3 pl-6 border-b">
+          <div className="bg-normal pt-4 pb-3 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
             <Breadcrumb>
               <Breadcrumb.Item href="/">
                 {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
@@ -256,7 +275,7 @@ export default function MainContainer() {
             </Breadcrumb>
           </div>
           {/* <Divider style={{ margin: '12px 0' }} /> */}
-          <Content className="site-layout-background select-text px-6 sm:px-10 pt-3">
+          <Content className="site-layout-background select-text px-6 sm:px-10 md:px-6 lg:px-10 pt-5">
             <Outlet />
           </Content>
         </Layout>

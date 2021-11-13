@@ -39,22 +39,29 @@ const columns = [
 export default function ProducerPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
+  const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
+
+  const fetchListProducers = () => {
+    apiCall(fetchProducers());
+  };
 
   useEffect(() => {
-    apiCall(fetchProducers());
+    fetchListProducers();
   }, []);
 
   async function handleDelete() {
-    await Promise.all(
-      selectedRows.map((row) => {
-        return deleteProducer(row);
-      })
-    )
-      .then(() => {
+    deleteCall(
+      Promise.all(
+        selectedRows.map((row) => {
+          return deleteProducer(row);
+        })
+      ),
+      () => {
         message.success('Xóa thành công');
-        selectedRows([]);
-      })
-      .catch((err) => fireErrorModal(err[0]));
+        setSelectedRows([]);
+        fetchListProducers();
+      }
+    );
   }
 
   return (
@@ -64,7 +71,12 @@ export default function ProducerPage() {
           Thêm nhà sản xuất
         </AppButton>
         {!!selectedRows.length && (
-          <AppButton type="delete" responsive onClick={handleDelete}>
+          <AppButton
+            type="delete"
+            responsive
+            onClick={handleDelete}
+            loading={deleteLoading}
+          >
             Xóa nhà sản xuất
           </AppButton>
         )}

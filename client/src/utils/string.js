@@ -19,12 +19,13 @@ export function errorString(err) {
     err?.response?.data?.message ||
     err?.message ||
     'Yêu cầu của bạn đã không được thực hiện';
+  const codeName = [code, name].join(code && name ? ' ' : '');
   return {
     code,
     name,
     message,
-    codeName: `${code} ${name}`,
-    combine: `${code} ${name} ${name && message ? ':' : ''} ${message}`,
+    codeName,
+    combine: `${codeName} ${name && message ? ':' : ''} ${message}`,
   };
 }
 

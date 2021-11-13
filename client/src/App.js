@@ -9,6 +9,8 @@ import ErrorPage from './pages/ErrorPage';
 import EditWarehousePage from './pages/warehouse/EditWarehousePage';
 import ProducerPage from './pages/producer/ProducerPage';
 import EditProducerPage from './pages/producer/EditProducerPage';
+import CounterPage from './pages/store/counter/CounterPage';
+import EditCounterPage from './pages/store/counter/EditCounterPage';
 
 function App() {
   return (
@@ -23,6 +25,17 @@ function App() {
               <Route index element={<BranchPage />} />
               <Route path="edit/:id" element={<EditBranchPage mode="edit" />} />
               <Route path="add" element={<EditBranchPage mode="add" />} />
+            </Route>
+          </Route>
+          <Route path="store">
+            <Route index element={<Navigate to="counter" replace />} />
+            <Route path="counter">
+              <Route index element={<CounterPage />} />
+              <Route
+                path="edit/:id"
+                element={<EditCounterPage mode="edit" />}
+              />
+              <Route path="add" element={<EditCounterPage mode="add" />} />
             </Route>
           </Route>
           <Route path="supply">

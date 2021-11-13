@@ -15,7 +15,6 @@ import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../../utils/string';
 import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
-import { FormGrid } from '../../../components/Grid';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -32,7 +31,7 @@ const defaultMapLct = {
   address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
 };
 
-export default function EditBranchPage({ mode }) {
+export default function EditCounterPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
@@ -115,7 +114,7 @@ export default function EditBranchPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
         <Map
           center={mapCenter}
           mapLocation={mapLocation}
@@ -211,7 +210,7 @@ export default function EditBranchPage({ mode }) {
             </div>
           </Form>
         </div>
-      </FormGrid>
+      </div>
     </div>
   );
 }
