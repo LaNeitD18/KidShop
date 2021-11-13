@@ -1,11 +1,8 @@
 import { Select } from 'antd';
 import { idString } from '../utils/string';
-const { Option } = Select;
 
 export default function SelectInput({
   data,
-  labelField = 'label',
-  idField = 'id',
   onSelect,
   idFormat,
   allowClear = true,
@@ -13,11 +10,9 @@ export default function SelectInput({
   showId = true,
   ...rest
 }) {
-  const options = data.map((d) => ({
-    label: showId
-      ? `${d[labelField]} (${idString(d[idField], idFormat)})`
-      : d[labelField],
-    value: d[idField],
+  const options = data?.map((d) => ({
+    value: d.value.toString(),
+    label: showId ? `${d.label} (${idString(d.value, idFormat)})` : d.label,
   }));
   return (
     <Select

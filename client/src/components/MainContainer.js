@@ -68,7 +68,7 @@ const navMenu = [
     path: 'store',
     title: 'Cửa hàng',
     icon: <MdOutlineStore />,
-    context: 'store',
+    context: 'stores',
     idFormat: ['CH', 4],
     children: [
       {
@@ -142,7 +142,7 @@ export default function MainContainer() {
   const [feature] = useFeature();
 
   const nav = arrayFind(navMenu, paths[1], 'path') || {};
-  const hasMavContext = arrayFind(navMenu, paths[1], 'context') ? 1 : 0;
+  const hasMavContext = nav?.context ? 1 : 0;
   const menu = arrayFind(nav?.children, paths[hasMavContext + 2], 'path');
   const subPage = arrayFind(menu?.children, paths[hasMavContext + 3], 'path');
 

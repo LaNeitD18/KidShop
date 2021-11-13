@@ -12,8 +12,8 @@ import {
 
 @Entity()
 export class Quay {
-  @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  @PrimaryGeneratedColumn('increment')
+  id?: number;
 
   @ApiProperty()
   @Column()

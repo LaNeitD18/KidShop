@@ -1,10 +1,9 @@
 import { Modal, message as antdMessage } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { errorString } from './string';
 
 export function fireError(err) {
   if (Array.isArray(err)) err = err[0];
-  const { code, codeName, message, combine } = errorString(err);
+  const { code, codeName, message } = errorString(err);
   if (!code) {
     antdMessage.error(message);
   } else {
@@ -70,24 +69,6 @@ export function fireSuccessModal({
     keyboard: true,
     centered: true,
   });
-}
-
-export function useFireSuccessModal() {
-  const navigate = useNavigate();
-  return (
-    options = {
-      title: '',
-      message: '',
-      onOk: () => {
-        navigate('../');
-      },
-      okText: '',
-      onCancel: () => {},
-      cancelText: '',
-    }
-  ) => {
-    fireSuccessModal(options);
-  };
 }
 
 export function fireConfirmModal(

@@ -11,11 +11,14 @@ import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
 import { useFeature } from './context/FeatureContext';
 import { useEffect } from 'react';
+import { getStoreList } from './api/store';
 
 function App() {
   const [feature, setFeature] = useFeature();
   useEffect(() => {
-    setFeature((prev) => ({ ...prev, store: [2, 4, 5] }));
+    getStoreList().then(({ data }) => {
+      setFeature((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
+    });
   }, []);
 
   return (
@@ -28,7 +31,10 @@ function App() {
             <Route index element={<Navigate to="branch" replace />} />
             <Route path="branch">
               <Route index element={<BranchPage />} />
-              <Route path="edit/:id" element={<EditBranchPage mode="edit" />} />
+              <Route
+                path="edit/:branchId"
+                element={<EditBranchPage mode="edit" />}
+              />
               <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
@@ -37,20 +43,18 @@ function App() {
             element={
               <Navigate
                 to={
-                  feature['store']
-                    ? feature['store'][0].toString()
-                    : '/error/403'
+                  feature.stores ? feature.stores[0].toString() : '/error/403'
                 }
                 replace
               />
             }
           />
-          <Route path="store/:id">
+          <Route path="store/:storeId">
             <Route index element={<Navigate to="counter" replace />} />
             <Route path="counter">
               <Route index element={<CounterPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:counterId"
                 element={<EditCounterPage mode="edit" />}
               />
               <Route path="add" element={<EditCounterPage mode="add" />} />
@@ -61,7 +65,7 @@ function App() {
             <Route path="supplier">
               <Route index element={<SupplierPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:supplierId"
                 element={<EditSupplierPage mode="edit" />}
               />
               <Route path="add" element={<EditSupplierPage />} />
@@ -72,7 +76,7 @@ function App() {
             <Route path="warehouse">
               <Route index element={<WarehousePage />} />
               <Route
-                path="edit/:id"
+                path="edit/:warehouseId"
                 element={<EditWarehousePage mode="edit" />}
               />
               <Route path="add" element={<EditWarehousePage />} />

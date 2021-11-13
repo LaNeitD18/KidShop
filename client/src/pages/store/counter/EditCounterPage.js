@@ -2,21 +2,14 @@ import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
 import { Form, Input, message } from 'antd';
 import { ContentHeader } from '../../../components/Content';
-import Map from '../../../components/Map';
-import {
-  deleteStore,
-  editStore,
-  getStore,
-  postStore,
-} from '../../../api/store';
-import { getUserList } from '../../../api/user';
+import { createCounter, editCounter, getCounter } from '../../../api/counter';
 import SelectInput from '../../../components/SelectInput';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
+import { idString, inputRuleNaN } from '../../../utils/string';
+import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
-import { useCurrentUser } from '../../../context/CurrentUserProvider';
+import { useFeature } from '../../../context/FeatureContext';
 
 const addConsts = {
   title: 'Tạo quầy',
@@ -37,80 +30,74 @@ export default function EditCounterPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const [currentUser, setCurrentUser] = useCurrentUser();
+  const [feature, setFeature] = useFeature();
 
-  const { id } = useParams();
+  const { storeId, counterId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
-  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
-  const [mapLocation, setMapLocation] = useState(defaultMapLct);
-
-  const { apiCall: getCall } = useApiFeedback();
+  const { apiCall: getCall, getResult } = useApiFeedback();
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
   const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
 
   useEffect(() => {
-    if (isEdit) {
-      getCall(getStore(id), ({ data }) => {
-        form.setFieldsValue({
-          ...data,
-          idChuCuaHang: data?.chuCuaHang?.id,
-        });
-        setMapLocation({
-          coordinates: [data?.kinhDo, data?.viDo],
-          address: data?.viTri,
-        });
-        setMapCenter([data?.kinhDo, data?.viDo]);
-      });
-    }
-  }, []);
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      idCuaHang: storeId,
+    });
+  }, [storeId]);
 
+  // edit
   useEffect(() => {
-    setCurrentUser((prev) => ({
-      ...prev,
-      storeList: [1, 3, 5],
-      currentStore: 3,
-    }));
-  }, []);
+    if (!isEdit) return;
+    getCall(getCounter(counterId), ({ data }) => {
+      if (data?.cuaHang?.id.toString() !== storeId) {
+        navigate('/error/404', { replace: true });
+        return;
+      }
+      form.setFieldsValue({
+        idCuaHang: storeId,
+        tenQuay: data?.tenQuay,
+        trangThai: data?.dangHoatDong ? '1' : '0',
+        nhanVienTruc: data?.dangHoatDong ? data?.nhanVienTruc?.hoTen : null,
+      });
+    });
+  }, [storeId]);
 
   const onFinish = (values) => {
-    const dto = {
-      ...values,
-      kinhDo: mapLocation?.coordinates[0],
-      viDo: mapLocation?.coordinates[1],
-      viTri: mapLocation?.address,
-    };
-    console.log(dto);
     if (isEdit) {
-      editCall(editStore(id, dto), () => {
-        message.success('Đã lưu thay đổi thành công');
-      });
+      editCall(
+        editCounter(counterId, {
+          // idCuaHang: values.idCuaHang,
+          // tenQuay: values.tenQuay,
+        }),
+        () => {
+          message.success('Lưu thay đổi thành công');
+        }
+      );
     } else {
-      postCall(postStore(dto), () => {
-        fireSuccessModal({
-          title: 'Tạo chi nhánh thành công',
-          onOk: () => {
-            form.resetFields();
-            setMapLocation(defaultMapLct);
-            setMapCenter(defaultMapLct.coordinates);
-          },
-          onCancel: () => {
-            navigate('../');
-          },
-        });
-      });
+      postCall(
+        createCounter({
+          ...values,
+        }),
+        () => {
+          fireSuccessModal({
+            title: 'Tạo quầy thành công',
+            onOk: () => {
+              form.setFieldsValue({
+                idCuaHang: storeId,
+                tenQuay: null,
+              });
+            },
+          });
+        }
+      );
     }
   };
 
-  function handleDelete() {
-    deleteCall(deleteStore(id), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
-    });
-  }
+  function handleDelete() {}
 
   return (
     <FormGrid>
@@ -140,8 +127,11 @@ export default function EditCounterPage({ mode }) {
               ]}
             >
               <SelectInput
-                labelField="label"
-                data={[{ label: 'CH0001', id: 1 }]}
+                data={feature?.stores?.map((id) => ({
+                  value: id,
+                  label: idString(id, ['CH', 4]),
+                }))}
+                showId={false}
               />
             </Form.Item>
             <Form.Item
@@ -170,9 +160,10 @@ export default function EditCounterPage({ mode }) {
                 ]}
               >
                 <SelectInput
+                  disabled
                   data={[
-                    { label: 'Đang đóng', id: 0 },
-                    { label: 'Đang hoạt động', id: 1 },
+                    { label: 'Đang đóng', value: 0 },
+                    { label: 'Đang hoạt động', value: 1 },
                   ]}
                   showId={false}
                   allowClear={false}
@@ -181,16 +172,8 @@ export default function EditCounterPage({ mode }) {
               </Form.Item>
             )}
             {isEdit && (
-              <Form.Item label="Nhân viên trực" name="idNhanVienTruc">
-                <SelectInput
-                  data={[
-                    { label: 'Đang đóng', id: 0 },
-                    { label: 'Đang hoạt động', id: 1 },
-                  ]}
-                  showId={false}
-                  allowClear={false}
-                  showSearch={false}
-                />
+              <Form.Item label="Nhân viên trực" name="nhanVienTruc">
+                <Input size="large" disabled />
               </Form.Item>
             )}
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">

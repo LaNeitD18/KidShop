@@ -5,5 +5,5 @@ export class CreateCounterDto {
   tenQuay?: string;
 
   @ApiProperty()
-  cuaHangId: string;
+  idCuaHang: string;
 }

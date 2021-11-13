@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { CounterService } from './counter.service';
 import { CreateCounterDto } from './dto/create-counter.dto';
+import { UpdateCounterDto } from './dto/update-counter.dto';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -35,34 +36,19 @@ export class CounterController {
     }
 
     try {
-      const store = await this.storeService.findOne(data.cuaHangId);
+      const store = await this.storeService.findOne(data.idCuaHang);
       if (!store) {
         return res
           .status(HttpStatus.NOT_FOUND)
           .send(
-            `Can not find  a store with id ${data.cuaHangId} to add a new counter`,
+            `Can not find  a store with id ${data.idCuaHang} to add a new counter`,
           );
       }
 
       const counterData: Quay = {
         tenQuay: data.tenQuay,
-        dangSuDung: data.dangSuDung,
         cuaHang: store,
       };
-
-      if (data.nhanVienTrucId) {
-        const onDutyEmployee = await this.userService.findOne(
-          data.nhanVienTrucId,
-        );
-        if (!onDutyEmployee) {
-          return res
-            .status(HttpStatus.NOT_FOUND)
-            .send(
-              `Can not find a user with id ${data.nhanVienTrucId} to assign`,
-            );
-        }
-        counterData.nhanVienTruc = onDutyEmployee;
-      }
 
       const newCounter = await this.counterService.create(counterData);
       return res.status(HttpStatus.CREATED).json(newCounter);
@@ -105,7 +91,7 @@ export class CounterController {
   @Patch(':id')
   async updateCounter(
     @Param('id') id: string,
-    @Body() data: Quay,
+    @Body() data: UpdateCounterDto,
     @Res() res: Response,
   ) {
     if (!data) {
@@ -122,7 +108,34 @@ export class CounterController {
         });
       }
 
-      const updatedCounter = await this.counterService.update(id, data);
+      const { idNhanVienTruc, idCuaHang, ...rest } = data;
+
+      const store = await this.storeService.findOne(idCuaHang);
+      if (!store) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send(
+            `Can not find  a store with id ${idCuaHang} to add a new counter`,
+          );
+      }
+
+      let onDutyEmployee = null;
+      if (idNhanVienTruc) {
+        onDutyEmployee = await this.userService.findOne(idNhanVienTruc);
+        if (!onDutyEmployee) {
+          return res
+            .status(HttpStatus.NOT_FOUND)
+            .send(`Can not find a user with id ${idNhanVienTruc} to assign`);
+        }
+      }
+
+      const newData: Quay = {
+        ...rest,
+        nhanVienTruc: onDutyEmployee,
+        cuaHang: store,
+      };
+
+      const updatedCounter = await this.counterService.update(id, newData);
       return res.status(HttpStatus.OK).json(updatedCounter);
     } catch (error) {
       return res

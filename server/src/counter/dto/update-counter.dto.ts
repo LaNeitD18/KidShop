@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateCounterDto } from './create-counter.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateCounterDto extends PartialType(CreateCounterDto) {}
+export class UpdateCounterDto {
+  @ApiProperty()
+  tenQuay?: string;
+
+  @ApiProperty()
+  idNhanVienTruc?: string;
+
+  @ApiProperty()
+  idCuaHang: string;
+}

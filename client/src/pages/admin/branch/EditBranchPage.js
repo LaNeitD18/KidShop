@@ -14,7 +14,7 @@ import SelectInput from '../../../components/SelectInput';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
+import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 
 const addConsts = {
@@ -36,7 +36,7 @@ export default function EditBranchPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { id } = useParams();
+  const { branchId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -58,7 +58,7 @@ export default function EditBranchPage({ mode }) {
 
   useEffect(() => {
     if (isEdit) {
-      getCall(getStore(id), ({ data }) => {
+      getCall(getStore(branchId), ({ data }) => {
         form.setFieldsValue({
           ...data,
           idChuCuaHang: data?.chuCuaHang?.id,
@@ -81,7 +81,7 @@ export default function EditBranchPage({ mode }) {
     };
     console.log(dto);
     if (isEdit) {
-      editCall(editStore(id, dto), () => {
+      editCall(editStore(branchId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
@@ -102,7 +102,7 @@ export default function EditBranchPage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteStore(id), () => {
+    deleteCall(deleteStore(branchId), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });
@@ -162,7 +162,12 @@ export default function EditBranchPage({ mode }) {
                 },
               ]}
             >
-              <SelectInput data={users} labelField="hoTen" />
+              <SelectInput
+                data={users.map((u) => ({
+                  label: u.hoTen,
+                  value: u.id,
+                }))}
+              />
             </Form.Item>
 
             <Form.Item

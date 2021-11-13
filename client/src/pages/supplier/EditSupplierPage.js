@@ -7,7 +7,7 @@ import CommonString from '../../constants/string';
 import * as api from '../../api/supplier';
 import { SupplierContext } from '../../context/SupplierContext';
 import { useLocation, useNavigate } from 'react-router';
-import { fireError, useFireSuccessModal } from '../../utils/feedback';
+import { fireError, fireSuccessModal } from '../../utils/feedback';
 import Map from '../../components/Map';
 
 const addConsts = {
@@ -26,7 +26,6 @@ const defaultMapLocation = {
 };
 
 export default function EditSupplierPage({ mode }) {
-  const fireSuccessModal = useFireSuccessModal();
   const navigate = useNavigate();
   const location = useLocation();
 
