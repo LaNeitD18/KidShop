@@ -1,3 +1,4 @@
+import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import {
   Controller,
   Get,
@@ -13,14 +14,18 @@ import { WarehouseService } from './warehouse.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Kho } from './entities/warehouse.entity';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('warehouse')
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(
+    private readonly warehouseService: WarehouseService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post()
-  async addWarehouse(@Body() data: Kho, @Res() res: Response) {
+  async addWarehouse(@Body() data: CreateWarehouseDto, @Res() res: Response) {
     if (!data) {
       return res
         .status(HttpStatus.BAD_REQUEST)
@@ -28,7 +33,23 @@ export class WarehouseController {
     }
 
     try {
-      const newWarehouse = await this.warehouseService.create(data);
+      const { idQuanLyKho, ...restData } = data;
+
+      const warehouseManager = await this.userService.findOne(idQuanLyKho);
+      if (!warehouseManager) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send(
+            `Can not find user with id ${idQuanLyKho} to set warehouse manager`,
+          );
+      }
+
+      const warehouseData: Kho = {
+        ...restData,
+        quanLyKho: warehouseManager,
+      };
+
+      const newWarehouse = await this.warehouseService.create(warehouseData);
       return res.status(HttpStatus.CREATED).json(newWarehouse);
     } catch (error) {
       return res
