@@ -26,20 +26,21 @@ module.exports = {
         ],
       },
       spacing: {
-        'nav-height': '64px',
+        'nav-height': '56px',
         'sider-width': '256px',
         128: '32rem',
       },
       colors: {
         normal: '#F6F8FA',
-        primary: '#1DA57A',
+        primary: '#2EAADC',
       },
       boxShadow: {
         'lg-soft':
           '0 10px 15px -3px rgba(0, 0, 0, 0.075), 0 4px 6px -2px rgba(0, 0, 0, 0.0375)',
+        '2xl-soft': '0 25px 50px -12px rgba(0, 0, 0, 0.1875)',
       },
       backgroundImage: {
-        kidshop: "url('https://iili.io/5hlSP2.jpg')",
+        kidshop: "url('https://iili.io/5jFy42.jpg')",
       },
     },
   },

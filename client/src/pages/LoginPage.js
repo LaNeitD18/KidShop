@@ -7,7 +7,7 @@ export function LoginPage() {
   function onFinish() {}
   return (
     <div className="h-screen bg-kidshop bg-cover bg-no-repeat bg-center flex flex-col justify-center items-center p-4">
-      <div className="bg-white w-full max-w-md border rounded-lg pb-8 pt-12 px-6 sm:px-10 flex flex-col hover:shadow-lg-soft">
+      <div className="bg-white w-full max-w-md border rounded-lg pb-8 pt-12 px-6 sm:px-10 flex flex-col shadow-sm">
         <span className="text-primary font-logo whitespace-nowrap self-center text-5xl mb-6">
           KidsShop
         </span>

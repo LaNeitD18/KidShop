@@ -124,7 +124,7 @@ export default function AppTable({
             <SearchOutlined
               className="text-xl p-2"
               style={{
-                color: filtered ? '#1DA57A' : undefined,
+                color: filtered ? '#2EAADC' : undefined,
               }}
             />
           ),

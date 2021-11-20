@@ -208,7 +208,7 @@ export default function MainContainer() {
           />
         )}
 
-        <span className="text-white font-logo hidden cursor-pointer xs:inline text-md sm:text-xl md:text-2xl lg:text-3xl mr-4 whitespace-nowrap">
+        <span className="text-white font-logo hidden cursor-pointer xs:inline text-md sm:text-xl md:text-2xl lg:text-2xl mr-4 whitespace-nowrap">
           KidsShop
         </span>
         <Menu
@@ -313,7 +313,7 @@ export default function MainContainer() {
             'ml-sider-width': media.isLg,
           })}
         >
-          <div className="bg-white pt-4 pb-3 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
+          <div className="bg-white py-4 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
             <Breadcrumb>
               <Breadcrumb.Item href="/">
                 {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}

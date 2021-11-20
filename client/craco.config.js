@@ -13,7 +13,7 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              '@primary-color': '#1DA57A',
+              '@primary-color': '#2EAADC',
               '@success-color': '#22C55E',
               '@processing-color': '#3B82F6',
               '@error-color': '#EF4444',
@@ -23,7 +23,7 @@ module.exports = {
               '@text-selection-bg': '#60A5FA',
               '@layout-body-background': '#F6F8FA',
               '@layout-header-background': '#232629',
-              '@text-color': '#24292f',
+              '@text-color': '#232629',
               '@background-color-light': '#F9FAFB',
               '@background-color-base': '#F3F4F6',
               '@layout-header-padding': '0 32px',
@@ -48,12 +48,12 @@ module.exports = {
               '@menu-inline-toplevel-item-height': '48px',
               '@checkbox-size': '18px',
               '@table-header-bg': '#ffffff',
-              '@checkbox-border-width': '2px',
               '@tag-line-height': '22px',
               '@typography-title-margin-bottom': '0',
               '@dropdown-vertical-padding': '7px',
               '@dropdown-line-height': '24px',
               '@select-dropdown-height': '34px',
+              '@layout-header-height': '56px',
             },
             javascriptEnabled: true,
           },

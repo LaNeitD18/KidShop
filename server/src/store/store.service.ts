@@ -1,9 +1,7 @@
 import { CuaHang } from './entities/store.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { UpdateStoreDto } from './dto/update-store.dto';
-import { Repository, UpdateResult } from 'typeorm';
-import { NguoiDung } from 'src/user/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StoreService {

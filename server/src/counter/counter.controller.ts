@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { StoreService } from './../store/store.service';
 import { UserService } from './../user/user.service';
 import { Quay } from './entities/counter.entity';
@@ -11,6 +12,7 @@ import {
   Delete,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CounterService } from './counter.service';
 import { CreateCounterDto } from './dto/create-counter.dto';
@@ -20,6 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('counter')
 @Controller('counter')
+@UseGuards(JwtAuthGuard)
 export class CounterController {
   constructor(
     private readonly counterService: CounterService,
