@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useFeature } from './context/FeatureContext';
+import { useRoles } from './context/RolesContext';
 import { getStoreList } from './api/store';
 
 import ErrorPage from './pages/ErrorPage';
@@ -18,10 +18,10 @@ import EditCounterPage from './pages/store/counter/EditCounterPage';
 import { LoginPage } from './pages/LoginPage';
 
 function App() {
-  const [feature, setFeature] = useFeature();
+  const [roles, setRoles] = useRoles();
   useEffect(() => {
     getStoreList().then(({ data }) => {
-      setFeature((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
+      setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
     });
   }, []);
 
@@ -46,9 +46,7 @@ function App() {
             path="store"
             element={
               <Navigate
-                to={
-                  feature.stores ? feature.stores[0].toString() : '/error/403'
-                }
+                to={roles.stores ? roles.stores[0].toString() : '/error/403'}
                 replace
               />
             }

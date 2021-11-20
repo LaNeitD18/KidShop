@@ -9,7 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import vi_VN from 'antd/lib/locale/vi_VN';
 import { SupplierProvider, WarehouseProvider } from './context';
-import { FeatureProvider } from './context/FeatureContext';
+import { RolesProvider } from './context/RolesContext';
 
 Moment.globalMoment = moment;
 Moment.globalLocale = 'vi';
@@ -18,13 +18,13 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <ConfigProvider locale={vi_VN}>
-        <FeatureProvider>
+        <RolesProvider>
           <SupplierProvider>
             <WarehouseProvider>
               <App />
             </WarehouseProvider>
           </SupplierProvider>
-        </FeatureProvider>
+        </RolesProvider>
       </ConfigProvider>
     </BrowserRouter>
   </React.StrictMode>,

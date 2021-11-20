@@ -14,7 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { idString } from '../../../utils/string';
 import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
-import { useFeature } from '../../../context/FeatureContext';
+import { useRoles } from '../../../context/RolesContext';
 
 const addConsts = {
   title: 'Tạo quầy',
@@ -22,20 +22,15 @@ const addConsts = {
 };
 
 const editConsts = {
-  title: 'Sửa chi nhánh',
+  title: 'Sửa quầy',
   okText: 'Lưu thay đổi',
-};
-
-const defaultMapLct = {
-  coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
 };
 
 export default function EditCounterPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const [feature] = useFeature();
+  const [roles] = useRoles();
 
   const { storeId, counterId } = useParams();
   const navigate = useNavigate();
@@ -136,7 +131,7 @@ export default function EditCounterPage({ mode }) {
               ]}
             >
               <SelectInput
-                data={feature?.stores?.map((id) => ({
+                data={roles?.stores?.map((id) => ({
                   value: id,
                   label: idString(id, ['CH', 4]),
                 }))}
@@ -206,10 +201,10 @@ export default function EditCounterPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: 'Bạn có muốn xóa quầy này?',
                     }}
                   >
-                    Xóa chi nhánh
+                    Xóa quầy
                   </AppButton>
                 </Form.Item>
               )}

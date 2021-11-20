@@ -40,7 +40,6 @@ const columns = [
 ];
 
 export default function CounterPage() {
-  const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
 
@@ -50,12 +49,8 @@ export default function CounterPage() {
     apiCall(getCounterList());
   }, []);
 
-  function handleDelete() {}
-
-  console.log(result?.data);
-
   const storeCounters = result?.data?.filter(
-    (d) => d?.cuaHang?.id?.toString() === storeId.toString()
+    (d) => d?.cuaHang?.id?.toString() === storeId?.toString()
   );
 
   return (
@@ -64,28 +59,20 @@ export default function CounterPage() {
         <AppButton type="add" link="add" responsive>
           Thêm quầy
         </AppButton>
-        {!!selectedRows.length && (
-          <AppButton
-            type="delete"
-            responsive
-            onClick={handleDelete}
-            loading={deleteLoading}
-          >
-            Xóa quầy đã chọn
-          </AppButton>
-        )}
       </ContentHeader>
-      <StatusBar className="-mt-1 gap-x-5 gap-y-2 mb-5">
-        <ActiveItem
-          active
-          number={storeCounters?.filter((r) => r?.dangHoatDong)?.length}
-          text="đang hoạt động"
-        />
-        <ActiveItem
-          number={storeCounters?.filter((r) => !r?.dangHoatDong).length}
-          text="đang đóng"
-        />
-      </StatusBar>
+      {!!storeCounters?.length && (
+        <StatusBar className="-mt-1 gap-x-5 gap-y-2 mb-5">
+          <ActiveItem
+            active
+            number={storeCounters?.filter((r) => r?.dangHoatDong)?.length}
+            text="đang hoạt động"
+          />
+          <ActiveItem
+            number={storeCounters?.filter((r) => !r?.dangHoatDong).length}
+            text="đang đóng"
+          />
+        </StatusBar>
+      )}
 
       <Grid>
         {storeCounters?.map((r) => (

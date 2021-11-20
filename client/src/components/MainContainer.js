@@ -16,7 +16,7 @@ import { GrGroup, GrUserManager } from 'react-icons/gr';
 import { RiPencilRuler2Line } from 'react-icons/ri';
 import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
-import { useFeature } from '../context/FeatureContext';
+import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
 
 const { Header, Content, Sider } = Layout;
@@ -153,7 +153,7 @@ export default function MainContainer() {
   const { pathname } = useLocation();
   const paths = stringToPaths(pathname);
 
-  const [feature] = useFeature();
+  const [roles] = useRoles();
 
   const nav = arrayFind(navMenu, paths[1], 'path') || {};
   const hasNavContext = nav?.context ? 1 : 0;
@@ -179,16 +179,18 @@ export default function MainContainer() {
     navigate(key);
   };
 
-  const navContextOptions = feature[nav?.context]?.map((v) => ({
+  const navContextOptions = roles[nav?.context]?.map((v) => ({
     value: v,
     label: idString(v, nav?.idFormat),
   }));
 
   const navContext = arrayFind(navContextOptions, paths[2], 'value');
 
-  if (navContextOptions && !navContext) {
-    navigate('/error/403', { replace: true });
-  }
+  useEffect(() => {
+    if (navContextOptions && !navContext && paths[2]) {
+      navigate('/error/403', { replace: true });
+    }
+  }, [navContextOptions, navContext, paths[2]]);
 
   return (
     <Layout className="select-none">
@@ -284,6 +286,7 @@ export default function MainContainer() {
               )}
             </div>
             <Menu.Divider />
+            <div className="mb-5" />
             <Menu.Item
               icon={<AiOutlineDashboard />}
               key={pathsToStrings(
