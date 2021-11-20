@@ -25,8 +25,6 @@ function App() {
     });
   }, []);
 
-  // return <LoginPage />;
-
   return (
     <Routes>
       <Route path="/">
@@ -97,6 +95,7 @@ function App() {
             </Route>
           </Route>
         </Route>
+        <Route path="login" element={<LoginPage />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>

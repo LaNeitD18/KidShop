@@ -9,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import vi_VN from 'antd/lib/locale/vi_VN';
 import { SupplierProvider, WarehouseProvider } from './context';
-import { CurrentUserProvider } from './context/CurrentUserProvider';
 import { FeatureProvider } from './context/FeatureContext';
 
 Moment.globalMoment = moment;
@@ -19,15 +18,13 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <ConfigProvider locale={vi_VN}>
-        <CurrentUserProvider>
-          <FeatureProvider>
-            <SupplierProvider>
-              <WarehouseProvider>
-                <App />
-              </WarehouseProvider>
-            </SupplierProvider>
-          </FeatureProvider>
-        </CurrentUserProvider>
+        <FeatureProvider>
+          <SupplierProvider>
+            <WarehouseProvider>
+              <App />
+            </WarehouseProvider>
+          </SupplierProvider>
+        </FeatureProvider>
       </ConfigProvider>
     </BrowserRouter>
   </React.StrictMode>,

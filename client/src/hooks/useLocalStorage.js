@@ -3,31 +3,18 @@ import { useEffect, useState } from 'react';
 const PREFIX = '';
 
 /**
- * local storage to store signed in user's information
- * @param {"user"} key
- * @param {{token: string, result: object}} initialValue
- * @returns {[{token: string, result: object}, Function]} initialValue
- * //**
- *
  * local storage
  * @param {string} key
  * @param {object} initialValue
  * @returns {[object, Function]} initialValue
  */
-export const useLocalStorage = (key, initialValue) => {
+export default function useLocalStorage(key, initialValue) {
   const prefixedKey = PREFIX + key;
 
-  const getItemFromLocalStorage = (prefixedKey) => {
-    const jsonValue = localStorage.getItem(prefixedKey);
-
-    if (jsonValue != null) return JSON.parse(jsonValue);
-    else return null;
-  };
-
-  const [value, setValue] = useState(() => {
+  const [value, _setValue] = useState(() => {
     // check in local storage first
-    const existingData = getItemFromLocalStorage(prefixedKey);
-    if (existingData != null) return existingData;
+    const existingData = localStorage.getItem(prefixedKey);
+    if (existingData) return existingData;
 
     // then use the provided initial value
     if (typeof initialValue === 'function') {
@@ -37,27 +24,37 @@ export const useLocalStorage = (key, initialValue) => {
     }
   });
 
-  // when the value updated, update the local storage
-  useEffect(() => {
-    if (value != null)
-      localStorage.setItem(
-        prefixedKey,
-        typeof value !== 'string' ? JSON.stringify(value) : value
-      );
-    else localStorage.removeItem(prefixedKey);
-  }, [prefixedKey, value]);
-
-  // when the local storage updated, updated the value
+  // when the local storage updated, update the value
   useEffect(() => {
     window.addEventListener(
       'storage',
       (e) => {
-        const newData = getItemFromLocalStorage(prefixedKey);
-        setValue(newData);
+        const newData = localStorage.getItem(prefixedKey);
+        _setValue(newData);
       },
       false
     );
   }, [prefixedKey]);
 
-  return [value, setValue];
-};
+  const setValue = (value) => {
+    if (!value) {
+      localStorage.removeItem(prefixedKey);
+      _setValue(null);
+    } else {
+      localStorage.setItem(prefixedKey, JSON.stringify(value));
+      _setValue(JSON.stringify(value));
+    }
+  };
+
+  const parsedValue = (value) => {
+    let parsed = value;
+    try {
+      parsed = JSON.parse(value);
+    } catch (error) {
+      console.error(error);
+    }
+    return parsed;
+  };
+
+  return [parsedValue(value), setValue];
+}

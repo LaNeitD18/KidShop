@@ -1,10 +1,48 @@
-import { Checkbox, Form, Input } from 'antd';
+import { Checkbox, Form, Input, message } from 'antd';
 import { IoLogInOutline } from 'react-icons/io5';
 import AppButton from '../components/AppButton';
+import useApiFeedback from '../hooks/useApiFeedback';
+import { login, verifyToken } from '../api/auth';
+import { fireError, fireSuccessModal } from '../utils/feedback';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const [form] = Form.useForm();
-  function onFinish() {}
+  const { loading, apiCall } = useApiFeedback();
+
+  const navigate = useNavigate();
+  const [accessToken, setAccessToken] = useLocalStorage('accessToken');
+
+  useEffect(() => {
+    if (accessToken) {
+      verifyToken(accessToken)
+        .then(() => navigate('/', { replace: true }))
+        .catch(() => setAccessToken(null));
+    }
+  }, [accessToken]);
+
+  function onFinish(values) {
+    apiCall(
+      login({
+        tenTaiKhoan: values.username,
+        matKhau: values.password,
+      }),
+      (res) => {
+        setAccessToken(res.data.accessToken);
+        form.resetFields();
+      },
+      (err) => {
+        if (err?.response?.status === 401) {
+          message.error('Sai tên đăng nhập hoặc mật khẩu');
+        } else {
+          fireError(err);
+        }
+      }
+    );
+  }
+
   return (
     <div className="h-screen bg-kidshop bg-cover bg-no-repeat bg-center flex flex-col justify-center items-center p-4">
       <div className="bg-white w-full max-w-md border rounded-lg pb-8 pt-12 px-6 sm:px-10 flex flex-col shadow-sm">
@@ -41,7 +79,7 @@ export function LoginPage() {
             </Form.Item>
             <Form.Item className="flex-1">
               <AppButton
-                // loading={loading}
+                loading={loading}
                 type="done"
                 className="w-full"
                 htmlType="submit"

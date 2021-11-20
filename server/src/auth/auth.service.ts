@@ -7,14 +7,14 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findByUsername(username);
-    if (!user) return null;
-    const isMatch = await bcrypt.compare(pass, user[0].matKhau);
+    const user = await this.userService.findByUsername(username);
+    if (!user[0]?.matKhau) return null;
+    const isMatch = await bcrypt.compare(pass, user[0]?.matKhau);
     if (isMatch) {
       const { matKhau, ...result } = user[0];
       return result;
@@ -25,7 +25,13 @@ export class AuthService {
   async login(user: LoginDto) {
     const payload = { username: user.tenTaiKhoan };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
+    };
+  }
+
+  async verify(token: string) {
+    return {
+      accessToken: this.jwtService.verify(token),
     };
   }
 }

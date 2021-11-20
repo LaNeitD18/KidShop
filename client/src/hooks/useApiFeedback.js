@@ -1,11 +1,14 @@
-import { message } from 'antd';
 import { useState } from 'react';
 import { fireError } from '../utils/feedback';
+import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 export default function useApiFeedback() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState({});
   const [error, setError] = useState({});
+
+  const navigate = useNavigate();
 
   const apiCall = async (apiPromise, onSuccess, onError) => {
     try {
@@ -20,7 +23,12 @@ export default function useApiFeedback() {
       if (onError) {
         onError(err);
       } else {
-        fireError(err);
+        if (err?.response?.status === 401) {
+          navigate('/login');
+          message.error('Vui lòng đăng nhập để truy cập vào hệ thống.');
+        } else {
+          fireError(err);
+        }
       }
     }
   };
