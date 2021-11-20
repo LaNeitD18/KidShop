@@ -20,10 +20,12 @@ import { LoginPage } from './pages/LoginPage';
 function App() {
   const [roles, setRoles] = useRoles();
   useEffect(() => {
-    getStoreList().then(({ data }) => {
-      setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
-    });
-  }, []);
+    if (!roles) {
+      getStoreList().then(({ data }) => {
+        setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
+      });
+    }
+  }, [roles]);
 
   return (
     <Routes>
