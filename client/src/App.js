@@ -16,11 +16,13 @@ import EditProducerPage from './pages/producer/EditProducerPage';
 import CounterPage from './pages/store/counter/CounterPage';
 import EditCounterPage from './pages/store/counter/EditCounterPage';
 import { LoginPage } from './pages/LoginPage';
+import ProductPage from './pages/business/product/ProductPage';
+import EditProductPage from './pages/business/product/EditProductPage';
 
 function App() {
   const [roles, setRoles] = useRoles();
   useEffect(() => {
-    if (!roles) {
+    if (!roles?.stores) {
       getStoreList().then(({ data }) => {
         setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
       });
@@ -44,11 +46,22 @@ function App() {
               <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
+          <Route path="business">
+            <Route index element={<Navigate to="product" replace />} />
+            <Route path="product">
+              <Route index element={<ProductPage />} />
+              <Route
+                path="edit/:productId"
+                element={<EditProductPage mode="edit" />}
+              />
+              <Route path="add" element={<EditBranchPage mode="add" />} />
+            </Route>
+          </Route>
           <Route
             path="store"
             element={
               <Navigate
-                to={roles.stores ? roles.stores[0].toString() : '/error/403'}
+                to={roles?.stores ? roles?.stores[0].toString() : '/error/403'}
                 replace
               />
             }

@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class MatHang {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id?: string;
 
   @ApiProperty()
@@ -22,15 +22,15 @@ export class MatHang {
   @Column()
   giaBan: number;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   kichThuoc?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   mauSac?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   hinhAnh?: string;
 }

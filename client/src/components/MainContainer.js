@@ -7,12 +7,12 @@ import { useResponsive } from '../components/Media';
 import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from 'antd';
 import theme from '../constants/theme';
 
-import { IoLogOutOutline, IoCloseSharp } from 'react-icons/io5';
+import { IoLogOutOutline, IoCloseSharp, IoBusiness } from 'react-icons/io5';
 import { FiMenu } from 'react-icons/fi';
 import { AiOutlineDashboard } from 'react-icons/ai';
 import { UserOutlined } from '@ant-design/icons';
 import { AiOutlineApartment } from 'react-icons/ai';
-import { GrGroup, GrUserManager } from 'react-icons/gr';
+import { GrGroup, GrUserManager, GrAppsRounded } from 'react-icons/gr';
 import { RiPencilRuler2Line } from 'react-icons/ri';
 import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
@@ -63,6 +63,24 @@ const navMenu = [
   {
     path: 'business',
     title: 'Kinh doanh',
+    icon: <IoBusiness />,
+    children: [
+      {
+        path: 'product',
+        title: 'QL mặt hàng',
+        icon: <GrAppsRounded />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'store',
@@ -171,7 +189,16 @@ export default function MainContainer() {
     }
   }, [media.isLg]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    navigate('/login');
+  };
+
   const handleSelectNav = ({ key }) => {
+    if (key === 'logout') {
+      handleLogout();
+      return;
+    }
     navigate(key);
   };
 
@@ -227,7 +254,10 @@ export default function MainContainer() {
             {!media.isLg && 'Đăng xuất'}
           </Menu.Item>
         </Menu>
-        <div className="hidden lg:flex text-white items-center gap-2 min-w-max cursor-pointer">
+        <div
+          className="hidden lg:flex text-white items-center gap-2 min-w-max cursor-pointer"
+          onClick={handleLogout}
+        >
           <IoLogOutOutline size={18} />
           Đăng xuất
         </div>

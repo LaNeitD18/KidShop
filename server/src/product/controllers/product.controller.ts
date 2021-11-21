@@ -15,10 +15,10 @@ import { ProductService } from '../services/product.service';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
+  // @Post()
+  // create(@Body() createProductDto: CreateProductDto) {
+  //   return this.productService.create(createProductDto);
+  // }
 
   @Get()
   findAll() {
