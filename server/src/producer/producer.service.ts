@@ -18,11 +18,11 @@ export class ProducerService {
     return this.producerRepository.find();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.producerRepository.findOne(id);
   }
 
-  async update(id: string, data: NhaSanXuat) {
+  async update(id: number, data: NhaSanXuat) {
     const response = await this.producerRepository
       .createQueryBuilder('producer')
       .update(data)
@@ -35,7 +35,7 @@ export class ProducerService {
     return updatedProducer;
   }
 
-  delete(id: string) {
+  delete(id: number) {
     return this.producerRepository.delete(id);
   }
 }

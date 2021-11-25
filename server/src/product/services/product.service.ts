@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
 import { MatHang } from '../entities/product.entity';
 
 @Injectable()
@@ -17,18 +15,29 @@ export class ProductService {
   }
 
   async findAll() {
-    return await this.productRepository.find({ relations: ['chuCuaHang'] });
+    return await this.productRepository.find({ relations: ['nhaSX', 'nhaCC'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.productRepository.findOne(id, {
+      relations: ['nhaSX', 'nhaCC'],
+    });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, data: MatHang) {
+    const response = await this.productRepository
+      .createQueryBuilder('product')
+      .update(data)
+      .where('id = :id', { id })
+      .returning('*')
+      .updateEntity(true)
+      .execute();
+
+    const updatedProduct = response.raw[0] as MatHang;
+    return updatedProduct;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    return this.productRepository.delete(id);
   }
 }

@@ -8,5 +8,6 @@ import { ProducerController } from './producer.controller';
   imports: [TypeOrmModule.forFeature([NhaSanXuat])],
   controllers: [ProducerController],
   providers: [ProducerService],
+  exports: [ProducerService],
 })
 export class ProducerModule {}

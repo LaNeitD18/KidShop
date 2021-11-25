@@ -8,5 +8,6 @@ import { NhaCungCap } from './entities/supplier.entity';
   imports: [TypeOrmModule.forFeature([NhaCungCap])],
   controllers: [SupplierController],
   providers: [SupplierService],
+  exports: [SupplierService],
 })
 export class SupplierModule {}
