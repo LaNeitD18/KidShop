@@ -1,48 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../../components/Content';
-import Map from '../../../components/Map';
+import React, { useEffect, useRef, useState } from "react";
+import AppButton from "../../../components/AppButton";
+import { Button, Form, Image, Input, message, Tooltip, Upload } from "antd";
+import { ContentHeader } from "../../../components/Content";
 import {
   deleteStore,
   editStore,
   getStore,
   postStore,
-} from '../../../api/store';
-import { getUserList } from '../../../api/user';
-import SelectInput from '../../../components/SelectInput';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal } from '../../../utils/feedback';
-import { FormGrid } from '../../../components/Grid';
+} from "../../../api/store";
+import { getUserList } from "../../../api/user";
+import { SelectInput, UploadImageInput } from "../../../components/Inputs";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { inputRuleNaN } from "../../../utils/string";
+import { fireError, fireSuccessModal } from "../../../utils/feedback";
+import { FormGrid } from "../../../components/Grid";
+
+import classNames from "classnames";
+import { ExpandableImage } from "../../../components/Images";
 
 const addConsts = {
-  title: 'Tạo mặt hàng',
-  okText: 'Hoàn tất',
+  title: "Tạo mặt hàng",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa mặt hàng',
-  okText: 'Lưu thay đổi',
-};
-
-const defaultMapLct = {
-  coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+  title: "Sửa mặt hàng",
+  okText: "Lưu thay đổi",
 };
 
 export default function EditProductPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
   const { branchId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-
-  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
-  const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
   const { apiCall: getCall } = useApiFeedback();
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
@@ -63,11 +57,6 @@ export default function EditProductPage({ mode }) {
           ...data,
           idChuCuaHang: data?.chuCuaHang?.id,
         });
-        setMapLocation({
-          coordinates: [data?.kinhDo, data?.viDo],
-          address: data?.viTri,
-        });
-        setMapCenter([data?.kinhDo, data?.viDo]);
       });
     }
   }, []);
@@ -75,26 +64,21 @@ export default function EditProductPage({ mode }) {
   const onFinish = (values) => {
     const dto = {
       ...values,
-      kinhDo: mapLocation?.coordinates[0],
-      viDo: mapLocation?.coordinates[1],
-      viTri: mapLocation?.address,
     };
     console.log(dto);
     if (isEdit) {
       editCall(editStore(branchId, dto), () => {
-        message.success('Đã lưu thay đổi thành công');
+        message.success("Đã lưu thay đổi thành công");
       });
     } else {
       postCall(postStore(dto), () => {
         fireSuccessModal({
-          title: 'Tạo mặt hàng thành công',
+          title: "Tạo mặt hàng thành công",
           onOk: () => {
             form.resetFields();
-            setMapLocation(defaultMapLct);
-            setMapCenter(defaultMapLct.coordinates);
           },
           onCancel: () => {
-            navigate('../');
+            navigate("../");
           },
         });
       });
@@ -103,10 +87,12 @@ export default function EditProductPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteStore(branchId), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+      message.success("Đã xóa thành công");
+      navigate("../");
     });
   }
+
+  const [imgUrl, setImgUrl] = useState(null);
 
   return (
     <div>
@@ -115,20 +101,23 @@ export default function EditProductPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid column={2}>
-        <Map
-          center={mapCenter}
-          mapLocation={mapLocation}
-          onChangeMapLocation={setMapLocation}
-        />
-        <div>
-          <Form
-            form={form}
-            name="create-branch"
-            layout="vertical"
-            onFinish={onFinish}
-            autoComplete="off"
-          >
+      <Form
+        form={form}
+        name="create-branch"
+        layout="vertical"
+        onFinish={onFinish}
+        autoComplete="off"
+      >
+        <FormGrid column={2}>
+          <div>
+            <ExpandableImage src={imgUrl} />
+            <div className="mb-4" />
+            <Form.Item label="Ảnh sản phẩm">
+              <UploadImageInput onValueChange={setImgUrl} />
+            </Form.Item>
+          </div>
+
+          <div>
             <Form.Item
               label="Địa chỉ"
               requiredMark="optional"
@@ -136,19 +125,11 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: "Vui lòng nhập địa chỉ",
                 },
               ]}
             >
               <Input size="large" />
-            </Form.Item>
-            <Form.Item label="Vị trí (chọn trên bản đồ)">
-              <Input
-                size="large"
-                disabled
-                value={mapLocation?.address}
-                name="map-location"
-              />
             </Form.Item>
 
             <Form.Item
@@ -158,7 +139,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng chọn chủ cửa hàng',
+                  message: "Vui lòng chọn chủ cửa hàng",
                 },
               ]}
             >
@@ -177,7 +158,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
+                  message: "Vui lòng nhập số điện thoại!",
                 },
                 inputRuleNaN(),
               ]}
@@ -206,7 +187,7 @@ export default function EditProductPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa mặt hàng này?',
+                      title: "Bạn có muốn xóa mặt hàng này?",
                     }}
                   >
                     Xóa mặt hàng
@@ -214,9 +195,9 @@ export default function EditProductPage({ mode }) {
                 </Form.Item>
               )}
             </div>
-          </Form>
-        </div>
-      </FormGrid>
+          </div>
+        </FormGrid>
+      </Form>
     </div>
   );
 }

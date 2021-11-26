@@ -22,3 +22,11 @@ export function Grid({ children }) {
     </div>
   );
 }
+
+export function OneColumnFormContainer({ children, ...rest }) {
+  return (
+    <div className="gap-6 md:gap-10 xl:gap-14 mt-7" {...rest}>
+      {children}
+    </div>
+  );
+}

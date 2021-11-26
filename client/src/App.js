@@ -1,23 +1,23 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useRoles } from './context/RolesContext';
-import { getStoreList } from './api/store';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useRoles } from "./context/RolesContext";
+import { getStoreList } from "./api/store";
 
-import ErrorPage from './pages/ErrorPage';
-import BranchPage from './pages/admin/branch/BranchPage';
-import EditBranchPage from './pages/admin/branch/EditBranchPage';
-import EditSupplierPage from './pages/supplier/EditSupplierPage';
-import SupplierPage from './pages/supplier/SupplierPage';
-import WarehousePage from './pages/warehouse/WarehousePage';
-import MainContainer from './components/MainContainer';
-import EditWarehousePage from './pages/warehouse/EditWarehousePage';
-import ProducerPage from './pages/producer/ProducerPage';
-import EditProducerPage from './pages/producer/EditProducerPage';
-import CounterPage from './pages/store/counter/CounterPage';
-import EditCounterPage from './pages/store/counter/EditCounterPage';
-import { LoginPage } from './pages/LoginPage';
-import ProductPage from './pages/business/product/ProductPage';
-import EditProductPage from './pages/business/product/EditProductPage';
+import ErrorPage from "./pages/ErrorPage";
+import BranchPage from "./pages/admin/branch/BranchPage";
+import EditBranchPage from "./pages/admin/branch/EditBranchPage";
+import EditSupplierPage from "./pages/supplier/EditSupplierPage";
+import SupplierPage from "./pages/supplier/SupplierPage";
+import WarehousePage from "./pages/warehouse/WarehousePage";
+import MainContainer from "./components/MainContainer";
+import EditWarehousePage from "./pages/warehouse/EditWarehousePage";
+import ProducerPage from "./pages/producer/ProducerPage";
+import EditProducerPage from "./pages/producer/EditProducerPage";
+import CounterPage from "./pages/store/counter/CounterPage";
+import EditCounterPage from "./pages/store/counter/EditCounterPage";
+import { LoginPage } from "./pages/LoginPage";
+import ProductPage from "./pages/business/product/ProductPage";
+import EditProductPage from "./pages/business/product/EditProductPage";
 
 function App() {
   const [roles, setRoles] = useRoles();
@@ -54,14 +54,14 @@ function App() {
                 path="edit/:productId"
                 element={<EditProductPage mode="edit" />}
               />
-              <Route path="add" element={<EditBranchPage mode="add" />} />
+              <Route path="add" element={<EditProductPage mode="add" />} />
             </Route>
           </Route>
           <Route
             path="store"
             element={
               <Navigate
-                to={roles?.stores ? roles?.stores[0].toString() : '/error/403'}
+                to={roles?.stores ? roles?.stores[0].toString() : "/error/403"}
                 replace
               />
             }

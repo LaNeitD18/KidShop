@@ -1,36 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../components/Content';
-import Map from '../../components/Map';
+import React, { useEffect, useState } from "react";
+import AppButton from "../../components/AppButton";
+import { Form, Input, message } from "antd";
+import { ContentHeader } from "../../components/Content";
+import Map from "../../components/Map";
 import {
   deleteSupplier,
   editSupplier,
   fetchASupplier,
   createSupplier,
-} from '../../api/supplier';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../utils/string';
-import { fireSuccessModal } from '../../utils/feedback';
+} from "../../api/supplier";
+import useApiFeedback from "../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { inputRuleNaN } from "../../utils/string";
+import { fireSuccessModal } from "../../utils/feedback";
 
 const addConsts = {
-  title: 'Tạo nhà cung cấp',
-  okText: 'Hoàn tất',
+  title: "Tạo nhà cung cấp",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa nhà cung cấp',
-  okText: 'Lưu thay đổi',
+  title: "Sửa nhà cung cấp",
+  okText: "Lưu thay đổi",
 };
 
 const defaultMapLct = {
   coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+  address: "Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308",
 };
 
 export default function EditSupplierPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
   const { supplierId } = useParams();
@@ -66,21 +66,21 @@ export default function EditSupplierPage({ mode }) {
       viDo: mapLocation?.coordinates[1],
       viTri: mapLocation?.address,
     };
-    console.log(dto);
     if (isEdit) {
       editCall(editSupplier(supplierId, dto), () => {
-        message.success('Đã lưu thay đổi thành công');
+        message.success("Đã lưu thay đổi thành công");
       });
     } else {
       postCall(createSupplier(dto), () => {
         fireSuccessModal({
-          title: 'Tạo nhà sản xuất thành công',
+          title: "Tạo nhà sản xuất thành công",
           onOk: () => {
             form.resetFields();
             setMapLocation(defaultMapLct);
+            setMapCenter(defaultMapLct.coordinates);
           },
           onCancel: () => {
-            navigate('../');
+            navigate("../");
           },
         });
       });
@@ -89,8 +89,8 @@ export default function EditSupplierPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteSupplier(supplierId), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+      message.success("Đã xóa thành công");
+      navigate("../");
     });
   }
 
@@ -121,7 +121,7 @@ export default function EditSupplierPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập tên nhà sản xuất',
+                  message: "Vui lòng nhập tên nhà sản xuất",
                 },
               ]}
             >
@@ -134,7 +134,7 @@ export default function EditSupplierPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: "Vui lòng nhập địa chỉ",
                 },
               ]}
             >
@@ -156,7 +156,7 @@ export default function EditSupplierPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
+                  message: "Vui lòng nhập số điện thoại!",
                 },
                 inputRuleNaN(),
               ]}
@@ -185,7 +185,7 @@ export default function EditSupplierPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: "Bạn có muốn xóa chi nhánh này?",
                     }}
                   >
                     Xóa nhà cung cấp

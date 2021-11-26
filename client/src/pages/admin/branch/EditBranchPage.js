@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../../components/Content';
-import Map from '../../../components/Map';
+import React, { useEffect, useState } from "react";
+import AppButton from "../../../components/AppButton";
+import { Form, Input, message } from "antd";
+import { ContentHeader } from "../../../components/Content";
+import Map from "../../../components/Map";
 import {
   deleteStore,
   editStore,
   getStore,
   postStore,
-} from '../../../api/store';
-import { getUserList } from '../../../api/user';
-import SelectInput from '../../../components/SelectInput';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal } from '../../../utils/feedback';
-import { FormGrid } from '../../../components/Grid';
+} from "../../../api/store";
+import { getUserList } from "../../../api/user";
+import { SelectInput } from "../../../components/Inputs";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { inputRuleNaN } from "../../../utils/string";
+import { fireSuccessModal } from "../../../utils/feedback";
+import { FormGrid } from "../../../components/Grid";
 
 const addConsts = {
-  title: 'Tạo chi nhánh',
-  okText: 'Hoàn tất',
+  title: "Tạo chi nhánh",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa chi nhánh',
-  okText: 'Lưu thay đổi',
+  title: "Sửa chi nhánh",
+  okText: "Lưu thay đổi",
 };
 
 const defaultMapLct = {
   coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+  address: "Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308",
 };
 
 export default function EditBranchPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
   const { branchId } = useParams();
@@ -82,19 +82,19 @@ export default function EditBranchPage({ mode }) {
     console.log(dto);
     if (isEdit) {
       editCall(editStore(branchId, dto), () => {
-        message.success('Đã lưu thay đổi thành công');
+        message.success("Đã lưu thay đổi thành công");
       });
     } else {
       postCall(postStore(dto), () => {
         fireSuccessModal({
-          title: 'Tạo chi nhánh thành công',
+          title: "Tạo chi nhánh thành công",
           onOk: () => {
             form.resetFields();
             setMapLocation(defaultMapLct);
             setMapCenter(defaultMapLct.coordinates);
           },
           onCancel: () => {
-            navigate('../');
+            navigate("../");
           },
         });
       });
@@ -103,8 +103,8 @@ export default function EditBranchPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteStore(branchId), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+      message.success("Đã xóa thành công");
+      navigate("../");
     });
   }
 
@@ -136,7 +136,7 @@ export default function EditBranchPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: "Vui lòng nhập địa chỉ",
                 },
               ]}
             >
@@ -158,7 +158,7 @@ export default function EditBranchPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng chọn chủ cửa hàng',
+                  message: "Vui lòng chọn chủ cửa hàng",
                 },
               ]}
             >
@@ -177,7 +177,7 @@ export default function EditBranchPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
+                  message: "Vui lòng nhập số điện thoại!",
                 },
                 inputRuleNaN(),
               ]}
@@ -206,7 +206,7 @@ export default function EditBranchPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: "Bạn có muốn xóa chi nhánh này?",
                     }}
                   >
                     Xóa chi nhánh

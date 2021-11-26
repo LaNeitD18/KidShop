@@ -1,33 +1,33 @@
-import React, { useEffect } from 'react';
-import AppButton from '../../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../../components/Content';
+import React, { useEffect } from "react";
+import AppButton from "../../../components/AppButton";
+import { Form, Input, message } from "antd";
+import { ContentHeader } from "../../../components/Content";
 import {
   createCounter,
   editCounter,
   getCounter,
   deleteCounter,
-} from '../../../api/counter';
-import SelectInput from '../../../components/SelectInput';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { idString } from '../../../utils/string';
-import { fireSuccessModal } from '../../../utils/feedback';
-import { FormGrid } from '../../../components/Grid';
-import { useRoles } from '../../../context/RolesContext';
+} from "../../../api/counter";
+import { SelectInput } from "../../../components/Inputs";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { idString } from "../../../utils/string";
+import { fireSuccessModal } from "../../../utils/feedback";
+import { FormGrid, OneColumnFormContainer } from "../../../components/Grid";
+import { useRoles } from "../../../context/RolesContext";
 
 const addConsts = {
-  title: 'Tạo quầy',
-  okText: 'Hoàn tất',
+  title: "Tạo quầy",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa quầy',
-  okText: 'Lưu thay đổi',
+  title: "Sửa quầy",
+  okText: "Lưu thay đổi",
 };
 
 export default function EditCounterPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
   const [roles] = useRoles();
@@ -53,13 +53,13 @@ export default function EditCounterPage({ mode }) {
     if (!isEdit) return;
     getCall(getCounter(counterId), ({ data }) => {
       if (data?.cuaHang?.id.toString() !== storeId) {
-        navigate('/error/404', { replace: true });
+        navigate("/error/404", { replace: true });
         return;
       }
       form.setFieldsValue({
         idCuaHang: storeId,
         tenQuay: data?.tenQuay,
-        trangThai: data?.dangHoatDong ? '1' : '0',
+        trangThai: data?.dangHoatDong ? "1" : "0",
         nhanVienTruc: data?.dangHoatDong ? data?.nhanVienTruc?.hoTen : null,
       });
     });
@@ -73,7 +73,7 @@ export default function EditCounterPage({ mode }) {
           tenQuay: values.tenQuay,
         }),
         () => {
-          message.success('Lưu thay đổi thành công');
+          message.success("Lưu thay đổi thành công");
         }
       );
     } else {
@@ -83,7 +83,7 @@ export default function EditCounterPage({ mode }) {
         }),
         () => {
           fireSuccessModal({
-            title: 'Tạo quầy thành công',
+            title: "Tạo quầy thành công",
             onOk: () => {
               form.setFieldsValue({
                 idCuaHang: storeId,
@@ -98,8 +98,8 @@ export default function EditCounterPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteCounter(counterId), () => {
-      message.success('Xóa quầy thành công');
-      navigate('../');
+      message.success("Xóa quầy thành công");
+      navigate("../");
     });
   }
 
@@ -110,7 +110,7 @@ export default function EditCounterPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div className="gap-6 md:gap-10 xl:gap-14 mt-7">
+      <OneColumnFormContainer>
         <div>
           <Form
             form={form}
@@ -126,14 +126,14 @@ export default function EditCounterPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng ',
+                  message: "Vui lòng ",
                 },
               ]}
             >
               <SelectInput
                 data={roles?.stores?.map((id) => ({
                   value: id,
-                  label: idString(id, ['CH', 4]),
+                  label: idString(id, ["CH", 4]),
                 }))}
                 showId={false}
               />
@@ -145,7 +145,7 @@ export default function EditCounterPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập tên quầy',
+                  message: "Vui lòng nhập tên quầy",
                 },
               ]}
             >
@@ -159,15 +159,15 @@ export default function EditCounterPage({ mode }) {
                 rules={[
                   {
                     required: true,
-                    message: 'Vui lòng nhập địa chỉ',
+                    message: "Vui lòng nhập địa chỉ",
                   },
                 ]}
               >
                 <SelectInput
                   disabled
                   data={[
-                    { label: 'Đang đóng', value: 0 },
-                    { label: 'Đang hoạt động', value: 1 },
+                    { label: "Đang đóng", value: 0 },
+                    { label: "Đang hoạt động", value: 1 },
                   ]}
                   showId={false}
                   allowClear={false}
@@ -201,7 +201,7 @@ export default function EditCounterPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa quầy này?',
+                      title: "Bạn có muốn xóa quầy này?",
                     }}
                   >
                     Xóa quầy
@@ -211,7 +211,7 @@ export default function EditCounterPage({ mode }) {
             </div>
           </Form>
         </div>
-      </div>
+      </OneColumnFormContainer>
     </FormGrid>
   );
 }
