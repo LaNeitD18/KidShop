@@ -9,7 +9,7 @@ import {
   fetchAWarehouse,
   createWarehouse,
 } from '../../api/warehouse';
-import SelectInput from '../../components/SelectInput';
+import { SelectInput } from '../../components/Inputs';
 import useApiFeedback from '../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../utils/string';

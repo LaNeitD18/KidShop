@@ -1,3 +1,4 @@
+import { PhieuNhapKho } from './../../import-product-receipt/entities/import-product-receipt.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { NguoiDung } from 'src/user/entities/user.entity';
 import {
@@ -5,6 +6,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -44,4 +46,7 @@ export class Kho {
   @OneToOne(() => NguoiDung)
   @JoinColumn()
   quanLyKho: NguoiDung;
+
+  @OneToMany(() => PhieuNhapKho, (phieuNhap) => phieuNhap.kho)
+  dsPhieuNhapKho?: PhieuNhapKho[];
 }

@@ -11,6 +11,7 @@ import { CounterModule } from './counter/counter.module';
 import { ProductModule } from './product/product.module';
 import { ProducerModule } from './producer/producer.module';
 import { AuthModule } from './auth/auth.module';
+import { ImportProductReceiptModule } from './import-product-receipt/import-product-receipt.module';
 
 @Module({
   imports: [
@@ -43,6 +44,8 @@ import { AuthModule } from './auth/auth.module';
     ProducerModule,
 
     AuthModule,
+
+    ImportProductReceiptModule,
   ],
   controllers: [AppController],
   providers: [AppService],

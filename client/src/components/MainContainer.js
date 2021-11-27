@@ -149,12 +149,46 @@ const navMenu = [
     title: 'Trữ hàng',
     children: [
       {
-        path: 'warehouse',
+        path: 'warehouses',
         title: 'QL Các Kho',
         children: [
           {
             path: 'add',
             title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: 'warehouse',
+    title: 'Kho',
+    children: [
+      {
+        path: 'import-product',
+        title: 'QL Nhập kho',
+        children: [
+          {
+            path: 'add',
+            title: 'Lập phiếu nhập kho',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+      {
+        path: 'export-product',
+        title: 'QL Xuất kho',
+        children: [
+          {
+            path: 'add',
+            title: 'Lập phiếu xuất kho',
           },
           {
             path: 'edit',
