@@ -1,5 +1,5 @@
 import { PhieuNhapKho } from './import-product-receipt.entity';
-import { MatHang } from './../../product/entities/product.entity';
+import { MatHang } from '../../product/entities/product.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 

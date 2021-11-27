@@ -1,4 +1,5 @@
-import { CT_PhieuNhapKho } from './detail-import-receipt.entity';
+import { CuaHang } from './../../store/entities/store.entity';
+import { CT_PhieuXuatKho } from 'src/export-product-receipt/entities/detail-export-receipt.entity';
 import { NguoiDung } from './../../user/entities/user.entity';
 import { Kho } from './../../warehouse/entities/warehouse.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,13 +14,9 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class PhieuNhapKho {
+export class PhieuXuatKho {
   @PrimaryGeneratedColumn('increment')
   id?: number;
-
-  @ApiProperty()
-  @Column()
-  tongTien: number;
 
   @ApiProperty({ required: false })
   @Column({ nullable: true })
@@ -32,13 +29,17 @@ export class PhieuNhapKho {
   suaLuc?: Date;
 
   @ApiProperty()
-  @ManyToOne(() => Kho, (kho) => kho.dsPhieuNhapKho)
+  @ManyToOne(() => Kho, (kho) => kho.dsPhieuXuatKho)
   kho: Kho;
 
   @ApiProperty()
-  @ManyToOne(() => NguoiDung, (nguoiDung) => nguoiDung.dsPhieuNhapKho)
+  @ManyToOne(() => CuaHang, (cuaHang) => cuaHang.dsPhieuXuatKho)
+  cuaHang: CuaHang;
+
+  @ApiProperty()
+  @ManyToOne(() => NguoiDung, (nguoiDung) => nguoiDung.dsPhieuXuatKho)
   nguoiLap: NguoiDung;
 
-  @OneToMany(() => CT_PhieuNhapKho, (ctPhieuNhap) => ctPhieuNhap.phieuNhapKho)
-  dsCTPhieuNhap?: CT_PhieuNhapKho[];
+  @OneToMany(() => CT_PhieuXuatKho, (ctPhieuXuat) => ctPhieuXuat.phieuXuatKho)
+  dsCTPhieuXuat?: CT_PhieuXuatKho[];
 }

@@ -1,6 +1,6 @@
 import { WarehouseModule } from './../warehouse/warehouse.module';
 import { DetailImportReceiptService } from './service/detail-import-receipt.service';
-import { CT_PhieuNhapKho } from './entities/detail-import-receipt';
+import { CT_PhieuNhapKho } from './entities/detail-import-receipt.entity';
 import { ProductModule } from './../product/product.module';
 import { UserModule } from './../user/user.module';
 import { PhieuNhapKho } from './entities/import-product-receipt.entity';

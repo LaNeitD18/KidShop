@@ -1,7 +1,7 @@
 import { ApiTags } from '@nestjs/swagger';
 import { PhieuNhapKho } from './entities/import-product-receipt.entity';
 import { DetailImportReceiptService } from './service/detail-import-receipt.service';
-import { CT_PhieuNhapKho } from './entities/detail-import-receipt';
+import { CT_PhieuNhapKho } from './entities/detail-import-receipt.entity';
 import { CreateDetailImportDto } from './dto/create-detail-import.dto';
 import { ProductService } from './../product/services/product.service';
 import { WarehouseService } from './../warehouse/warehouse.service';
@@ -41,7 +41,7 @@ export class ImportProductReceiptController {
     if (!data) {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: 'New store information is required' });
+        .json({ message: 'New import receipt information is required' });
     }
 
     try {
@@ -73,19 +73,19 @@ export class ImportProductReceiptController {
         importReceiptData,
       );
 
-      // for (const chiTiet of data.dsChiTietPhieuNhap) {
-      //   const product = await this.productService.findOne(chiTiet.idMatHang);
-      //   if (!product) {
-      //     return res.status(HttpStatus.NOT_FOUND).json({
-      //       message: `Can not find a product with id ${chiTiet.idMatHang}`,
-      //     });
-      //   }
-      //   const newDetailImport = new CT_PhieuNhapKho();
-      //   newDetailImport.matHang = product;
-      //   newDetailImport.soLuong = chiTiet.soLuong;
-      //   newDetailImport.phieuNhapKho = newImportReceipt;
-      //   await this.detailImportService.create(newDetailImport);
-      // }
+      for (const chiTiet of data.dsChiTietPhieuNhap) {
+        const product = await this.productService.findOne(chiTiet.idMatHang);
+        if (!product) {
+          return res.status(HttpStatus.NOT_FOUND).json({
+            message: `Can not find a product with id ${chiTiet.idMatHang}`,
+          });
+        }
+        const newDetailImport = new CT_PhieuNhapKho();
+        newDetailImport.matHang = product;
+        newDetailImport.soLuong = chiTiet.soLuong;
+        newDetailImport.phieuNhapKho = newImportReceipt;
+        await this.detailImportService.create(newDetailImport);
+      }
 
       return res.status(HttpStatus.CREATED).json(newImportReceipt);
     } catch (error) {
@@ -101,23 +101,23 @@ export class ImportProductReceiptController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.importProductReceiptService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.importProductReceiptService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateImportProductReceiptDto: UpdateImportProductReceiptDto,
   ) {
     return this.importProductReceiptService.update(
-      +id,
+      id,
       updateImportProductReceiptDto,
     );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.importProductReceiptService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.importProductReceiptService.remove(id);
   }
 }
