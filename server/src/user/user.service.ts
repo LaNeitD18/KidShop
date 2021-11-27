@@ -31,6 +31,17 @@ export class UserService {
     }
   }
 
+  async findByUsername(username: string) {
+    try {
+      const user = await this.userRepository.find({
+        where: { tenTaiKhoan: username },
+      });
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async update(id: string, data: NguoiDung): Promise<NguoiDung> {
     const response = await this.userRepository
       .createQueryBuilder('user')

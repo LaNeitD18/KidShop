@@ -1,36 +1,39 @@
-import { Modal } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Modal, message as antdMessage } from 'antd';
 import { errorString } from './string';
 
-export function fireErrorModal(err) {
+export function fireError(err) {
   if (Array.isArray(err)) err = err[0];
   const { code, codeName, message } = errorString(err);
-  Modal.error({
-    title: codeName || 'Đã xảy ra lỗi',
-    content: (
-      <div>
-        {message || 'Vui lòng thử lại sau'}
-        {!!code && (
-          <>
-            <br />
-            <br />
-            <a
-              rel="noreferrer"
-              target="_blank"
-              className="font-semibold hover:underline"
-              href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${code}`}
-            >
-              Tìm hiểu thêm về lỗi này
-            </a>
-          </>
-        )}
-      </div>
-    ),
-    keyboard: true,
-    mask: true,
-    maskClosable: true,
-    centered: true,
-  });
+  if (!code) {
+    antdMessage.error(message);
+  } else {
+    Modal.error({
+      title: codeName || 'Đã xảy ra lỗi',
+      content: (
+        <div>
+          {message || 'Vui lòng thử lại sau'}
+          {!!code && (
+            <>
+              <br />
+              <br />
+              <a
+                rel="noreferrer"
+                target="_blank"
+                className="font-semibold hover:underline"
+                href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${code}`}
+              >
+                Tìm hiểu thêm về lỗi này
+              </a>
+            </>
+          )}
+        </div>
+      ),
+      keyboard: true,
+      mask: true,
+      maskClosable: true,
+      centered: true,
+    });
+  }
 }
 
 export function fireSuccessModal({
@@ -66,24 +69,6 @@ export function fireSuccessModal({
     keyboard: true,
     centered: true,
   });
-}
-
-export function useFireSuccessModal() {
-  const navigate = useNavigate();
-  return (
-    options = {
-      title: '',
-      message: '',
-      onOk: () => {
-        navigate('../');
-      },
-      okText: '',
-      onCancel: () => {},
-      cancelText: '',
-    }
-  ) => {
-    fireSuccessModal(options);
-  };
 }
 
 export function fireConfirmModal(

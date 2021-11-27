@@ -1,18 +1,34 @@
-import BranchPage from './pages/admin/branch/BranchPage';
-import EditBranchPage from './pages/admin/branch/EditBranchPage';
-import EditSupplierPage from './pages/supplier/EditSupplierPage';
-import SupplierPage from './pages/supplier/SupplierPage';
-import WarehousePage from './pages/warehouse/WarehousePage';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import MainContainer from './components/MainContainer';
-import ErrorPage from './pages/ErrorPage';
-import EditWarehousePage from './pages/warehouse/EditWarehousePage';
-import ProducerPage from './pages/producer/ProducerPage';
-import EditProducerPage from './pages/producer/EditProducerPage';
-import CounterPage from './pages/store/counter/CounterPage';
-import EditCounterPage from './pages/store/counter/EditCounterPage';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useRoles } from "./context/RolesContext";
+import { getStoreList } from "./api/store";
+
+import ErrorPage from "./pages/ErrorPage";
+import BranchPage from "./pages/admin/branch/BranchPage";
+import EditBranchPage from "./pages/admin/branch/EditBranchPage";
+import EditSupplierPage from "./pages/supplier/EditSupplierPage";
+import SupplierPage from "./pages/supplier/SupplierPage";
+import WarehousePage from "./pages/warehouse/WarehousePage";
+import MainContainer from "./components/MainContainer";
+import EditWarehousePage from "./pages/warehouse/EditWarehousePage";
+import ProducerPage from "./pages/producer/ProducerPage";
+import EditProducerPage from "./pages/producer/EditProducerPage";
+import CounterPage from "./pages/store/counter/CounterPage";
+import EditCounterPage from "./pages/store/counter/EditCounterPage";
+import { LoginPage } from "./pages/LoginPage";
+import ProductPage from "./pages/business/product/ProductPage";
+import EditProductPage from "./pages/business/product/EditProductPage";
 
 function App() {
+  const [roles, setRoles] = useRoles();
+  useEffect(() => {
+    if (!roles?.stores) {
+      getStoreList().then(({ data }) => {
+        setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
+      });
+    }
+  }, [roles]);
+
   return (
     <Routes>
       <Route path="/">
@@ -23,16 +39,39 @@ function App() {
             <Route index element={<Navigate to="branch" replace />} />
             <Route path="branch">
               <Route index element={<BranchPage />} />
-              <Route path="edit/:id" element={<EditBranchPage mode="edit" />} />
+              <Route
+                path="edit/:branchId"
+                element={<EditBranchPage mode="edit" />}
+              />
               <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
-          <Route path="store">
+          <Route path="business">
+            <Route index element={<Navigate to="product" replace />} />
+            <Route path="product">
+              <Route index element={<ProductPage />} />
+              <Route
+                path="edit/:productId"
+                element={<EditProductPage mode="edit" />}
+              />
+              <Route path="add" element={<EditProductPage mode="add" />} />
+            </Route>
+          </Route>
+          <Route
+            path="store"
+            element={
+              <Navigate
+                to={roles?.stores ? roles?.stores[0].toString() : "/error/403"}
+                replace
+              />
+            }
+          />
+          <Route path="store/:storeId">
             <Route index element={<Navigate to="counter" replace />} />
             <Route path="counter">
               <Route index element={<CounterPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:counterId"
                 element={<EditCounterPage mode="edit" />}
               />
               <Route path="add" element={<EditCounterPage mode="add" />} />
@@ -43,7 +82,7 @@ function App() {
             <Route path="supplier">
               <Route index element={<SupplierPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:supplierId"
                 element={<EditSupplierPage mode="edit" />}
               />
               <Route path="add" element={<EditSupplierPage />} />
@@ -51,7 +90,7 @@ function App() {
             <Route path="producer">
               <Route index element={<ProducerPage />} />
               <Route
-                path="edit/:id"
+                path="edit/:producerId"
                 element={<EditProducerPage mode="edit" />}
               />
               <Route path="add" element={<EditProducerPage />} />
@@ -62,13 +101,14 @@ function App() {
             <Route path="warehouse">
               <Route index element={<WarehousePage />} />
               <Route
-                path="edit/:id"
+                path="edit/:warehouseId"
                 element={<EditWarehousePage mode="edit" />}
               />
               <Route path="add" element={<EditWarehousePage />} />
             </Route>
           </Route>
         </Route>
+        <Route path="login" element={<LoginPage />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>

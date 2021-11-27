@@ -15,7 +15,7 @@ import {
 @Entity()
 export class CuaHang {
   @PrimaryGeneratedColumn('increment')
-  id?: number;
+  id?: string;
 
   @ApiProperty()
   @Column()

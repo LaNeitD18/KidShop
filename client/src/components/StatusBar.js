@@ -5,7 +5,7 @@ export function StatusBar({ children, className }) {
   return (
     <div
       className={classNames(
-        'bg-normal py-2 px-4 border rounded flex items-center flex-wrap',
+        'bg-white py-2 px-4 border rounded flex items-center flex-wrap',
         {
           [className]: true,
         }

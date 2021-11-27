@@ -51,7 +51,7 @@ export class ProducerController {
   }
 
   @Get(':id')
-  async fetchAProducer(@Param('id') id: string, @Res() res: Response) {
+  async fetchAProducer(@Param('id') id: number, @Res() res: Response) {
     try {
       const producer = await this.producerService.findOne(id);
       if (!producer) {
@@ -69,7 +69,7 @@ export class ProducerController {
 
   @Patch(':id')
   async updateProducer(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() data: NhaSanXuat,
     @Res() res: Response,
   ) {
@@ -97,7 +97,7 @@ export class ProducerController {
   }
 
   @Delete(':id')
-  async deleteProducer(@Param('id') id: string, @Res() res: Response) {
+  async deleteProducer(@Param('id') id: number, @Res() res: Response) {
     try {
       const producer = await this.producerService.findOne(id);
       if (!producer) {

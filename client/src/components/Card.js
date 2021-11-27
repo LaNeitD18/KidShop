@@ -5,15 +5,19 @@ import { GiPlainCircle } from 'react-icons/gi';
 import { Card } from 'antd';
 import classNames from 'classnames';
 import { SingleLineSkeleton } from './Skeleton';
+import { Link } from 'react-router-dom';
 
-export function CounterCard({ active, employeeName }) {
+export function CounterCard({ employeeName, name, id, active }) {
   return (
     <Card
+      headStyle={{
+        backgroundColor: '#F9FAFB',
+      }}
       className="hover:shadow-lg-soft transition-all"
       style={
         active
           ? {
-              border: 'solid 1px #1DA57A',
+              border: 'solid 2px #1DA57A',
             }
           : {}
       }
@@ -26,13 +30,13 @@ export function CounterCard({ active, employeeName }) {
             })}
             style={{ marginTop: 2 }}
           />
-          Tên quầy
+          {name}
         </span>
       }
       extra={
-        <a className="font-semibold" href="#">
+        <Link className="font-semibold" to={`./edit/${id}`}>
           Sửa
-        </a>
+        </Link>
       }
       actions={[
         <span

@@ -12,16 +12,12 @@ import {
 
 @Entity()
 export class Quay {
-  @PrimaryGeneratedColumn('uuid')
-  id?: string;
+  @PrimaryGeneratedColumn('increment')
+  id?: number;
 
   @ApiProperty()
   @Column()
   tenQuay?: string;
-
-  @ApiProperty()
-  @Column({ default: false })
-  dangSuDung: boolean;
 
   @OneToOne(() => NguoiDung)
   @JoinColumn()

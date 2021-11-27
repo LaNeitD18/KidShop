@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UserService } from './../user/user.service';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { CuaHang } from './entities/store.entity';
@@ -11,14 +12,15 @@ import {
   Delete,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
-import { UpdateStoreDto } from './dto/update-store.dto';
 import { Response } from 'express';
 
 @ApiTags('store')
 @Controller('store')
+@UseGuards(JwtAuthGuard)
 export class StoreController {
   constructor(
     private readonly storeService: StoreService,

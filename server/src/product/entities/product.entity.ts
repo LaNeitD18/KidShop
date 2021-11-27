@@ -1,10 +1,18 @@
+import { NhaCungCap } from './../../supplier/entities/supplier.entity';
+import { NhaSanXuat } from './../../producer/entities/producer.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class MatHang {
-  @PrimaryGeneratedColumn()
-  id?: string;
+  @PrimaryGeneratedColumn('increment')
+  id?: number;
 
   @ApiProperty()
   @Column()
@@ -22,15 +30,23 @@ export class MatHang {
   @Column()
   giaBan: number;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   kichThuoc?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   mauSac?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @Column({ nullable: true })
   hinhAnh?: string;
+
+  @OneToOne(() => NhaSanXuat)
+  @JoinColumn()
+  nhaSX: NhaSanXuat;
+
+  @OneToOne(() => NhaCungCap)
+  @JoinColumn()
+  nhaCC: NhaCungCap;
 }

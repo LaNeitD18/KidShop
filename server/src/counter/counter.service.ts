@@ -1,8 +1,6 @@
 import { Quay } from './entities/counter.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCounterDto } from './dto/create-counter.dto';
-import { UpdateCounterDto } from './dto/update-counter.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -33,7 +31,7 @@ export class CounterService {
       .createQueryBuilder('counter')
       .update(data)
       .where('id = :id', { id: id })
-      .returning(['id', 'tenQuay', 'dangSuDung'])
+      .returning(['id', 'tenQuay', 'nhanVienTruc', 'cuaHang'])
       .updateEntity(true)
       .execute();
 

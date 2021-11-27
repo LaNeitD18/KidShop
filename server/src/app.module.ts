@@ -10,6 +10,7 @@ import { SupplierModule } from './supplier/supplier.module';
 import { CounterModule } from './counter/counter.module';
 import { ProductModule } from './product/product.module';
 import { ProducerModule } from './producer/producer.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ import { ProducerModule } from './producer/producer.module';
     ProductModule,
 
     ProducerModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { MatHang } from '../entities/product.entity';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectRepository(MatHang)
+    private readonly productRepository: Repository<MatHang>,
+  ) {}
+
+  async create(newProduct: MatHang) {
+    return await this.productRepository.save(newProduct);
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    return await this.productRepository.find({ relations: ['nhaSX', 'nhaCC'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.productRepository.findOne(id, {
+      relations: ['nhaSX', 'nhaCC'],
+    });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, data: MatHang) {
+    const response = await this.productRepository
+      .createQueryBuilder('product')
+      .update(data)
+      .where('id = :id', { id })
+      .returning('*')
+      .updateEntity(true)
+      .execute();
+
+    const updatedProduct = response.raw[0] as MatHang;
+    return updatedProduct;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    return this.productRepository.delete(id);
   }
 }

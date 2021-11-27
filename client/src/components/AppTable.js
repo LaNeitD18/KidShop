@@ -1,18 +1,20 @@
-import { Table, Input, Button } from 'antd';
-import { useRef } from 'react';
-import Moment from 'react-moment';
-import { autoSorter, withKeys } from '../utils/array';
-import { SearchOutlined } from '@ant-design/icons';
-import { useResponsive } from './Media';
-import { extractNumber, idString } from '../utils/string';
-import { Link } from 'react-router-dom';
+import { Table, Input, Button, Popover, Image } from "antd";
+import { useRef } from "react";
+import Moment from "react-moment";
+import { autoSorter, withKeys } from "../utils/array";
+import { SearchOutlined } from "@ant-design/icons";
+import { useResponsive } from "./Media";
+import { extractNumber, idString } from "../utils/string";
+import { Link } from "react-router-dom";
+import { BsBarChartLine } from "react-icons/bs";
+import { TextButton } from "./AppButton";
 
 export default function AppTable({
   columns = [],
   data = [],
   onSelectRows = () => {},
   loading,
-  itemName = 'dòng',
+  itemName = "dòng",
 }) {
   const media = useResponsive();
 
@@ -32,24 +34,50 @@ export default function AppTable({
       createdTime,
       searchable,
       sortable,
+      preview,
       title,
       dataIndex,
       render,
     }) => {
       if (id) {
-        title = title || 'ID';
-        dataIndex = dataIndex || 'id';
+        title = title || "ID";
+        dataIndex = dataIndex || "id";
         render = render
           ? render
-          : (id) => (
-              <Link to={link || `./edit/${id}`} className="font-semibold">
-                {idFormat ? idString(id, idFormat) : id}
-              </Link>
-            );
+          : (id) =>
+              preview ? (
+                <Popover
+                  placement="right"
+                  title="Tên mặt hàng"
+                  content={
+                    <div className="flex flex-col gap-2">
+                      <Image
+                        width={200}
+                        height={200}
+                        src="https://miro.medium.com/max/2755/1*9JkkcXOhMK_aM5F6ISjMVQ.png"
+                        placeholder={true}
+                        preview={false}
+                        className="object-cover rounded-sm"
+                      />
+                      <TextButton icon={<BsBarChartLine />}>
+                        Xem thống kê
+                      </TextButton>
+                    </div>
+                  }
+                >
+                  <Link to={link || `./edit/${id}`} className="font-semibold">
+                    {idFormat ? idString(id, idFormat) : id}
+                  </Link>
+                </Popover>
+              ) : (
+                <Link to={link || `./edit/${id}`} className="font-semibold">
+                  {idFormat ? idString(id, idFormat) : id}
+                </Link>
+              );
       }
       if (createdTime) {
-        title = title || 'Ngày tạo';
-        dataIndex = dataIndex || 'taoLuc';
+        title = title || "Ngày tạo";
+        dataIndex = dataIndex || "taoLuc";
         render = render
           ? render
           : (createdTime) => <Moment fromNow>{createdTime}</Moment>;
@@ -97,7 +125,7 @@ export default function AppTable({
                   onPressEnter={() => {
                     handleSearch(selectedKeys, confirm, dataIndex);
                   }}
-                  style={{ marginBottom: '0.75rem', display: 'block' }}
+                  style={{ marginBottom: "0.75rem", display: "block" }}
                 />
                 <div className="flex gap-2">
                   <Button
@@ -124,7 +152,7 @@ export default function AppTable({
             <SearchOutlined
               className="text-xl p-2"
               style={{
-                color: filtered ? '#1DA57A' : undefined,
+                color: filtered ? "#2EAADC" : undefined,
               }}
             />
           ),
@@ -134,7 +162,7 @@ export default function AppTable({
                   .toString()
                   .toLowerCase()
                   .includes(value.toLowerCase())
-              : '',
+              : "",
           onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
               setTimeout(() => searchInput.current.select(), 100);

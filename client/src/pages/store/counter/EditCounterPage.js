@@ -1,125 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../../components/Content';
-import Map from '../../../components/Map';
+import React, { useEffect } from "react";
+import AppButton from "../../../components/AppButton";
+import { Form, Input, message } from "antd";
+import { ContentHeader } from "../../../components/Content";
 import {
-  deleteStore,
-  editStore,
-  getStore,
-  postStore,
-} from '../../../api/store';
-import { getUserList } from '../../../api/user';
-import SelectInput from '../../../components/SelectInput';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal, useFireSuccessModal } from '../../../utils/feedback';
+  createCounter,
+  editCounter,
+  getCounter,
+  deleteCounter,
+} from "../../../api/counter";
+import { SelectInput } from "../../../components/Inputs";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { idString } from "../../../utils/string";
+import { fireSuccessModal } from "../../../utils/feedback";
+import { FormGrid, OneColumnFormContainer } from "../../../components/Grid";
+import { useRoles } from "../../../context/RolesContext";
 
 const addConsts = {
-  title: 'Tạo chi nhánh',
-  okText: 'Hoàn tất',
+  title: "Tạo quầy",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa chi nhánh',
-  okText: 'Lưu thay đổi',
-};
-
-const defaultMapLct = {
-  coordinates: [106.80452, 10.871013],
-  address: 'Xa Lộ Hà Nội 58/47, Hồ Chí Minh, Hồ Chí Minh, 71308',
+  title: "Sửa quầy",
+  okText: "Lưu thay đổi",
 };
 
 export default function EditCounterPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { id } = useParams();
+  const [roles] = useRoles();
+
+  const { storeId, counterId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-
-  const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
-  const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
   const { apiCall: getCall } = useApiFeedback();
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
   const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
-  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    getUserList().then((res) => {
-      setUsers(res.data);
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      idCuaHang: storeId,
     });
-  }, []);
+  }, [storeId]);
 
   useEffect(() => {
-    if (isEdit) {
-      getCall(getStore(id), ({ data }) => {
-        form.setFieldsValue({
-          ...data,
-          idChuCuaHang: data?.chuCuaHang?.id,
-        });
-        setMapLocation({
-          coordinates: [data?.kinhDo, data?.viDo],
-          address: data?.viTri,
-        });
-        setMapCenter([data?.kinhDo, data?.viDo]);
+    if (!isEdit) return;
+    getCall(getCounter(counterId), ({ data }) => {
+      if (data?.cuaHang?.id.toString() !== storeId) {
+        navigate("/error/404", { replace: true });
+        return;
+      }
+      form.setFieldsValue({
+        idCuaHang: storeId,
+        tenQuay: data?.tenQuay,
+        trangThai: data?.dangHoatDong ? "1" : "0",
+        nhanVienTruc: data?.dangHoatDong ? data?.nhanVienTruc?.hoTen : null,
       });
-    }
-  }, []);
+    });
+  }, [storeId]);
 
   const onFinish = (values) => {
-    const dto = {
-      ...values,
-      kinhDo: mapLocation?.coordinates[0],
-      viDo: mapLocation?.coordinates[1],
-      viTri: mapLocation?.address,
-    };
-    console.log(dto);
     if (isEdit) {
-      editCall(editStore(id, dto), () => {
-        message.success('Đã lưu thay đổi thành công');
-      });
+      editCall(
+        editCounter(counterId, {
+          idCuaHang: values.idCuaHang,
+          tenQuay: values.tenQuay,
+        }),
+        () => {
+          message.success("Lưu thay đổi thành công");
+        }
+      );
     } else {
-      postCall(postStore(dto), () => {
-        fireSuccessModal({
-          title: 'Tạo chi nhánh thành công',
-          onOk: () => {
-            form.resetFields();
-            setMapLocation(defaultMapLct);
-            setMapCenter(defaultMapLct.coordinates);
-          },
-          onCancel: () => {
-            navigate('../');
-          },
-        });
-      });
+      postCall(
+        createCounter({
+          ...values,
+        }),
+        () => {
+          fireSuccessModal({
+            title: "Tạo quầy thành công",
+            onOk: () => {
+              form.setFieldsValue({
+                idCuaHang: storeId,
+                tenQuay: null,
+              });
+            },
+          });
+        }
+      );
     }
   };
 
   function handleDelete() {
-    deleteCall(deleteStore(id), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+    deleteCall(deleteCounter(counterId), () => {
+      message.success("Xóa quầy thành công");
+      navigate("../");
     });
   }
 
   return (
-    <div>
+    <FormGrid>
       <ContentHeader title={byModes.title}>
         <AppButton type="cancel" responsive>
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
-        <Map
-          center={mapCenter}
-          mapLocation={mapLocation}
-          onChangeMapLocation={setMapLocation}
-        />
+      <OneColumnFormContainer>
         <div>
           <Form
             form={form}
@@ -129,56 +120,66 @@ export default function EditCounterPage({ mode }) {
             autoComplete="off"
           >
             <Form.Item
-              label="Địa chỉ"
+              label="Cửa hàng"
               requiredMark="optional"
-              name="diaChi"
+              name="idCuaHang"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: "Vui lòng ",
                 },
               ]}
             >
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item label="Vị trí (chọn trên bản đồ)">
-              <Input
-                size="large"
-                disabled
-                value={mapLocation?.address}
-                name="map-location"
+              <SelectInput
+                data={roles?.stores?.map((id) => ({
+                  value: id,
+                  label: idString(id, ["CH", 4]),
+                }))}
+                showId={false}
               />
             </Form.Item>
-
             <Form.Item
-              label="Chủ cửa hàng"
-              name="idChuCuaHang"
+              label="Tên quầy"
               requiredMark="optional"
+              name="tenQuay"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng chọn chủ cửa hàng',
+                  message: "Vui lòng nhập tên quầy",
                 },
-              ]}
-            >
-              <SelectInput data={users} />
-            </Form.Item>
-
-            <Form.Item
-              label="Số điện thoại"
-              name="sdt"
-              requiredMark="optional"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
-                },
-                inputRuleNaN(),
               ]}
             >
               <Input size="large" />
             </Form.Item>
-
+            {isEdit && (
+              <Form.Item
+                label="Trạng thái"
+                requiredMark="optional"
+                name="trangThai"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập địa chỉ",
+                  },
+                ]}
+              >
+                <SelectInput
+                  disabled
+                  data={[
+                    { label: "Đang đóng", value: 0 },
+                    { label: "Đang hoạt động", value: 1 },
+                  ]}
+                  showId={false}
+                  allowClear={false}
+                  showSearch={false}
+                />
+              </Form.Item>
+            )}
+            {isEdit && (
+              <Form.Item label="Nhân viên trực" name="nhanVienTruc">
+                <Input size="large" disabled />
+              </Form.Item>
+            )}
             <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
               <Form.Item className="flex-1">
                 <AppButton
@@ -200,17 +201,17 @@ export default function EditCounterPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: "Bạn có muốn xóa quầy này?",
                     }}
                   >
-                    Xóa chi nhánh
+                    Xóa quầy
                   </AppButton>
                 </Form.Item>
               )}
             </div>
           </Form>
         </div>
-      </div>
-    </div>
+      </OneColumnFormContainer>
+    </FormGrid>
   );
 }

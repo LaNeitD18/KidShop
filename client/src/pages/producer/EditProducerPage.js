@@ -1,33 +1,34 @@
-import React, { useEffect } from 'react';
-import AppButton from '../../components/AppButton';
-import { Form, Input, message } from 'antd';
-import { ContentHeader } from '../../components/Content';
+import React, { useEffect } from "react";
+import AppButton from "../../components/AppButton";
+import { Form, Input, message } from "antd";
+import { ContentHeader } from "../../components/Content";
 import {
   deleteProducer,
   editProducer,
   fetchAProducer,
   createProducer,
-} from '../../api/producer';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../utils/string';
-import { fireSuccessModal, useFireSuccessModal } from '../../utils/feedback';
+} from "../../api/producer";
+import useApiFeedback from "../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { inputRuleNaN } from "../../utils/string";
+import { fireSuccessModal } from "../../utils/feedback";
+import { FormGrid, OneColumnFormContainer } from "../../components/Grid";
 
 const addConsts = {
-  title: 'Tạo nhà sản xuất',
-  okText: 'Hoàn tất',
+  title: "Tạo nhà sản xuất",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa nhà sản xuất',
-  okText: 'Lưu thay đổi',
+  title: "Sửa nhà sản xuất",
+  okText: "Lưu thay đổi",
 };
 
 export default function EditProducerPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { id } = useParams();
+  const { producerId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -39,26 +40,26 @@ export default function EditProducerPage({ mode }) {
 
   useEffect(() => {
     if (isEdit) {
-      getCall(fetchAProducer(id), ({ data }) => {
+      getCall(fetchAProducer(producerId), ({ data }) => {
         form.setFieldsValue(data);
       });
     }
-  }, []);
+  }, [isEdit]);
 
   const onFinish = (values) => {
     if (isEdit) {
-      editCall(editProducer(id, values), () => {
-        message.success('Đã lưu thay đổi thành công');
+      editCall(editProducer(producerId, values), () => {
+        message.success("Đã lưu thay đổi thành công");
       });
     } else {
       postCall(createProducer(values), () => {
         fireSuccessModal({
-          title: 'Tạo nhà sản xuất thành công',
+          title: "Tạo nhà sản xuất thành công",
           onOk: () => {
             form.resetFields();
           },
           onCancel: () => {
-            navigate('../');
+            navigate("../");
           },
         });
       });
@@ -66,20 +67,20 @@ export default function EditProducerPage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteProducer(id), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+    deleteCall(deleteProducer(producerId), () => {
+      message.success("Đã xóa thành công");
+      navigate("../");
     });
   }
 
   return (
-    <div>
+    <FormGrid>
       <ContentHeader title={byModes.title}>
         <AppButton type="cancel" responsive>
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
+      <OneColumnFormContainer>
         <div>
           <Form
             form={form}
@@ -94,7 +95,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập tên nhà sản xuất',
+                  message: "Vui lòng nhập tên nhà sản xuất",
                 },
               ]}
             >
@@ -107,7 +108,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập địa chỉ',
+                  message: "Vui lòng nhập địa chỉ",
                 },
               ]}
             >
@@ -120,7 +121,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập số điện thoại!',
+                  message: "Vui lòng nhập số điện thoại!",
                 },
                 inputRuleNaN(),
               ]}
@@ -149,7 +150,7 @@ export default function EditProducerPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa nhà sản xuất này?',
+                      title: "Bạn có muốn xóa nhà sản xuất này?",
                     }}
                   >
                     Xóa nhà sản xuất
@@ -159,7 +160,7 @@ export default function EditProducerPage({ mode }) {
             </div>
           </Form>
         </div>
-      </div>
-    </div>
+      </OneColumnFormContainer>
+    </FormGrid>
   );
 }

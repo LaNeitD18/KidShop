@@ -57,6 +57,7 @@ export default function AppButton({
   onClick,
   confirm,
   loading,
+  icon,
   ...rest
 }) {
   const media = useResponsive();
@@ -93,5 +94,14 @@ export default function AppButton({
         ? children || mapType[type]?.buttonProps?.children
         : null}
     </Button>
+  );
+}
+
+export function TextButton({ icon, children }) {
+  return (
+    <button className="w-full flex items-center gap-2 justify-center font-semibold p-2 cursor-pointer hover:text-primary">
+      {icon}
+      {children}
+    </button>
   );
 }

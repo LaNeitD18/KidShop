@@ -1,15 +1,18 @@
-import { ProductTypeService } from './services/product_type.service';
+import { SupplierModule } from './../supplier/supplier.module';
+import { ProducerModule } from './../producer/producer.module';
 import { MatHang } from './entities/product.entity';
-import { LoatMatHang } from './entities/product_type.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProductController } from './controllers/product.controller';
-import { ProductTypeController } from './controllers/product_type.controller';
 import { ProductService } from './services/product.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LoatMatHang, MatHang])],
-  controllers: [ProductController, ProductTypeController],
-  providers: [ProductService, ProductTypeService],
+  imports: [
+    TypeOrmModule.forFeature([MatHang]),
+    forwardRef(() => ProducerModule),
+    forwardRef(() => SupplierModule),
+  ],
+  controllers: [ProductController],
+  providers: [ProductService],
 })
 export class ProductModule {}
