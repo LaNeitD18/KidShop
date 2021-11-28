@@ -54,6 +54,7 @@ module.exports = {
               "@dropdown-line-height": "24px",
               "@select-dropdown-height": "34px",
               "@layout-header-height": "56px",
+              "@select-single-item-height-lg": "44px",
             },
             javascriptEnabled: true,
           },

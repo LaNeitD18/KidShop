@@ -3,6 +3,8 @@ import classNames from "classnames";
 import { useState, useLayoutEffect } from "react";
 import { IoExpandOutline, IoContractOutline } from "react-icons/io5";
 import { LoadingOutlined } from "@ant-design/icons";
+import fallback from "../assets/fallback.jpg";
+import placeholder from "../assets/placeholder.jpg";
 
 export function ExpandableImage({ src, height = 400, loading }) {
   const [contain, setContain] = useState(false);
@@ -20,15 +22,15 @@ export function ExpandableImage({ src, height = 400, loading }) {
       {(!loading || !src) && (
         <Image
           height={height}
-          src={src || "https://i.ibb.co/T4NtKWY/fallback.jpg"}
-          fallback="https://i.ibb.co/KzpKtFw/404.jpg"
+          src={src || placeholder}
+          fallback={fallback}
           preview={false}
           style={{
             border: `solid 1px #D1D5DB`,
             backgroundColor: "transparent",
           }}
-          className={classNames("transition-all", {
-            "object-contain shadow-inner": contain,
+          className={classNames("transition-all  shadow-inner", {
+            "object-contain": contain,
             "object-cover": !contain,
           })}
         />

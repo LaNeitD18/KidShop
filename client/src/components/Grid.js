@@ -2,13 +2,19 @@ export function FormGrid({ children, column = 1 }) {
   switch (column) {
     case 2:
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 md:gap-x-10 xl:gap-x-14">
+          {children}
+        </div>
+      );
+    case 3:
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 md:gap-x-10 xl:gap-x-6">
           {children}
         </div>
       );
     default:
       return (
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           <div>{children}</div>
         </div>
       );

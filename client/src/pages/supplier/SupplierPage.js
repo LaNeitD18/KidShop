@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../components/AppButton';
-import { ContentHeader } from '../../components/Content';
-import * as api from '../../api/supplier';
-import AppTable from '../../components/AppTable';
-import CommonString from '../../constants/string';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { message } from 'antd';
+import React, { useEffect, useState } from "react";
+import AppButton from "../../components/AppButton";
+import { ContentHeader } from "../../components/Content";
+import * as api from "../../api/supplier";
+import AppTable from "../../components/AppTable";
+import CommonString from "../../constants/string";
+import useApiFeedback from "../../hooks/useApiFeedback";
+import { message } from "antd";
 
 const columns = [
   {
-    title: 'Mã NCC',
+    title: "Mã NCC",
     id: true,
-    idFormat: ['NCC', 4],
+    idFormat: ["NCC", 4],
     searchable: true,
     sortable: true,
   },
   {
     title: CommonString.SUPPLIER_NAME,
-    dataIndex: 'tenNCC',
+    dataIndex: "tenNCC",
     searchable: true,
   },
   {
     title: CommonString.SUPPLIER_ADDRESS,
-    dataIndex: 'diaChi',
+    dataIndex: "diaChi",
     searchable: true,
   },
   {
     title: CommonString.SUPPLIER_PHONE,
-    dataIndex: 'sdt',
+    dataIndex: "sdt",
     searchable: true,
   },
 ];
@@ -53,7 +53,7 @@ export default function SupplierPage() {
         })
       ),
       () => {
-        message.success('Xóa thành công');
+        message.success("Xóa thành công");
         setSelectedRows([]);
         fetchListSuppliers();
       }

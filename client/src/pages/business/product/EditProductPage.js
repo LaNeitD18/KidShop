@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import AppButton from "../../../components/AppButton";
-import { Button, Form, Image, Input, message, Tooltip, Upload } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  message,
+  Tooltip,
+  Upload,
+} from "antd";
 import { ContentHeader } from "../../../components/Content";
 import {
   deleteStore,
@@ -18,6 +27,7 @@ import { FormGrid } from "../../../components/Grid";
 
 import classNames from "classnames";
 import { ExpandableImage } from "../../../components/Images";
+import { fetchProducers } from "../../../api/producer";
 
 const addConsts = {
   title: "Tạo mặt hàng",
@@ -42,12 +52,15 @@ export default function EditProductPage({ mode }) {
   const { apiCall: postCall, loading: postLoad } = useApiFeedback();
   const { apiCall: editCall, loading: editLoad } = useApiFeedback();
   const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
-  const [users, setUsers] = useState([]);
+  const [producers, setProducers] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
   useEffect(() => {
-    getUserList().then((res) => {
-      setUsers(res.data);
-    });
+    fetchProducers()
+      .then((res) => {
+        setProducers(res.data);
+      })
+      .catch((err) => fireError(err));
   }, []);
 
   useEffect(() => {
@@ -108,65 +121,138 @@ export default function EditProductPage({ mode }) {
         onFinish={onFinish}
         autoComplete="off"
       >
-        <FormGrid column={2}>
+        <FormGrid column={3}>
           <div>
-            <ExpandableImage src={imgUrl} />
-            <div className="mb-4" />
             <Form.Item label="Ảnh sản phẩm">
-              <UploadImageInput onValueChange={setImgUrl} />
+              <ExpandableImage src={imgUrl} height={454} />
             </Form.Item>
           </div>
-
           <div>
             <Form.Item
-              label="Địa chỉ"
+              label="Tên mặt hàng"
               requiredMark="optional"
-              name="diaChi"
+              name="tenMH"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập địa chỉ",
+                  message: "Vui lòng nhập tên mặt hàng",
                 },
               ]}
             >
               <Input size="large" />
             </Form.Item>
 
+            <Form.Item label="Liên kết hình ảnh">
+              <UploadImageInput onValueChange={setImgUrl} />
+            </Form.Item>
+
             <Form.Item
-              label="Chủ cửa hàng"
-              name="idChuCuaHang"
+              label="Đơn vị"
+              requiredMark="optional"
+              name="donVi"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập tên đơn vị",
+                },
+              ]}
+            >
+              <Input size="large" />
+            </Form.Item>
+
+            <Form.Item label="Màu sắc" name="mauSac">
+              <Input size="large" />
+            </Form.Item>
+
+            <Form.Item label="Kích thước" name="kichThuoc">
+              <Input size="large" />
+            </Form.Item>
+          </div>
+          <div className="md:col-span-2 xl:col-span-1">
+            <Form.Item
+              label="Nhà sản xuất"
+              name="idNSX"
               requiredMark="optional"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn chủ cửa hàng",
+                  message: "Vui lòng chọn nhà sản xuất",
                 },
               ]}
             >
               <SelectInput
-                data={users.map((u) => ({
-                  label: u.hoTen,
+                data={producers.map((u) => ({
+                  label: u.tenNSX,
                   value: u.id,
                 }))}
               />
             </Form.Item>
 
             <Form.Item
-              label="Số điện thoại"
-              name="sdt"
+              label="Nhà cung cấp"
+              name="idNCC"
               requiredMark="optional"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập số điện thoại!",
+                  message: "Vui lòng chọn nhà cung cấp",
                 },
-                inputRuleNaN(),
               ]}
             >
-              <Input size="large" />
+              <SelectInput
+                data={producers.map((u) => ({
+                  label: u.tenNSX,
+                  value: u.id,
+                }))}
+              />
             </Form.Item>
 
-            <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
+            <Form.Item
+              label="Giá nhập (VNĐ)"
+              requiredMark="optional"
+              name="giaNhap"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập giá nhập",
+                },
+              ]}
+            >
+              <InputNumber
+                style={{ width: "100%" }}
+                min={0}
+                formatter={(value) =>
+                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                size="large"
+                step={1000}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Giá bán (VNĐ)"
+              requiredMark="optional"
+              name="giaBan"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập giá bán",
+                },
+              ]}
+            >
+              <InputNumber
+                style={{ width: "100%" }}
+                min={0}
+                formatter={(value) =>
+                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                size="large"
+                step={1000}
+              />
+            </Form.Item>
+            <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xl:mt-14">
               <Form.Item className="flex-1">
                 <AppButton
                   loading={postLoad || editLoad}

@@ -1,35 +1,35 @@
 export function idString(id = 0, idFormat = []) {
-  const [prefix = '', digits = 6] = idFormat;
-  return prefix.concat(id.toString().padStart(digits, '0'));
+  const [prefix = "", digits = 6] = idFormat;
+  return prefix.concat(id.toString().padStart(digits, "0"));
 }
 
 export function extractNumber(text) {
   return text
-    ?.split('')
+    ?.split("")
     ?.filter((c) => !isNaN(c))
-    .join('')
-    .replace(/^0+/, '');
+    .join("")
+    .replace(/^0+/, "");
 }
 
 export function errorString(err) {
   const code = err?.response?.status || err?.code;
   const name =
-    err?.response?.data?.name || err?.request || err?.name || 'Đã xảy ra lỗi!';
+    err?.response?.data?.name || err?.request || err?.name || "Đã xảy ra lỗi!";
   const message =
     err?.response?.data?.message ||
     err?.message ||
-    'Yêu cầu của bạn đã không được thực hiện';
-  const codeName = [code, name].join(code && name ? ' ' : '');
+    "Yêu cầu của bạn đã không được thực hiện";
+  const codeName = [code, name].join(code && name ? " " : "");
   return {
     code,
     name,
     message,
     codeName,
-    combine: `${codeName} ${name && message ? ':' : ''} ${message}`,
+    combine: `${codeName} ${name && message ? ":" : ""} ${message}`,
   };
 }
 
-export const inputRuleNaN = (message = 'Vui lòng chỉ nhập số') => ({
+export const inputRuleNaN = (message = "Vui lòng chỉ nhập số") => ({
   pattern: new RegExp(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g),
   message: message,
 });

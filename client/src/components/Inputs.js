@@ -32,12 +32,6 @@ export function SelectInput({
   );
 }
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
 export function UploadImageInput({ onValueChange, ...rest }) {
   const [progress, setProgress] = useState(0);
   const [fetching, setFetching] = useState(false);
@@ -99,7 +93,7 @@ export function UploadImageInput({ onValueChange, ...rest }) {
             ) : (
               <IoCloudUploadOutline className="text-lg" />
             )}
-            {fetching ? "Đang upload" : "Upload ảnh"}
+            {fetching ? "Đang upload" : "Chọn tệp"}
           </div>
         </Upload>
       }
