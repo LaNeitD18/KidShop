@@ -80,7 +80,7 @@ export class ExportProductReceiptController {
       const newExportReceipt = await this.exportProductReceiptService.create(
         exportReceiptData,
       );
-      console.log('dsCTPX', data.dsChiTietPhieuXuat);
+
       for (const chiTiet of data.dsChiTietPhieuXuat) {
         const product = await this.productService.findOne(chiTiet.idMatHang);
         if (!product) {

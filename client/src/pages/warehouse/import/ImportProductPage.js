@@ -3,7 +3,10 @@ import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
-import { deleteWarehouse, fetchAllWarehouses } from '../../../api/warehouse';
+import {
+  deleteImportReceipt,
+  fetchAllImportReceipts,
+} from '../../../api/warehouse';
 import { message } from 'antd';
 import CommonString from '../../../constants/string';
 
@@ -16,23 +19,28 @@ const columns = [
     sortable: true,
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
+    title: 'Tổng tiền',
+    dataIndex: 'tongTien',
     searchable: true,
   },
   {
-    title: 'SDT',
-    dataIndex: 'sdt',
+    title: 'Kho',
+    dataIndex: ['kho', 'diaChi'],
     searchable: true,
   },
   {
-    title: 'Quản lý kho',
-    dataIndex: ['quanLyKho', 'hoTen'],
+    title: 'Người lập',
+    dataIndex: ['nguoiLap', 'hoTen'],
     searchable: true,
   },
   {
     createdTime: true,
     sortable: true,
+  },
+  {
+    title: 'Ghi chú',
+    dataIndex: 'ghiChu',
+    searchable: false,
   },
 ];
 
@@ -41,25 +49,25 @@ export default function ImportProductPage() {
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
 
-  function fetchWarehouses() {
-    apiCall(fetchAllWarehouses());
+  function fetchImportReceipts() {
+    apiCall(fetchAllImportReceipts());
   }
 
   useEffect(() => {
-    fetchWarehouses();
+    fetchImportReceipts();
   }, []);
 
   function handleDelete() {
     deleteCall(
       Promise.all(
         selectedRows.map((row) => {
-          return deleteWarehouse(row);
+          return deleteImportReceipt(row);
         })
       ),
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchWarehouses();
+        fetchImportReceipts();
       }
     );
   }
@@ -77,7 +85,7 @@ export default function ImportProductPage() {
             onClick={handleDelete}
             loading={deleteLoading}
           >
-            {CommonString.WAREHOUSE_DELETE}
+            Xóa phiếu nhập kho
           </AppButton>
         )}
       </ContentHeader>

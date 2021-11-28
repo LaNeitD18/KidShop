@@ -22,7 +22,7 @@ export class ImportProductReceiptService {
 
   findOne(id: number) {
     return this.importReceiptRepo.findOne(id, {
-      relations: ['kho', 'nguoiLap', 'dsCTPhieuNhap'],
+      relations: ['kho', 'nguoiLap', 'dsCTPhieuNhap', 'dsCTPhieuNhap.matHang'],
     });
   }
 

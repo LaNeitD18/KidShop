@@ -20,6 +20,7 @@ import ProductPage from './pages/business/product/ProductPage';
 import EditProductPage from './pages/business/product/EditProductPage';
 import ImportProductPage from './pages/warehouse/import/ImportProductPage';
 import ExportProductPage from './pages/warehouse/export/ExportProductPage';
+import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
 
 function App() {
   const [roles, setRoles] = useRoles();
@@ -114,10 +115,10 @@ function App() {
             <Route path="import-product">
               <Route index element={<ImportProductPage />} />
               <Route
-                path="edit/:id"
-                element={<EditWarehousePage mode="edit" />}
+                path="edit/:importReceiptId"
+                element={<EditImportReceiptPage mode="edit" />}
               />
-              <Route path="add" element={<EditWarehousePage />} />
+              <Route path="add" element={<EditImportReceiptPage />} />
             </Route>
             <Route path="export-product">
               <Route index element={<ExportProductPage />} />

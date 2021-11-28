@@ -95,13 +95,16 @@ export class ImportProductReceiptController {
     }
   }
 
+  // TODO
   @Get()
   findAll() {
+    // fetch all theo idKho
     return this.importProductReceiptService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
+    // find1 theo idKho
     return this.importProductReceiptService.findOne(id);
   }
 

@@ -37,7 +37,7 @@ export default function EditWarehousePage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { id } = useParams();
+  const { warehouseId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -59,7 +59,7 @@ export default function EditWarehousePage({ mode }) {
 
   useEffect(() => {
     if (isEdit) {
-      getCall(fetchAWarehouse(id), ({ data }) => {
+      getCall(fetchAWarehouse(warehouseId), ({ data }) => {
         form.setFieldsValue({
           ...data,
           idQuanLyKho: data?.quanLyKho?.id,
@@ -81,7 +81,7 @@ export default function EditWarehousePage({ mode }) {
       viTri: mapLocation?.address,
     };
     if (isEdit) {
-      editCall(editWarehouse(id, dto), () => {
+      editCall(editWarehouse(warehouseId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
@@ -102,7 +102,7 @@ export default function EditWarehousePage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteWarehouse(id), () => {
+    deleteCall(deleteWarehouse(warehouseId), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });
@@ -115,7 +115,7 @@ export default function EditWarehousePage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid>
+      <FormGrid column={2}>
         <Map
           center={mapCenter}
           mapLocation={mapLocation}
@@ -124,7 +124,7 @@ export default function EditWarehousePage({ mode }) {
         <div>
           <Form
             form={form}
-            name="create-branch"
+            name="create-warehouse"
             layout="vertical"
             onFinish={onFinish}
             autoComplete="off"
@@ -161,7 +161,12 @@ export default function EditWarehousePage({ mode }) {
                 },
               ]}
             >
-              <SelectInput data={users} />
+              <SelectInput
+                data={users.map((u) => ({
+                  label: u.hoTen,
+                  value: u.id,
+                }))}
+              />
             </Form.Item>
             <Form.Item
               label="Số điện thoại"
