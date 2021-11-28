@@ -1,164 +1,164 @@
-import { cloneElement, useEffect, useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
-import { arrayFind } from '../utils/array';
-import { stringToPaths, pathsToStrings } from '../utils/route';
-import { useResponsive } from '../components/Media';
-import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from 'antd';
-import theme from '../constants/theme';
+import { cloneElement, useEffect, useState } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import classNames from "classnames";
+import { arrayFind } from "../utils/array";
+import { stringToPaths, pathsToStrings } from "../utils/route";
+import { useResponsive } from "../components/Media";
+import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from "antd";
+import theme from "../constants/theme";
 
-import { IoLogOutOutline, IoCloseSharp, IoBusiness } from 'react-icons/io5';
-import { FiMenu } from 'react-icons/fi';
-import { AiOutlineDashboard } from 'react-icons/ai';
-import { UserOutlined } from '@ant-design/icons';
-import { AiOutlineApartment } from 'react-icons/ai';
-import { GrGroup, GrUserManager, GrAppsRounded } from 'react-icons/gr';
-import { RiPencilRuler2Line } from 'react-icons/ri';
-import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
-import { GoChevronDown } from 'react-icons/go';
-import { useRoles } from '../context/RolesContext';
-import { idString } from '../utils/string';
+import { IoLogOutOutline, IoCloseSharp, IoBusiness } from "react-icons/io5";
+import { FiMenu } from "react-icons/fi";
+import { AiOutlineDashboard } from "react-icons/ai";
+import { UserOutlined } from "@ant-design/icons";
+import { AiOutlineApartment } from "react-icons/ai";
+import { GrGroup, GrUserManager, GrAppsRounded } from "react-icons/gr";
+import { RiPencilRuler2Line } from "react-icons/ri";
+import { MdPointOfSale, MdOutlineStore } from "react-icons/md";
+import { GoChevronDown } from "react-icons/go";
+import { useRoles } from "../context/RolesContext";
+import { idString } from "../utils/string";
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
 
 const navMenu = [
   {
-    path: 'admin',
-    title: 'Quản trị',
+    path: "admin",
+    title: "Quản trị",
     icon: <GrUserManager />,
     children: [
       {
-        path: 'employee',
-        title: 'QL Nhân Viên',
+        path: "employee",
+        title: "QL Nhân Viên",
         icon: <UserOutlined />,
       },
       {
-        path: 'branch',
-        title: 'QL Chi Nhánh',
+        path: "branch",
+        title: "QL Chi Nhánh",
         icon: <AiOutlineApartment />,
         children: [
           {
-            path: 'add',
-            title: 'Tạo mới',
+            path: "add",
+            title: "Tạo mới",
           },
           {
-            path: 'edit',
-            title: 'Sửa',
+            path: "edit",
+            title: "Sửa",
           },
         ],
       },
       {
-        path: 'group',
-        title: 'QL Nhóm Quyền',
+        path: "group",
+        title: "QL Nhóm Quyền",
         icon: <GrGroup />,
       },
       {
-        path: 'config',
-        title: 'Cài Đặt Cấu Hình',
+        path: "config",
+        title: "Cài Đặt Cấu Hình",
         icon: <RiPencilRuler2Line />,
       },
     ],
   },
   {
-    path: 'business',
-    title: 'Kinh doanh',
+    path: "business",
+    title: "Kinh doanh",
     icon: <IoBusiness />,
     children: [
       {
-        path: 'product',
-        title: 'QL mặt hàng',
+        path: "product",
+        title: "QL mặt hàng",
         icon: <GrAppsRounded />,
         children: [
           {
-            path: 'add',
-            title: 'Tạo mới',
+            path: "add",
+            title: "Tạo mới",
           },
           {
-            path: 'edit',
-            title: 'Sửa',
+            path: "edit",
+            title: "Sửa",
           },
         ],
       },
     ],
   },
   {
-    path: 'store',
-    title: 'Cửa hàng',
+    path: "store",
+    title: "Cửa hàng",
     icon: <MdOutlineStore />,
-    context: 'stores',
-    idFormat: ['CH', 4],
+    context: "stores",
+    idFormat: ["CH", 4],
     children: [
       {
-        path: 'counter',
-        title: 'QL Quầy',
+        path: "counter",
+        title: "QL Quầy",
         icon: <MdPointOfSale />,
         children: [
           {
-            path: 'add',
-            title: 'Tạo mới',
+            path: "add",
+            title: "Tạo mới",
           },
           {
-            path: 'edit',
-            title: 'Sửa',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: 'counter',
-    title: 'Bán hàng',
-  },
-  {
-    path: 'supply',
-    title: 'Nguồn hàng',
-    children: [
-      {
-        path: 'supplier',
-        title: 'QL Nhà Cung Cấp',
-        children: [
-          {
-            path: 'add',
-            title: 'Tạo mới',
-          },
-          {
-            path: 'edit',
-            title: 'Sửa',
-          },
-        ],
-      },
-      {
-        path: 'producer',
-        title: 'QL Nhà Sản Xuất',
-        children: [
-          {
-            path: 'add',
-            title: 'Tạo mới',
-          },
-          {
-            path: 'edit',
-            title: 'Sửa',
+            path: "edit",
+            title: "Sửa",
           },
         ],
       },
     ],
   },
   {
-    path: 'storage',
-    title: 'Trữ hàng',
+    path: "counter",
+    title: "Bán hàng",
+  },
+  {
+    path: "supply",
+    title: "Nguồn hàng",
     children: [
       {
-        path: 'warehouse',
-        title: 'QL Các Kho',
+        path: "supplier",
+        title: "QL Nhà Cung Cấp",
         children: [
           {
-            path: 'add',
-            title: 'Tạo mới',
+            path: "add",
+            title: "Tạo mới",
           },
           {
-            path: 'edit',
-            title: 'Sửa',
+            path: "edit",
+            title: "Sửa",
+          },
+        ],
+      },
+      {
+        path: "producer",
+        title: "QL Nhà Sản Xuất",
+        children: [
+          {
+            path: "add",
+            title: "Tạo mới",
+          },
+          {
+            path: "edit",
+            title: "Sửa",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "storage",
+    title: "Trữ hàng",
+    children: [
+      {
+        path: "warehouse",
+        title: "QL Các Kho",
+        children: [
+          {
+            path: "add",
+            title: "Tạo mới",
+          },
+          {
+            path: "edit",
+            title: "Sửa",
           },
         ],
       },
@@ -173,10 +173,10 @@ export default function MainContainer() {
 
   const [roles] = useRoles();
 
-  const nav = arrayFind(navMenu, paths[1], 'path') || {};
+  const nav = arrayFind(navMenu, paths[1], "path") || {};
   const hasNavContext = nav?.context ? 1 : 0;
-  const menu = arrayFind(nav?.children, paths[hasNavContext + 2], 'path');
-  const subPage = arrayFind(menu?.children, paths[hasNavContext + 3], 'path');
+  const menu = arrayFind(nav?.children, paths[hasNavContext + 2], "path");
+  const subPage = arrayFind(menu?.children, paths[hasNavContext + 3], "path");
 
   const [isOpenSider, setIsOpenSider] = useState(false);
 
@@ -190,12 +190,12 @@ export default function MainContainer() {
   }, [media.isLg]);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   const handleSelectNav = ({ key }) => {
-    if (key === 'logout') {
+    if (key === "logout") {
       handleLogout();
       return;
     }
@@ -211,11 +211,11 @@ export default function MainContainer() {
     label: idString(v, nav?.idFormat),
   }));
 
-  const navContext = arrayFind(navContextOptions, paths[2], 'value');
+  const navContext = arrayFind(navContextOptions, paths[2], "value");
 
   useEffect(() => {
     if (navContextOptions && !navContext && paths[2]) {
-      navigate('/error/403', { replace: true });
+      navigate("/error/403", { replace: true });
     }
   }, [navContextOptions, navContext, paths[2]]);
 
@@ -226,7 +226,7 @@ export default function MainContainer() {
           <FiMenu
             onClick={() => setIsOpenSider(true)}
             className="text-white mr-4 block lg:hidden opacity-75 -ml-5 p-1 cursor-pointer"
-            style={{ color: 'white' }}
+            style={{ color: "white" }}
             size={32}
           />
         ) : (
@@ -251,7 +251,7 @@ export default function MainContainer() {
             <Menu.Item key={value.path}>{value.title}</Menu.Item>
           ))}
           <Menu.Item key="logout" className="lg:pointer-events-none">
-            {!media.isLg && 'Đăng xuất'}
+            {!media.isLg && "Đăng xuất"}
           </Menu.Item>
         </Menu>
         <div
@@ -271,12 +271,12 @@ export default function MainContainer() {
           width={256}
           className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 border-r"
           style={{
-            position: 'fixed',
+            position: "fixed",
           }}
         >
           <Menu
             mode="inline"
-            style={{ height: '100%', borderRight: 0 }}
+            style={{ height: "100%", borderRight: 0 }}
             selectedKeys={
               hasNavContext
                 ? pathsToStrings([paths[1], paths[2], paths[3]])
@@ -287,7 +287,7 @@ export default function MainContainer() {
             <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
               {nav.icon &&
                 cloneElement(nav.icon, {
-                  className: 'text-3xl w-full mb-1',
+                  className: "text-3xl w-full mb-1",
                 })}
               <Title level={4}>{nav.title}</Title>
               {!!hasNavContext && (
@@ -295,7 +295,7 @@ export default function MainContainer() {
                   style={{
                     color: theme.color.primary,
                     fontWeight: 600,
-                    fontSize: '1.125rem',
+                    fontSize: "1.125rem",
                   }}
                   options={navContextOptions}
                   value={navContext}
@@ -310,7 +310,7 @@ export default function MainContainer() {
                   onSelect={(option) => {
                     let tempPaths = [...paths];
                     tempPaths[2] = option?.value;
-                    navigate(['', ...tempPaths].join('/'));
+                    navigate(["", ...tempPaths].join("/"));
                   }}
                 />
               )}
@@ -321,8 +321,8 @@ export default function MainContainer() {
               icon={<AiOutlineDashboard />}
               key={pathsToStrings(
                 navContext
-                  ? [nav.path, navContext.value, 'dashboard']
-                  : [nav.path, 'dashboard']
+                  ? [nav.path, navContext.value, "dashboard"]
+                  : [nav.path, "dashboard"]
               )}
             >
               Bảng điều khiển
@@ -342,8 +342,8 @@ export default function MainContainer() {
           </Menu>
         </Sider>
         <Layout
-          className={classNames('pb-6 sm:pb-0 mt-nav-height', {
-            'ml-sider-width': media.isLg,
+          className={classNames("pb-6 sm:pb-0 mt-nav-height", {
+            "ml-sider-width": media.isLg,
           })}
         >
           <div className="bg-white py-4 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
@@ -357,8 +357,8 @@ export default function MainContainer() {
                     <Link
                       to={
                         hasNavContext
-                          ? [paths[1], paths[2], paths[3]].join('/')
-                          : [paths[1], paths[2]].join('/')
+                          ? [paths[1], paths[2], paths[3]].join("/")
+                          : [paths[1], paths[2]].join("/")
                       }
                     >
                       {menu.title}

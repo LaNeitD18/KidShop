@@ -1,27 +1,28 @@
-import { Checkbox, Form, Input, message } from 'antd';
-import { IoLogInOutline } from 'react-icons/io5';
-import AppButton from '../components/AppButton';
-import useApiFeedback from '../hooks/useApiFeedback';
-import { login, verifyToken } from '../api/auth';
-import { fireError, fireSuccessModal } from '../utils/feedback';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Checkbox, Form, Input, message } from "antd";
+import { IoLogInOutline } from "react-icons/io5";
+import AppButton from "../components/AppButton";
+import useApiFeedback from "../hooks/useApiFeedback";
+import { login, verifyToken } from "../api/auth";
+import { fireError, fireSuccessModal } from "../utils/feedback";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUserByUsername } from "../api/user";
 
 export function LoginPage() {
   const [form] = Form.useForm();
   const { loading, apiCall } = useApiFeedback();
 
   const navigate = useNavigate();
-  const [accessToken, setAccessToken] = useLocalStorage('accessToken');
+  const [user, setUser] = useLocalStorage("user");
 
   useEffect(() => {
-    if (accessToken) {
-      verifyToken(accessToken)
-        .then(() => navigate('/', { replace: true }))
-        .catch(() => setAccessToken(null));
+    if (user?.token) {
+      verifyToken(user.token)
+        .then(() => navigate("/", { replace: true }))
+        .catch(() => setUser(null));
     }
-  }, [accessToken]);
+  }, [user]);
 
   function onFinish(values) {
     apiCall(
@@ -30,12 +31,22 @@ export function LoginPage() {
         matKhau: values.password,
       }),
       (res) => {
-        setAccessToken(res.data.accessToken);
+        getUserByUsername(values.username)
+          .then(({ data }) => {
+            console.log("user data", data);
+            setUser({
+              id: data[0].id,
+              hoTen: data[0].hoTen,
+              gioiTinh: data[0].gioiTinh,
+              token: res.data.accessToken,
+            });
+          })
+          .catch((err) => fireError(err));
         form.resetFields();
       },
       (err) => {
         if (err?.response?.status === 401) {
-          message.error('Sai tên đăng nhập hoặc mật khẩu');
+          message.error("Sai tên đăng nhập hoặc mật khẩu");
         } else {
           fireError(err);
         }
@@ -61,7 +72,7 @@ export function LoginPage() {
               name="username"
               requiredMark="optional"
               rules={[
-                { required: true, message: 'Vui lòng nhập tên người dùng' },
+                { required: true, message: "Vui lòng nhập tên người dùng" },
               ]}
             >
               <Input size="large" />
@@ -70,7 +81,7 @@ export function LoginPage() {
               label="Mật khẩu"
               name="password"
               requiredMark="optional"
-              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
             >
               <Input.Password size="large" />
             </Form.Item>

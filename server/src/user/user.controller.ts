@@ -101,6 +101,28 @@ export class UserController {
     }
   }
 
+  @ApiOkResponse({ type: NguoiDung })
+  @ApiNotFoundResponse()
+  @Get('username/:username')
+  async fetchAUserByUsername(
+    @Param('username') username: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const user = await this.userService.findByUsername(username);
+      if (!user) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: `Can not find a user with username ${username}`,
+        });
+      }
+      return res.status(HttpStatus.OK).json(user);
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
+  }
+
   @Patch(':id')
   async updateUser(
     @Param('id') id: string,
