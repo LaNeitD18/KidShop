@@ -5,9 +5,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CT_PhieuNhapKho } from '../../import-product-receipt/entities/detail-import-receipt.entity';
+import { CT_PhieuXuatKho } from 'src/export-product-receipt/entities/detail-export-receipt.entity';
 
 @Entity()
 export class MatHang {
@@ -49,4 +52,10 @@ export class MatHang {
   @OneToOne(() => NhaCungCap)
   @JoinColumn()
   nhaCC: NhaCungCap;
+
+  @OneToMany(() => CT_PhieuNhapKho, (ctPhieuNhapKho) => ctPhieuNhapKho.matHang)
+  dsCTPhieuNhapKho?: CT_PhieuNhapKho[];
+
+  @OneToMany(() => CT_PhieuXuatKho, (ctPhieuXuatKho) => ctPhieuXuatKho.matHang)
+  dsCTPhieuXuatKho?: CT_PhieuXuatKho[];
 }

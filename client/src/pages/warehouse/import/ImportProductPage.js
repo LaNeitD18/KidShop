@@ -1,74 +1,82 @@
 import React, { useEffect, useState } from 'react';
-import AppButton from '../../components/AppButton';
-import { ContentHeader } from '../../components/Content';
-import AppTable from '../../components/AppTable';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { deleteWarehouse, fetchAllWarehouses } from '../../api/warehouse';
+import AppButton from '../../../components/AppButton';
+import { ContentHeader } from '../../../components/Content';
+import AppTable from '../../../components/AppTable';
+import useApiFeedback from '../../../hooks/useApiFeedback';
+import {
+  deleteImportReceipt,
+  fetchAllImportReceipts,
+} from '../../../api/warehouse';
 import { message } from 'antd';
-import CommonString from '../../constants/string';
+import CommonString from '../../../constants/string';
 
 const columns = [
   {
-    title: 'Mã kho',
+    title: 'Mã phiếu nhập kho',
     id: true,
-    idFormat: ['K', 4],
+    idFormat: ['PNK', 4],
     searchable: true,
     sortable: true,
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
+    title: 'Tổng tiền',
+    dataIndex: 'tongTien',
     searchable: true,
   },
   {
-    title: 'SDT',
-    dataIndex: 'sdt',
+    title: 'Kho',
+    dataIndex: ['kho', 'diaChi'],
     searchable: true,
   },
   {
-    title: 'Quản lý kho',
-    dataIndex: ['quanLyKho', 'hoTen'],
+    title: 'Người lập',
+    dataIndex: ['nguoiLap', 'hoTen'],
     searchable: true,
   },
   {
     createdTime: true,
     sortable: true,
   },
+  {
+    title: 'Ghi chú',
+    dataIndex: 'ghiChu',
+    searchable: false,
+  },
 ];
 
-export default function WarehousePage() {
+export default function ImportProductPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
 
-  function fetchWarehouses() {
-    apiCall(fetchAllWarehouses());
+  function fetchImportReceipts() {
+    apiCall(fetchAllImportReceipts());
   }
 
   useEffect(() => {
-    fetchWarehouses();
+    fetchImportReceipts();
   }, []);
 
   function handleDelete() {
     deleteCall(
       Promise.all(
         selectedRows.map((row) => {
-          return deleteWarehouse(row);
+          return deleteImportReceipt(row);
         })
       ),
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchWarehouses();
+        fetchImportReceipts();
       }
     );
   }
 
   return (
     <div>
-      <ContentHeader title={CommonString.WAREHOUSE_TITLE}>
+      <ContentHeader title="Quản lý nhập kho">
         <AppButton type="add" link="add" responsive>
-          {CommonString.WAREHOUSE_ADD}
+          Tạo phiếu nhập kho
         </AppButton>
         {!!selectedRows.length && (
           <AppButton
@@ -77,7 +85,7 @@ export default function WarehousePage() {
             onClick={handleDelete}
             loading={deleteLoading}
           >
-            {CommonString.WAREHOUSE_DELETE}
+            Xóa phiếu nhập kho
           </AppButton>
         )}
       </ContentHeader>
@@ -86,7 +94,7 @@ export default function WarehousePage() {
         columns={columns}
         data={result?.data}
         onSelectRows={setSelectedRows}
-        itemName="kho"
+        itemName="phiếu nhập kho"
       />
     </div>
   );

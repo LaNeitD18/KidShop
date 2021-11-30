@@ -1,23 +1,26 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useRoles } from "./context/RolesContext";
-import { getStoreList } from "./api/store";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useRoles } from './context/RolesContext';
+import { getStoreList } from './api/store';
 
-import ErrorPage from "./pages/ErrorPage";
-import BranchPage from "./pages/admin/branch/BranchPage";
-import EditBranchPage from "./pages/admin/branch/EditBranchPage";
-import EditSupplierPage from "./pages/supplier/EditSupplierPage";
-import SupplierPage from "./pages/supplier/SupplierPage";
-import WarehousePage from "./pages/warehouse/WarehousePage";
-import MainContainer from "./components/MainContainer";
-import EditWarehousePage from "./pages/warehouse/EditWarehousePage";
-import ProducerPage from "./pages/producer/ProducerPage";
-import EditProducerPage from "./pages/producer/EditProducerPage";
-import CounterPage from "./pages/store/counter/CounterPage";
-import EditCounterPage from "./pages/store/counter/EditCounterPage";
-import { LoginPage } from "./pages/LoginPage";
-import ProductPage from "./pages/business/product/ProductPage";
-import EditProductPage from "./pages/business/product/EditProductPage";
+import ErrorPage from './pages/ErrorPage';
+import BranchPage from './pages/admin/branch/BranchPage';
+import EditBranchPage from './pages/admin/branch/EditBranchPage';
+import EditSupplierPage from './pages/supplier/EditSupplierPage';
+import SupplierPage from './pages/supplier/SupplierPage';
+import WarehousePage from './pages/warehouse/WarehousePage';
+import MainContainer from './components/MainContainer';
+import EditWarehousePage from './pages/warehouse/EditWarehousePage';
+import ProducerPage from './pages/producer/ProducerPage';
+import EditProducerPage from './pages/producer/EditProducerPage';
+import CounterPage from './pages/store/counter/CounterPage';
+import EditCounterPage from './pages/store/counter/EditCounterPage';
+import { LoginPage } from './pages/LoginPage';
+import ProductPage from './pages/business/product/ProductPage';
+import EditProductPage from './pages/business/product/EditProductPage';
+import ImportProductPage from './pages/warehouse/import/ImportProductPage';
+import ExportProductPage from './pages/warehouse/export/ExportProductPage';
+import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
 
 function App() {
   const [roles, setRoles] = useRoles();
@@ -61,7 +64,7 @@ function App() {
             path="store"
             element={
               <Navigate
-                to={roles?.stores ? roles?.stores[0].toString() : "/error/403"}
+                to={roles?.stores ? roles?.stores[0].toString() : '/error/403'}
                 replace
               />
             }
@@ -97,11 +100,30 @@ function App() {
             </Route>
           </Route>
           <Route path="storage">
-            <Route index element={<Navigate to="warehouse" replace />} />
-            <Route path="warehouse">
+            <Route index element={<Navigate to="warehouses" replace />} />
+            <Route path="warehouses">
               <Route index element={<WarehousePage />} />
               <Route
                 path="edit/:warehouseId"
+                element={<EditWarehousePage mode="edit" />}
+              />
+              <Route path="add" element={<EditWarehousePage />} />
+            </Route>
+          </Route>
+          <Route path="warehouse">
+            <Route index element={<Navigate to="import-product" replace />} />
+            <Route path="import-product">
+              <Route index element={<ImportProductPage />} />
+              <Route
+                path="edit/:importReceiptId"
+                element={<EditImportReceiptPage mode="edit" />}
+              />
+              <Route path="add" element={<EditImportReceiptPage />} />
+            </Route>
+            <Route path="export-product">
+              <Route index element={<ExportProductPage />} />
+              <Route
+                path="edit/:id"
                 element={<EditWarehousePage mode="edit" />}
               />
               <Route path="add" element={<EditWarehousePage />} />

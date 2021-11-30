@@ -15,11 +15,11 @@ export class WarehouseService {
   }
 
   findAll() {
-    return this.warehouseRepository.find();
+    return this.warehouseRepository.find({ relations: ['quanLyKho'] });
   }
 
   findOne(id: string) {
-    return this.warehouseRepository.findOne(id);
+    return this.warehouseRepository.findOne(id, { relations: ['quanLyKho'] });
   }
 
   async update(id: string, data: Kho) {

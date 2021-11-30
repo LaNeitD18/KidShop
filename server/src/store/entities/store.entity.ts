@@ -1,3 +1,4 @@
+import { PhieuXuatKho } from './../../export-product-receipt/entities/export-product-receipt.entity';
 import { Quay } from './../../counter/entities/counter.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { NguoiDung } from 'src/user/entities/user.entity';
@@ -49,4 +50,7 @@ export class CuaHang {
 
   @UpdateDateColumn()
   suaLuc?: Date;
+
+  @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.cuaHang)
+  dsPhieuXuatKho?: PhieuXuatKho[];
 }

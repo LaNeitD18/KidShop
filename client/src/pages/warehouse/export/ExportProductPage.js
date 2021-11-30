@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import AppButton from '../../components/AppButton';
-import { ContentHeader } from '../../components/Content';
-import AppTable from '../../components/AppTable';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { deleteWarehouse, fetchAllWarehouses } from '../../api/warehouse';
+import AppButton from '../../../components/AppButton';
+import { ContentHeader } from '../../../components/Content';
+import AppTable from '../../../components/AppTable';
+import useApiFeedback from '../../../hooks/useApiFeedback';
+import { deleteWarehouse, fetchAllWarehouses } from '../../../api/warehouse';
 import { message } from 'antd';
-import CommonString from '../../constants/string';
+import CommonString from '../../../constants/string';
 
 const columns = [
   {
-    title: 'Mã kho',
+    title: 'Mã phiếu xuất kho',
     id: true,
-    idFormat: ['K', 4],
+    idFormat: ['PXK', 4],
     searchable: true,
     sortable: true,
   },
@@ -36,7 +36,7 @@ const columns = [
   },
 ];
 
-export default function WarehousePage() {
+export default function ExportProductPage() {
   const [selectedRows, setSelectedRows] = useState([]);
   const { loading, apiCall, result } = useApiFeedback();
   const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
@@ -68,7 +68,7 @@ export default function WarehousePage() {
     <div>
       <ContentHeader title={CommonString.WAREHOUSE_TITLE}>
         <AppButton type="add" link="add" responsive>
-          {CommonString.WAREHOUSE_ADD}
+          Tạo phiếu xuất kho
         </AppButton>
         {!!selectedRows.length && (
           <AppButton
@@ -86,7 +86,7 @@ export default function WarehousePage() {
         columns={columns}
         data={result?.data}
         onSelectRows={setSelectedRows}
-        itemName="kho"
+        itemName="phiếu xuất kho"
       />
     </div>
   );

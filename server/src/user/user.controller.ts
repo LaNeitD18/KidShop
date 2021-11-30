@@ -41,7 +41,7 @@ export class UserController {
     const existingUser = await this.userService.findByUsername(
       data.tenTaiKhoan,
     );
-    if (existingUser.length) {
+    if (existingUser?.length) {
       return res.status(HttpStatus.CONFLICT).send(`Username taken`);
     }
 

@@ -1,3 +1,4 @@
+import { WarehouseModule } from './../warehouse/warehouse.module';
 import { StoreModule } from './../store/store.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, forwardRef } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { NguoiDung } from './entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([NguoiDung]),
     forwardRef(() => StoreModule),
+    forwardRef(() => WarehouseModule),
   ],
   controllers: [UserController],
   providers: [UserService],
