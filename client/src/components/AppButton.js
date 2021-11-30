@@ -45,10 +45,13 @@ const mapType = {
       link: '../',
     },
   },
+  normal: {
+    buttonProps: {},
+  },
 };
 
 export default function AppButton({
-  type,
+  type = 'normal',
   className,
   children,
   responsive,
@@ -58,6 +61,7 @@ export default function AppButton({
   confirm,
   loading,
   icon,
+  buttonType,
   ...rest
 }) {
   const media = useResponsive();
@@ -82,12 +86,17 @@ export default function AppButton({
     }
   };
 
+  icon = icon || mapType[type].buttonProps.icon;
+  buttonType = buttonType || mapType[type].buttonProps.type;
+
   return (
     <Button
       className={className}
       onClick={handleClick}
       loading={loading}
       {...mapType[type].buttonProps}
+      icon={icon}
+      type={buttonType}
       {...rest}
     >
       {media.isXs || !responsive

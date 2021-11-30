@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
-import { Form, Input, message } from 'antd';
+import { DatePicker, Form, Input, message, TimePicker, Typography } from 'antd';
 import { ContentHeader } from '../../../components/Content';
 import {
   deleteImportReceipt,
@@ -12,10 +12,13 @@ import { getProductList } from '../../../api/product';
 import { SelectInput } from '../../../components/Inputs';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
-import { inputRuleNaN } from '../../../utils/string';
+import { currency, inputRuleNaN } from '../../../utils/string';
 import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 import AppTable from '../../../components/AppTable';
+import { PlusOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 
 const addConsts = {
   title: 'Tạo phiếu nhập kho',
@@ -161,15 +164,16 @@ export default function EditImportReceiptPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid column={2}>
-        <div>
-          <Form
-            form={formAddDetail}
-            name="create-import-detail"
-            layout="vertical"
-            onFinish={onFinishAddDetail}
-            autoComplete="off"
-          >
+      <div>
+        <Form
+          className="sm:grid grid-cols-12 gap-x-5"
+          form={formAddDetail}
+          name="create-import-detail"
+          layout="vertical"
+          onFinish={onFinishAddDetail}
+          autoComplete="off"
+        >
+          <div className="col-span-4">
             <Form.Item
               label="Mặt hàng"
               name="idMatHang"
@@ -203,38 +207,53 @@ export default function EditImportReceiptPage({ mode }) {
               <Input size="large" />
             </Form.Item>
 
-            <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
-              <Form.Item className="flex-1">
-                <AppButton
-                  type="done"
-                  className="w-full"
-                  htmlType="submit"
-                  size="large"
-                >
-                  Thêm mặt hàng
-                </AppButton>
-              </Form.Item>
+            <Form.Item>
+              <AppButton
+                type="add"
+                className="w-full mt-4"
+                htmlType="submit"
+                size="large"
+              >
+                Thêm vào phiếu
+              </AppButton>
+            </Form.Item>
+          </div>
+
+          <div className="col-span-8">
+            <Form.Item label="Chi tiết phiếu">
+              <AppTable columns={columns} data={listNewDetails} minCols={3} />
+            </Form.Item>
+          </div>
+        </Form>
+
+        <Form
+          className="col-span-12 sm:grid grid-cols-2 gap-x-5"
+          form={formAddReceipt}
+          name="create-import-receipt"
+          layout="vertical"
+          onFinish={onFinishAddReceipt}
+          autoComplete="off"
+        >
+          <Form.Item label="Ghi chú" name="ghiChu">
+            <Input.TextArea
+              size="large"
+              autoSize={{ minRows: 5, maxRows: 5 }}
+              showCount
+              maxLength={300}
+            />
+          </Form.Item>
+          <div className="flex flex-col">
+            <Form.Item label="Thời gian tạo" name="thoiGian">
+              <div className="flex gap-x-2">
+                <DatePicker size="large" className="flex-1" />
+                <TimePicker size="large" className="flex-1" format="HH:mm" />
+              </div>
+            </Form.Item>
+            <div className="flex justify-between gap-y-1 -mt-2">
+              <Text>Tổng tiền</Text>
+              <Text className="font-semibold">{currency(sumMoney)}</Text>
             </div>
-          </Form>
-        </div>
-        <div>
-          <Form
-            form={formAddReceipt}
-            name="create-import-receipt"
-            layout="vertical"
-            onFinish={onFinishAddReceipt}
-            autoComplete="off"
-          >
-            <Form.Item label="Danh sách mặt hàng" name="listProduct">
-              <AppTable columns={columns} data={listNewDetails} />
-            </Form.Item>
-            <Form.Item label="Tổng tiền" name="tongTien">
-              <Input size="large" disabled={true} value={sumMoney} />
-            </Form.Item>
-            <Form.Item label="Ghi chú" name="ghiChu">
-              <Input size="large" />
-            </Form.Item>
-            <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xs:mt-12">
+            <div className="xs:flex flex-row-reverse items-center gap-6 mt-4">
               <Form.Item className="flex-1">
                 <AppButton
                   loading={postLoad || editLoad}
@@ -264,12 +283,9 @@ export default function EditImportReceiptPage({ mode }) {
                 </Form.Item>
               )}
             </div>
-          </Form>
-        </div>
-        {/* <div className="space-y-8">
-          
-        </div> */}
-      </FormGrid>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 }

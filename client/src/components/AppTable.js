@@ -1,20 +1,21 @@
-import { Table, Input, Button, Popover, Image } from "antd";
-import { useRef } from "react";
-import Moment from "react-moment";
-import { autoSorter, withKeys } from "../utils/array";
-import { SearchOutlined } from "@ant-design/icons";
-import { useResponsive } from "./Media";
-import { extractNumber, idString } from "../utils/string";
-import { Link } from "react-router-dom";
-import { BsBarChartLine } from "react-icons/bs";
-import { TextButton } from "./AppButton";
+import { Table, Input, Button, Popover, Image } from 'antd';
+import { useRef } from 'react';
+import Moment from 'react-moment';
+import { autoSorter, withKeys } from '../utils/array';
+import { SearchOutlined } from '@ant-design/icons';
+import { useResponsive } from './Media';
+import { extractNumber, idString } from '../utils/string';
+import { Link } from 'react-router-dom';
+import { BsBarChartLine } from 'react-icons/bs';
+import { TextButton } from './AppButton';
 
 export default function AppTable({
   columns = [],
   data = [],
   onSelectRows = () => {},
   loading,
-  itemName = "dòng",
+  itemName = 'dòng',
+  minCols = 2,
 }) {
   const media = useResponsive();
 
@@ -40,8 +41,8 @@ export default function AppTable({
       render,
     }) => {
       if (id) {
-        title = title || "ID";
-        dataIndex = dataIndex || "id";
+        title = title || 'ID';
+        dataIndex = dataIndex || 'id';
         render = render
           ? render
           : (id) =>
@@ -76,8 +77,8 @@ export default function AppTable({
               );
       }
       if (createdTime) {
-        title = title || "Ngày tạo";
-        dataIndex = dataIndex || "taoLuc";
+        title = title || 'Ngày tạo';
+        dataIndex = dataIndex || 'taoLuc';
         render = render
           ? render
           : (createdTime) => <Moment fromNow>{createdTime}</Moment>;
@@ -125,7 +126,7 @@ export default function AppTable({
                   onPressEnter={() => {
                     handleSearch(selectedKeys, confirm, dataIndex);
                   }}
-                  style={{ marginBottom: "0.75rem", display: "block" }}
+                  style={{ marginBottom: '0.75rem', display: 'block' }}
                 />
                 <div className="flex gap-2">
                   <Button
@@ -152,7 +153,7 @@ export default function AppTable({
             <SearchOutlined
               className="text-xl p-2"
               style={{
-                color: filtered ? "#2EAADC" : undefined,
+                color: filtered ? '#2EAADC' : undefined,
               }}
             />
           ),
@@ -162,7 +163,7 @@ export default function AppTable({
                   .toString()
                   .toLowerCase()
                   .includes(value.toLowerCase())
-              : "",
+              : '',
           onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
               setTimeout(() => searchInput.current.select(), 100);
@@ -189,7 +190,7 @@ export default function AppTable({
   };
 
   const responsiveColumn = (cols) => {
-    if (!media.isLg) return cols.slice(0, 2);
+    if (!media.isLg) return cols.slice(0, minCols);
     return cols;
   };
 
