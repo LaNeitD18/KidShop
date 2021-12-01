@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import AppButton from '../../../components/AppButton';
 import { Form, Input, InputNumber, message } from 'antd';
 import { ContentHeader } from '../../../components/Content';
-import {
-  deleteStore,
-  editStore,
-  getStore,
-  postStore,
-} from '../../../api/store';
+import { deleteStore, editStore, getStore } from '../../../api/store';
 import { SelectInput, UploadImageInput } from '../../../components/Inputs';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -15,6 +10,7 @@ import { fireError, fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 import { ExpandableImage } from '../../../components/Images';
 import { fetchProducers } from '../../../api/producer';
+import { postProduct } from '../../../api/product';
 
 const addConsts = {
   title: 'Tạo mặt hàng',
@@ -71,7 +67,7 @@ export default function EditProductPage({ mode }) {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
-      postCall(postStore(dto), () => {
+      postCall(postProduct(dto), () => {
         fireSuccessModal({
           title: 'Tạo mặt hàng thành công',
           onOk: () => {
@@ -140,11 +136,11 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập tên đơn vị',
+                  message: 'Vui lòng nhập đơn vị',
                 },
               ]}
             >
-              <Input size="large" />
+              <Input size="large" defaultValue="cái" />
             </Form.Item>
 
             <Form.Item label="Màu sắc" name="mauSac">

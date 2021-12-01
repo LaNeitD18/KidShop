@@ -13,6 +13,7 @@ const columns = [
     idFormat: ['MH', 6],
     searchable: true,
     sortable: true,
+    preview: 'hinhAnh',
   },
   {
     title: 'Địa chỉ',
