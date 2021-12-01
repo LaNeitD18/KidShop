@@ -22,8 +22,8 @@ export class MatHang {
   tenMH: string;
 
   @ApiProperty()
-  @Column()
-  donVi: string;
+  @Column({ nullable: true })
+  donVi?: string;
 
   @ApiProperty()
   @Column()

@@ -5,7 +5,7 @@ export class UpdateProductDto {
   tenMH: string;
 
   @ApiProperty()
-  donVi: string;
+  donVi?: string;
 
   @ApiProperty()
   giaNhap: number;

@@ -34,11 +34,13 @@ export const inputRuleNaN = (message = 'Vui lòng chỉ nhập số') => ({
   message: message,
 });
 
+export const currenyInt = (num) => {
+  return num
+    .toFixed(2)
+    .replace(/\d(?=(\d{3})+\.)/g, '$&,')
+    .slice(0, -3);
+};
+
 export const currency = (num) => {
-  return (
-    num
-      .toFixed(2)
-      .replace(/\d(?=(\d{3})+\.)/g, '$&,')
-      .slice(0, -3) + ' VNĐ'
-  );
+  return currenyInt(num) + ' VNĐ';
 };

@@ -1,9 +1,9 @@
-import { Input, message, Select, Upload } from "antd";
-import { useEffect, useState } from "react";
-import { fireError } from "../utils/feedback";
-import { idString } from "../utils/string";
-import { LoadingOutlined } from "@ant-design/icons";
-import { IoCloudUploadOutline } from "react-icons/io5";
+import { Input, message, Select, Upload } from 'antd';
+import { useEffect, useState } from 'react';
+import { fireError } from '../utils/feedback';
+import { idString } from '../utils/string';
+import { LoadingOutlined } from '@ant-design/icons';
+import { IoCloudUploadOutline } from 'react-icons/io5';
 
 export function SelectInput({
   data,
@@ -32,35 +32,38 @@ export function SelectInput({
   );
 }
 
-export function UploadImageInput({ onValueChange, ...rest }) {
+export function UploadImageInput({ onValueChange, defaultValue, ...rest }) {
   const [progress, setProgress] = useState(0);
   const [fetching, setFetching] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(defaultValue);
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     onValueChange(value);
   }, [value, onValueChange]);
 
   const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
-      message.error("Chỉ cho phép định dạng hình ảnh (jpeg/png)");
+      message.error('Chỉ cho phép định dạng hình ảnh (jpeg/png)');
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error("Kích thước tệp tin tối đa 2MB");
+      message.error('Kích thước tệp tin tối đa 2MB');
     }
     return isJpgOrPng && isLt2M;
   };
 
   const handleChange = (info) => {
-    if (info.file.status === "uploading") {
+    if (info.file.status === 'uploading') {
       setFetching(true);
       setValue(null);
       setProgress(Math.round(info.file.percent));
       return;
     }
-    if (info.file.status === "done") {
+    if (info.file.status === 'done') {
       setValue(info.file.response.data.url);
     } else {
       fireError(info.file.response);
@@ -74,7 +77,7 @@ export function UploadImageInput({ onValueChange, ...rest }) {
   return (
     <Input
       size="large"
-      placeholder={fetching ? `Đang tải lên ${progress}%` : "URL hình ảnh"}
+      placeholder={fetching ? `Đang tải lên ${progress}%` : 'URL hình ảnh'}
       name="imgUrl"
       onChange={handleChangeUrl}
       value={value}
@@ -93,7 +96,7 @@ export function UploadImageInput({ onValueChange, ...rest }) {
             ) : (
               <IoCloudUploadOutline className="text-lg" />
             )}
-            {fetching ? "Đang upload" : "Chọn tệp"}
+            {fetching ? 'Đang upload' : 'Chọn tệp'}
           </div>
         </Upload>
       }

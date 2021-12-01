@@ -136,7 +136,6 @@ export default function EditBranchPage({ mode }) {
           >
             <Form.Item
               label="Địa chỉ"
-              requiredMark="optional"
               name="diaChi"
               rules={[
                 {
@@ -159,7 +158,6 @@ export default function EditBranchPage({ mode }) {
             <Form.Item
               label="Chủ cửa hàng"
               name="idChuCuaHang"
-              requiredMark="optional"
               rules={[
                 {
                   required: true,
@@ -178,7 +176,6 @@ export default function EditBranchPage({ mode }) {
             <Form.Item
               label="Số điện thoại"
               name="sdt"
-              requiredMark="optional"
               rules={[
                 {
                   required: true,
