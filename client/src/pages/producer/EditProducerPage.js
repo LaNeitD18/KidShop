@@ -1,31 +1,31 @@
-import React, { useEffect } from "react";
-import AppButton from "../../components/AppButton";
-import { Form, Input, message } from "antd";
-import { ContentHeader } from "../../components/Content";
+import React, { useEffect } from 'react';
+import AppButton from '../../components/AppButton';
+import { Form, Input, message } from 'antd';
+import { ContentHeader } from '../../components/Content';
 import {
   deleteProducer,
   editProducer,
   fetchAProducer,
   createProducer,
-} from "../../api/producer";
-import useApiFeedback from "../../hooks/useApiFeedback";
-import { useNavigate, useParams } from "react-router-dom";
-import { inputRuleNaN } from "../../utils/string";
-import { fireSuccessModal } from "../../utils/feedback";
-import { FormGrid, OneColumnFormContainer } from "../../components/Grid";
+} from '../../api/producer';
+import useApiFeedback from '../../hooks/useApiFeedback';
+import { useNavigate, useParams } from 'react-router-dom';
+import { inputRuleNaN } from '../../utils/string';
+import { fireSuccessModal } from '../../utils/feedback';
+import { FormGrid, OneColumnFormContainer } from '../../components/Grid';
 
 const addConsts = {
-  title: "Tạo nhà sản xuất",
-  okText: "Hoàn tất",
+  title: 'Tạo nhà sản xuất',
+  okText: 'Hoàn tất',
 };
 
 const editConsts = {
-  title: "Sửa nhà sản xuất",
-  okText: "Lưu thay đổi",
+  title: 'Sửa nhà sản xuất',
+  okText: 'Lưu thay đổi',
 };
 
 export default function EditProducerPage({ mode }) {
-  const isEdit = mode === "edit";
+  const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
   const { producerId } = useParams();
@@ -33,10 +33,10 @@ export default function EditProducerPage({ mode }) {
 
   const [form] = Form.useForm();
 
-  const { apiCall: getCall } = useApiFeedback();
-  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
-  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
-  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
+  const [getCall] = useApiFeedback();
+  const [postCall, postLoad] = useApiFeedback();
+  const [editCall, editLoad] = useApiFeedback();
+  const [deleteCall, deleteLoad] = useApiFeedback();
 
   useEffect(() => {
     if (isEdit) {
@@ -49,17 +49,17 @@ export default function EditProducerPage({ mode }) {
   const onFinish = (values) => {
     if (isEdit) {
       editCall(editProducer(producerId, values), () => {
-        message.success("Đã lưu thay đổi thành công");
+        message.success('Đã lưu thay đổi thành công');
       });
     } else {
       postCall(createProducer(values), () => {
         fireSuccessModal({
-          title: "Tạo nhà sản xuất thành công",
+          title: 'Tạo nhà sản xuất thành công',
           onOk: () => {
             form.resetFields();
           },
           onCancel: () => {
-            navigate("../");
+            navigate('../');
           },
         });
       });
@@ -68,8 +68,8 @@ export default function EditProducerPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteProducer(producerId), () => {
-      message.success("Đã xóa thành công");
-      navigate("../");
+      message.success('Đã xóa thành công');
+      navigate('../');
     });
   }
 
@@ -95,7 +95,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập tên nhà sản xuất",
+                  message: 'Vui lòng nhập tên nhà sản xuất',
                 },
               ]}
             >
@@ -108,7 +108,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập địa chỉ",
+                  message: 'Vui lòng nhập địa chỉ',
                 },
               ]}
             >
@@ -121,7 +121,7 @@ export default function EditProducerPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập số điện thoại!",
+                  message: 'Vui lòng nhập số điện thoại!',
                 },
                 inputRuleNaN(),
               ]}
@@ -150,7 +150,7 @@ export default function EditProducerPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: "Bạn có muốn xóa nhà sản xuất này?",
+                      title: 'Bạn có muốn xóa nhà sản xuất này?',
                     }}
                   >
                     Xóa nhà sản xuất

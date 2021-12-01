@@ -45,10 +45,10 @@ export default function EditWarehousePage({ mode }) {
   const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
   const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const { apiCall: getCall } = useApiFeedback();
-  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
-  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
-  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
+  const [getCall] = useApiFeedback();
+  const [postCall, postLoad] = useApiFeedback();
+  const [editCall, editLoad] = useApiFeedback();
+  const [deleteCall, deleteLoad] = useApiFeedback();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {

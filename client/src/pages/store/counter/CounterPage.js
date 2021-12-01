@@ -40,8 +40,8 @@ const columns = [
 ];
 
 export default function CounterPage() {
-  const { loading, apiCall, result } = useApiFeedback();
-  const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
+  const [apiCall, loading, error, result] = useApiFeedback();
+  const [deleteCall, deleteLoading] = useApiFeedback();
 
   const { storeId } = useParams();
 

@@ -57,10 +57,10 @@ export default function EditImportReceiptPage({ mode }) {
   const [listNewDetails, setListNewDetails] = useState([]);
   const [sumMoney, setSumMoney] = useState(0);
 
-  const { apiCall: getCall } = useApiFeedback();
-  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
-  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
-  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
+  const [getCall] = useApiFeedback();
+  const [postCall, postLoad] = useApiFeedback();
+  const [editCall, editLoad] = useApiFeedback();
+  const [deleteCall, deleteLoad] = useApiFeedback();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {

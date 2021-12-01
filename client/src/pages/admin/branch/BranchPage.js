@@ -37,11 +37,11 @@ const columns = [
 
 export default function BranchPage() {
   const [selectedRows, setSelectedRows] = useState([]);
-  const { loading, apiCall, result } = useApiFeedback();
-  const { loading: deleteLoading, apiCall: deleteCall } = useApiFeedback();
+  const [storeListCall, storeListLoading, error, storeList] = useApiFeedback();
+  const [deleteCall, deleteLoading] = useApiFeedback();
 
   function fetchStore() {
-    apiCall(getStoreList());
+    storeListCall(getStoreList());
   }
 
   useEffect(() => {
@@ -81,9 +81,9 @@ export default function BranchPage() {
         )}
       </ContentHeader>
       <AppTable
-        loading={loading}
+        loading={storeListLoading}
         columns={columns}
-        data={result?.data}
+        data={storeList?.data}
         onSelectRows={setSelectedRows}
         itemName="chi nhánh"
       />

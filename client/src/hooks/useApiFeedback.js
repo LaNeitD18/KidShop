@@ -33,5 +33,5 @@ export default function useApiFeedback() {
     }
   };
 
-  return { apiCall, loading, result, error };
+  return [apiCall, loading, error, result];
 }

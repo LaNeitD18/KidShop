@@ -1,46 +1,33 @@
-import React, { useEffect, useRef, useState } from "react";
-import AppButton from "../../../components/AppButton";
-import {
-  Button,
-  Form,
-  Image,
-  Input,
-  InputNumber,
-  message,
-  Tooltip,
-  Upload,
-} from "antd";
-import { ContentHeader } from "../../../components/Content";
+import React, { useEffect, useRef, useState } from 'react';
+import AppButton from '../../../components/AppButton';
+import { Form, Input, InputNumber, message } from 'antd';
+import { ContentHeader } from '../../../components/Content';
 import {
   deleteStore,
   editStore,
   getStore,
   postStore,
-} from "../../../api/store";
-import { getUserList } from "../../../api/user";
-import { SelectInput, UploadImageInput } from "../../../components/Inputs";
-import useApiFeedback from "../../../hooks/useApiFeedback";
-import { useNavigate, useParams } from "react-router-dom";
-import { inputRuleNaN } from "../../../utils/string";
-import { fireError, fireSuccessModal } from "../../../utils/feedback";
-import { FormGrid } from "../../../components/Grid";
-
-import classNames from "classnames";
-import { ExpandableImage } from "../../../components/Images";
-import { fetchProducers } from "../../../api/producer";
+} from '../../../api/store';
+import { SelectInput, UploadImageInput } from '../../../components/Inputs';
+import useApiFeedback from '../../../hooks/useApiFeedback';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fireError, fireSuccessModal } from '../../../utils/feedback';
+import { FormGrid } from '../../../components/Grid';
+import { ExpandableImage } from '../../../components/Images';
+import { fetchProducers } from '../../../api/producer';
 
 const addConsts = {
-  title: "Tạo mặt hàng",
-  okText: "Hoàn tất",
+  title: 'Tạo mặt hàng',
+  okText: 'Hoàn tất',
 };
 
 const editConsts = {
-  title: "Sửa mặt hàng",
-  okText: "Lưu thay đổi",
+  title: 'Sửa mặt hàng',
+  okText: 'Lưu thay đổi',
 };
 
 export default function EditProductPage({ mode }) {
-  const isEdit = mode === "edit";
+  const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
   const { branchId } = useParams();
@@ -48,10 +35,10 @@ export default function EditProductPage({ mode }) {
 
   const [form] = Form.useForm();
 
-  const { apiCall: getCall } = useApiFeedback();
-  const { apiCall: postCall, loading: postLoad } = useApiFeedback();
-  const { apiCall: editCall, loading: editLoad } = useApiFeedback();
-  const { apiCall: deleteCall, loading: deleteLoad } = useApiFeedback();
+  const [getCall] = useApiFeedback();
+  const [postCall, postLoad] = useApiFeedback();
+  const [editCall, editLoad] = useApiFeedback();
+  const [deleteCall, deleteLoad] = useApiFeedback();
   const [producers, setProducers] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
 
@@ -81,17 +68,17 @@ export default function EditProductPage({ mode }) {
     console.log(dto);
     if (isEdit) {
       editCall(editStore(branchId, dto), () => {
-        message.success("Đã lưu thay đổi thành công");
+        message.success('Đã lưu thay đổi thành công');
       });
     } else {
       postCall(postStore(dto), () => {
         fireSuccessModal({
-          title: "Tạo mặt hàng thành công",
+          title: 'Tạo mặt hàng thành công',
           onOk: () => {
             form.resetFields();
           },
           onCancel: () => {
-            navigate("../");
+            navigate('../');
           },
         });
       });
@@ -100,8 +87,8 @@ export default function EditProductPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteStore(branchId), () => {
-      message.success("Đã xóa thành công");
-      navigate("../");
+      message.success('Đã xóa thành công');
+      navigate('../');
     });
   }
 
@@ -135,7 +122,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập tên mặt hàng",
+                  message: 'Vui lòng nhập tên mặt hàng',
                 },
               ]}
             >
@@ -153,7 +140,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập tên đơn vị",
+                  message: 'Vui lòng nhập tên đơn vị',
                 },
               ]}
             >
@@ -176,7 +163,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn nhà sản xuất",
+                  message: 'Vui lòng chọn nhà sản xuất',
                 },
               ]}
             >
@@ -195,7 +182,7 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn nhà cung cấp",
+                  message: 'Vui lòng chọn nhà cung cấp',
                 },
               ]}
             >
@@ -214,17 +201,17 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập giá nhập",
+                  message: 'Vui lòng nhập giá nhập',
                 },
               ]}
             >
               <InputNumber
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 min={0}
                 formatter={(value) =>
-                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
-                parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                 size="large"
                 step={1000}
               />
@@ -237,17 +224,17 @@ export default function EditProductPage({ mode }) {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập giá bán",
+                  message: 'Vui lòng nhập giá bán',
                 },
               ]}
             >
               <InputNumber
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 min={0}
                 formatter={(value) =>
-                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
-                parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                 size="large"
                 step={1000}
               />
@@ -273,7 +260,7 @@ export default function EditProductPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: "Bạn có muốn xóa mặt hàng này?",
+                      title: 'Bạn có muốn xóa mặt hàng này?',
                     }}
                   >
                     Xóa mặt hàng
