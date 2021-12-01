@@ -6,6 +6,7 @@ import useApiFeedback from '../../hooks/useApiFeedback';
 import { deleteWarehouse, fetchAllWarehouses } from '../../api/warehouse';
 import { message } from 'antd';
 import CommonString from '../../constants/string';
+import { useRoles } from '../../context/RolesContext';
 
 const columns = [
   {
@@ -41,6 +42,8 @@ export default function WarehousePage() {
   const [apiCall, loading, error, result] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
 
+  const [roles, updateRoles] = useRoles();
+
   function fetchWarehouses() {
     apiCall(fetchAllWarehouses());
   }
@@ -57,6 +60,7 @@ export default function WarehousePage() {
         })
       ),
       () => {
+        updateRoles();
         message.success('Xóa thành công');
         setSelectedRows([]);
         fetchWarehouses();

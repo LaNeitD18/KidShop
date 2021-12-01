@@ -16,6 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../../utils/string';
 import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
+import { useRoles } from '../../../context/RolesContext';
 
 const addConsts = {
   title: 'Tạo chi nhánh',
@@ -49,6 +50,8 @@ export default function EditBranchPage({ mode }) {
   const [editCall, editLoading] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
   const [users, setUsers] = useState([]);
+
+  const [roles, updateRoles] = useRoles();
 
   useEffect(() => {
     getUserList().then((res) => {
@@ -86,6 +89,7 @@ export default function EditBranchPage({ mode }) {
       });
     } else {
       postStoreCall(postStore(dto), () => {
+        updateRoles();
         fireSuccessModal({
           title: 'Tạo chi nhánh thành công',
           onOk: () => {
@@ -103,6 +107,7 @@ export default function EditBranchPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteStore(branchId), () => {
+      updateRoles();
       message.success('Đã xóa thành công');
       navigate('../');
     });

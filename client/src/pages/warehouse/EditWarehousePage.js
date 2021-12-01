@@ -17,6 +17,7 @@ import { fireSuccessModal, useFireSuccessModal } from '../../utils/feedback';
 import { FormGrid } from '../../components/Grid';
 import CommonString from '../../constants/string';
 import { getUserList } from '../../api/user';
+import { useRoles } from '../../context/RolesContext';
 
 const addConsts = {
   title: CommonString.WAREHOUSE_ADD,
@@ -50,6 +51,8 @@ export default function EditWarehousePage({ mode }) {
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
   const [users, setUsers] = useState([]);
+
+  const [roles, updateRoles] = useRoles();
 
   useEffect(() => {
     getUserList().then((res) => {
@@ -86,6 +89,7 @@ export default function EditWarehousePage({ mode }) {
       });
     } else {
       postCall(createWarehouse(dto), () => {
+        updateRoles();
         fireSuccessModal({
           title: CommonString.WAREHOUSE_ADD_SUCCESS,
           onOk: () => {
@@ -103,6 +107,7 @@ export default function EditWarehousePage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteWarehouse(warehouseId), () => {
+      updateRoles();
       message.success('Đã xóa thành công');
       navigate('../');
     });

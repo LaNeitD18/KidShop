@@ -21,16 +21,13 @@ import EditProductPage from './pages/business/product/EditProductPage';
 import ImportProductPage from './pages/warehouse/import/ImportProductPage';
 import ExportProductPage from './pages/warehouse/export/ExportProductPage';
 import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
+import { fetchAllWarehouses } from './api/warehouse';
 
 function App() {
-  const [roles, setRoles] = useRoles();
+  const [roles, updateRoles] = useRoles();
   useEffect(() => {
-    if (!roles?.stores) {
-      getStoreList().then(({ data }) => {
-        setRoles((prev) => ({ ...prev, stores: data.map((d) => d.id) }));
-      });
-    }
-  }, [roles]);
+    updateRoles();
+  }, []);
 
   return (
     <Routes>
@@ -101,6 +98,7 @@ function App() {
           </Route>
           <Route path="storage">
             <Route index element={<Navigate to="warehouses" replace />} />
+
             <Route path="warehouses">
               <Route index element={<WarehousePage />} />
               <Route
@@ -110,7 +108,20 @@ function App() {
               <Route path="add" element={<EditWarehousePage />} />
             </Route>
           </Route>
-          <Route path="warehouse">
+          <Route
+            path="warehouse"
+            element={
+              <Navigate
+                to={
+                  roles?.warehouses
+                    ? roles?.warehouses[0].toString()
+                    : '/error/403'
+                }
+                replace
+              />
+            }
+          />
+          <Route path="warehouse/:warehouseId">
             <Route index element={<Navigate to="import-product" replace />} />
             <Route path="import-product">
               <Route index element={<ImportProductPage />} />

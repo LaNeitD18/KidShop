@@ -167,6 +167,8 @@ const navMenu = [
   {
     path: 'warehouse',
     title: 'Kho',
+    context: 'warehouses',
+    idFormat: ['KH', 4],
     children: [
       {
         path: 'import-product',

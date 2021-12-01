@@ -5,6 +5,7 @@ import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { deleteStore, getStoreList } from '../../../api/store';
 import { message } from 'antd';
+import { useRoles } from '../../../context/RolesContext';
 
 const columns = [
   {
@@ -40,6 +41,8 @@ export default function BranchPage() {
   const [storeListCall, storeListLoading, error, storeList] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
 
+  const [roles, updateRoles] = useRoles();
+
   function fetchStore() {
     storeListCall(getStoreList());
   }
@@ -56,6 +59,7 @@ export default function BranchPage() {
         })
       ),
       () => {
+        updateRoles();
         message.success('Xóa thành công');
         setSelectedRows([]);
         fetchStore();
