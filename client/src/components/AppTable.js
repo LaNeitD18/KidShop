@@ -1,7 +1,7 @@
 import { Table, Input, Button, Popover, Image } from 'antd';
 import { useRef } from 'react';
 import Moment from 'react-moment';
-import { autoSorter, withKeys } from '../utils/array';
+import { arrayFind, autoSorter, withKeys } from '../utils/array';
 import { SearchOutlined } from '@ant-design/icons';
 import { useResponsive } from './Media';
 import { extractNumber, idString } from '../utils/string';
@@ -16,6 +16,10 @@ export default function AppTable({
   loading,
   itemName = 'dòng',
   minCols = 2,
+  size,
+  className,
+  defaultPageSize = 7,
+  ...rest
 }) {
   const media = useResponsive();
 
@@ -49,13 +53,13 @@ export default function AppTable({
               preview ? (
                 <Popover
                   placement="right"
-                  title="Tên mặt hàng"
+                  title="Xem trước"
                   content={
                     <div className="flex flex-col gap-2">
                       <Image
                         width={200}
                         height={200}
-                        src="https://miro.medium.com/max/2755/1*9JkkcXOhMK_aM5F6ISjMVQ.png"
+                        src={arrayFind(data, id, 'id')?.hinhAnh}
                         placeholder={true}
                         preview={false}
                         className="object-cover rounded-sm"
@@ -190,7 +194,7 @@ export default function AppTable({
   };
 
   const responsiveColumn = (cols) => {
-    if (!media.isLg) return cols.slice(0, minCols);
+    if (!media.isXl) return cols.slice(0, minCols);
     return cols;
   };
 
@@ -205,11 +209,14 @@ export default function AppTable({
         }}
         loading={loading}
         pagination={{
-          defaultPageSize: 7,
-          pageSizeOptions: [7, 15, 20, 50],
+          defaultPageSize: defaultPageSize,
+          pageSizeOptions: [defaultPageSize, 15, 20, 50],
           showTotal: (total, range) =>
             `${range[0]} đến ${range[1]} trong ${total} ${itemName}`,
         }}
+        size={size}
+        className={className}
+        {...rest}
       />
     </div>
   );

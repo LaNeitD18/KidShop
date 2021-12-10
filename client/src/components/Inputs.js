@@ -38,10 +38,13 @@ export function SelectInput({
   );
 }
 
-export function UploadImageInput({ onValueChange, ...rest }) {
+export function UploadImageInput({ onValueChange, defaultValue, ...rest }) {
   const [progress, setProgress] = useState(0);
   const [fetching, setFetching] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(defaultValue);
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     onValueChange(value);

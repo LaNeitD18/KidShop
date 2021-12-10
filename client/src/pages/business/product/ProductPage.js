@@ -5,10 +5,12 @@ import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
 import { deleteStore, getStoreList } from '../../../api/store';
 import { message } from 'antd';
+import { deleteProduct, getProductList } from '../../../api/product';
+import { currenyInt } from '../../../utils/string';
 
 const columns = [
   {
-    title: 'Mã mặt hàng',
+    title: 'Mã MH',
     id: true,
     idFormat: ['MH', 6],
     searchable: true,
@@ -16,50 +18,79 @@ const columns = [
     preview: 'hinhAnh',
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
+    title: 'Tên MH',
+    dataIndex: 'tenMH',
     searchable: true,
+    sortable: true,
   },
   {
-    title: 'SDT',
-    dataIndex: 'sdt',
-    searchable: true,
+    title: 'Giá nhập',
+    dataIndex: 'giaNhap',
+    sortable: true,
+    render: (val) => currenyInt(val),
   },
   {
-    title: 'Chủ cửa hàng',
-    dataIndex: ['chuCuaHang', 'hoTen'],
-    searchable: true,
+    title: 'Giá bán',
+    dataIndex: 'giaBan',
+    sortable: true,
+    render: (val) => currenyInt(val),
   },
   {
-    createdTime: true,
+    title: 'Nhà SX',
+    dataIndex: ['nhaSX', 'tenNSX'],
+    searchable: true,
+    sortable: true,
+  },
+  {
+    title: 'Nhà CC',
+    dataIndex: ['nhaCC', 'tenNCC'],
+    searchable: true,
+    sortable: true,
+  },
+  {
+    title: 'Đơn vị',
+    dataIndex: 'donVi',
+    searchable: true,
+    sortable: true,
+  },
+  {
+    title: 'Màu',
+    dataIndex: 'mauSac',
+    searchable: true,
+    sortable: true,
+  },
+  {
+    title: 'Size',
+    dataIndex: 'kichThuoc',
+    searchable: true,
     sortable: true,
   },
 ];
 
 export default function ProductPage() {
   const [selectedRows, setSelectedRows] = useState([]);
-  const [apiCall, loading, error, result] = useApiFeedback();
+  const [apiCall, loading, error, productList] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
 
-  function fetchStore() {
-    apiCall(getStoreList());
+  function fetchProductList() {
+    apiCall(getProductList());
   }
 
   useEffect(() => {
-    fetchStore();
+    fetchProductList();
   }, []);
 
   function handleDelete() {
     deleteCall(
       Promise.all(
         selectedRows.map((row) => {
-          return deleteStore(row);
+          return deleteProduct(row);
         })
       ),
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchStore();
+        fetchProductList();
       }
     );
   }
@@ -82,11 +113,14 @@ export default function ProductPage() {
         )}
       </ContentHeader>
       <AppTable
+        size="small"
         loading={loading}
         columns={columns}
-        data={result?.data}
+        data={productList?.data}
         onSelectRows={setSelectedRows}
         itemName="mặt hàng"
+        defaultPageSize={10}
+        minCols={4}
       />
     </div>
   );

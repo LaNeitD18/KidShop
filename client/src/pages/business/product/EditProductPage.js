@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppButton from '../../../components/AppButton';
 import { Form, Input, InputNumber, message } from 'antd';
 import { ContentHeader } from '../../../components/Content';
@@ -10,7 +10,13 @@ import { fireError, fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 import { ExpandableImage } from '../../../components/Images';
 import { fetchProducers } from '../../../api/producer';
-import { postProduct } from '../../../api/product';
+import {
+  deleteProduct,
+  editProduct,
+  getProduct,
+  postProduct,
+} from '../../../api/product';
+import { fetchAllSuppliers } from '../../../api/supplier';
 
 const addConsts = {
   title: 'Tạo mặt hàng',
@@ -26,7 +32,7 @@ export default function EditProductPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { branchId } = useParams();
+  const { productId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -37,6 +43,7 @@ export default function EditProductPage({ mode }) {
   const [deleteCall, deleteLoad] = useApiFeedback();
   const [producers, setProducers] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [hinhAnh, setHinhAnh] = useState(null);
 
   useEffect(() => {
     fetchProducers()
@@ -44,15 +51,21 @@ export default function EditProductPage({ mode }) {
         setProducers(res.data);
       })
       .catch((err) => fireError(err));
+    fetchAllSuppliers()
+      .then(({ data }) => setSuppliers(data))
+      .catch((err) => fireError(err));
   }, []);
 
   useEffect(() => {
     if (isEdit) {
-      getCall(getStore(branchId), ({ data }) => {
+      getCall(getProduct(productId), ({ data }) => {
+        console.log('get product', data);
         form.setFieldsValue({
           ...data,
-          idChuCuaHang: data?.chuCuaHang?.id,
+          idNCC: data?.nhaCC?.id,
+          idNSX: data?.nhaSX?.id,
         });
+        setHinhAnh(data?.hinhAnh);
       });
     }
   }, []);
@@ -60,10 +73,11 @@ export default function EditProductPage({ mode }) {
   const onFinish = (values) => {
     const dto = {
       ...values,
+      hinhAnh,
     };
     console.log(dto);
     if (isEdit) {
-      editCall(editStore(branchId, dto), () => {
+      editCall(editProduct(productId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
@@ -82,13 +96,11 @@ export default function EditProductPage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteStore(branchId), () => {
+    deleteCall(deleteProduct(productId), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });
   }
-
-  const [imgUrl, setImgUrl] = useState(null);
 
   return (
     <div>
@@ -107,13 +119,12 @@ export default function EditProductPage({ mode }) {
         <FormGrid column={3}>
           <div>
             <Form.Item label="Ảnh sản phẩm">
-              <ExpandableImage src={imgUrl} height={454} />
+              <ExpandableImage src={hinhAnh} height={454} />
             </Form.Item>
           </div>
           <div>
             <Form.Item
               label="Tên mặt hàng"
-              requiredMark="optional"
               name="tenMH"
               rules={[
                 {
@@ -126,21 +137,14 @@ export default function EditProductPage({ mode }) {
             </Form.Item>
 
             <Form.Item label="Liên kết hình ảnh">
-              <UploadImageInput onValueChange={setImgUrl} />
+              <UploadImageInput
+                onValueChange={setHinhAnh}
+                defaultValue={hinhAnh}
+              />
             </Form.Item>
 
-            <Form.Item
-              label="Đơn vị"
-              requiredMark="optional"
-              name="donVi"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng nhập đơn vị',
-                },
-              ]}
-            >
-              <Input size="large" defaultValue="cái" />
+            <Form.Item label="Đơn vị" name="donVi">
+              <Input size="large" />
             </Form.Item>
 
             <Form.Item label="Màu sắc" name="mauSac">
@@ -151,11 +155,10 @@ export default function EditProductPage({ mode }) {
               <Input size="large" />
             </Form.Item>
           </div>
-          <div className="md:col-span-2 xl:col-span-1">
+          <div className="md:col-span-2 xl:col-span-1 md:grid md:grid-cols-2 xl:flex xl:flex-col gap-x-8 self-start">
             <Form.Item
               label="Nhà sản xuất"
               name="idNSX"
-              requiredMark="optional"
               rules={[
                 {
                   required: true,
@@ -168,13 +171,13 @@ export default function EditProductPage({ mode }) {
                   label: u.tenNSX,
                   value: u.id,
                 }))}
+                idFormat={['SX', 4]}
               />
             </Form.Item>
 
             <Form.Item
               label="Nhà cung cấp"
               name="idNCC"
-              requiredMark="optional"
               rules={[
                 {
                   required: true,
@@ -183,16 +186,16 @@ export default function EditProductPage({ mode }) {
               ]}
             >
               <SelectInput
-                data={producers.map((u) => ({
-                  label: u.tenNSX,
+                data={suppliers.map((u) => ({
+                  label: u.tenNCC,
                   value: u.id,
                 }))}
+                idFormat={['CC', 4]}
               />
             </Form.Item>
 
             <Form.Item
               label="Giá nhập (VNĐ)"
-              requiredMark="optional"
               name="giaNhap"
               rules={[
                 {
@@ -215,7 +218,6 @@ export default function EditProductPage({ mode }) {
 
             <Form.Item
               label="Giá bán (VNĐ)"
-              requiredMark="optional"
               name="giaBan"
               rules={[
                 {
@@ -235,7 +237,7 @@ export default function EditProductPage({ mode }) {
                 step={1000}
               />
             </Form.Item>
-            <div className="xs:flex flex-row-reverse items-center gap-6 mt-8 xl:mt-14">
+            <div className="xs:flex flex-row-reverse items-center gap-x-6 mt-6 xl:mt-8 md:col-span-2 xl:col-span-1 col-span-1 ">
               <Form.Item className="flex-1">
                 <AppButton
                   loading={postLoad || editLoad}
