@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useRoles } from './context/RolesContext';
-import { getStoreList } from './api/store';
 
 import ErrorPage from './pages/ErrorPage';
 import BranchPage from './pages/admin/branch/BranchPage';
@@ -21,7 +20,7 @@ import EditProductPage from './pages/business/product/EditProductPage';
 import ImportProductPage from './pages/warehouse/import/ImportProductPage';
 import ExportProductPage from './pages/warehouse/export/ExportProductPage';
 import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
-import { fetchAllWarehouses } from './api/warehouse';
+import SalePage from './pages/counter/SalePage';
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -77,6 +76,12 @@ function App() {
               <Route path="add" element={<EditCounterPage mode="add" />} />
             </Route>
           </Route>
+          <Route
+            path="counter"
+            element={<SalePage />}
+            disableMenu
+            disableBreadcrumb
+          />
           <Route path="supply">
             <Route index element={<Navigate to="supplier" replace />} />
             <Route path="supplier">

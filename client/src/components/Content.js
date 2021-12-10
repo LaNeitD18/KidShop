@@ -8,7 +8,7 @@ export function ContentHeader({ title, children }) {
   return (
     <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
       <Title level={media.isXs ? 3 : 4}>{title}</Title>
-      <div className="flex-1 flex flex-row-reverse gap-2">{children}</div>
+      <div className="flex-1 flex flex-row-reverse gap-2 mt-1">{children}</div>
     </div>
   );
 }
