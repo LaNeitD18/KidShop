@@ -1,5 +1,7 @@
+import { PhieuXuatKho } from './../../export-product-receipt/entities/export-product-receipt.entity';
+import { PhieuNhapKho } from './../../import-product-receipt/entities/import-product-receipt.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class NguoiDung {
@@ -31,4 +33,9 @@ export class NguoiDung {
   gioiTinh?: string;
 
   // maNhom: string
+  @OneToMany(() => PhieuNhapKho, (phieuNhap) => phieuNhap.nguoiLap)
+  dsPhieuNhapKho?: PhieuNhapKho[];
+
+  @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.nguoiLap)
+  dsPhieuXuatKho?: PhieuXuatKho[];
 }

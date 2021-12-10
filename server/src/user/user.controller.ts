@@ -19,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import * as bcrypt from 'bcrypt';
 
 @ApiTags('user')
 @Controller('user')
@@ -37,14 +38,29 @@ export class UserController {
         .json({ message: 'New user information is required' });
     }
 
+    const existingUser = await this.userService.findByUsername(
+      data.tenTaiKhoan,
+    );
+    if (existingUser?.length) {
+      return res.status(HttpStatus.CONFLICT).send(`Username taken`);
+    }
+
     if (data.id) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: 'New user must not have id field' });
     }
 
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(data.matKhau, salt);
+
+    const dataWithHash: NguoiDung = {
+      ...data,
+      matKhau: hash,
+    };
+
     try {
-      const newUser = await this.userService.create(data);
+      const newUser = await this.userService.create(dataWithHash);
       return res.status(HttpStatus.CREATED).json(newUser);
     } catch (error) {
       return res
@@ -85,6 +101,28 @@ export class UserController {
     }
   }
 
+  @ApiOkResponse({ type: NguoiDung })
+  @ApiNotFoundResponse()
+  @Get('username/:username')
+  async fetchAUserByUsername(
+    @Param('username') username: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const user = await this.userService.findByUsername(username);
+      if (!user) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: `Can not find a user with username ${username}`,
+        });
+      }
+      return res.status(HttpStatus.OK).json(user);
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
+  }
+
   @Patch(':id')
   async updateUser(
     @Param('id') id: string,
@@ -105,7 +143,22 @@ export class UserController {
         });
       }
 
-      const updatedUser = await this.userService.updateUser(id, data);
+      const existingUser = await this.userService.findByUsername(
+        data.tenTaiKhoan,
+      );
+      if (existingUser) {
+        return res.status(HttpStatus.CONFLICT).send(`Username taken`);
+      }
+
+      const salt = await bcrypt.genSalt();
+      const hash = await bcrypt.hash(data.matKhau, salt);
+
+      const dataWithHash: NguoiDung = {
+        ...data,
+        matKhau: hash,
+      };
+
+      const updatedUser = await this.userService.update(id, dataWithHash);
       return res.status(HttpStatus.OK).json(updatedUser);
     } catch (error) {
       return res
