@@ -2,7 +2,11 @@ import { Input, message, Select, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { fireError } from '../utils/feedback';
 import { idString } from '../utils/string';
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  LoadingOutlined,
+  SearchOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
 import { IoCloudUploadOutline } from 'react-icons/io5';
 
 export function SelectInput({
@@ -12,6 +16,8 @@ export function SelectInput({
   allowClear = true,
   showSearch = true,
   showId = true,
+  placeholder = 'Chọn',
+  className,
   ...rest
 }) {
   const options = data?.map((d) => ({
@@ -20,9 +26,11 @@ export function SelectInput({
   }));
   return (
     <Select
+      className={className}
       size="large"
       showSearch={showSearch}
-      placeholder="Chọn..."
+      suffixIcon={showSearch ? <SearchOutlined /> : <DownOutlined />}
+      placeholder={placeholder}
       optionFilterProp="label"
       options={options}
       onSelect={onSelect}

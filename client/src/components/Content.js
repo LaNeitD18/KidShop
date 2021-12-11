@@ -12,7 +12,7 @@ export function ContentHeader({ title, children, className = 'mb-6' }) {
       }
     >
       <Title level={media.isXs ? 3 : 4}>{title}</Title>
-      <div className="flex-1 flex flex-row-reverse gap-2">{children}</div>
+      <div className="flex-1 flex flex-row-reverse gap-2 mt-1">{children}</div>
     </div>
   );
 }

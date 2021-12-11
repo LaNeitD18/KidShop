@@ -10,6 +10,7 @@ import { ConfigProvider } from 'antd';
 import vi_VN from 'antd/lib/locale/vi_VN';
 import { SupplierProvider, WarehouseProvider } from './context';
 import { RolesProvider } from './context/RolesContext';
+import { LayoutProvider } from './context/LayoutContext';
 
 Moment.globalMoment = moment;
 Moment.globalLocale = 'vi';
@@ -21,7 +22,9 @@ ReactDOM.render(
         <RolesProvider>
           <SupplierProvider>
             <WarehouseProvider>
-              <App />
+              <LayoutProvider>
+                <App />
+              </LayoutProvider>
             </WarehouseProvider>
           </SupplierProvider>
         </RolesProvider>

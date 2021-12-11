@@ -1,5 +1,4 @@
 import { Checkbox, Form, Input, message } from 'antd';
-import { IoLogInOutline } from 'react-icons/io5';
 import AppButton from '../components/AppButton';
 import useApiFeedback from '../hooks/useApiFeedback';
 import { login, verifyToken } from '../api/auth';
@@ -8,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserByUsername } from '../api/user';
+import { LoginOutlined } from '@ant-design/icons';
 
 export function LoginPage() {
   const [form] = Form.useForm();
@@ -95,7 +95,7 @@ export function LoginPage() {
                 className="w-full"
                 htmlType="submit"
                 size="large"
-                icon={<IoLogInOutline />}
+                icon={<LoginOutlined />}
               >
                 Đăng nhập
               </AppButton>

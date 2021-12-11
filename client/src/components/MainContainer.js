@@ -18,6 +18,7 @@ import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
 import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
+import { useLayoutContext } from '../context/LayoutContext';
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -203,6 +204,9 @@ const navMenu = [
 ];
 
 export default function MainContainer() {
+  const [{ disableSider, disableBreadcrumb, disablePx, alwaysScrollY }] =
+    useLayoutContext();
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const paths = stringToPaths(pathname);
@@ -299,116 +303,125 @@ export default function MainContainer() {
         </div>
       </Header>
       <Layout>
-        <Sider
-          collapsedWidth="0"
-          collapsible
-          theme="light"
-          collapsed={isSiderCollapsed}
-          width={256}
-          className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 border-r"
-          style={{
-            position: 'fixed',
-          }}
-        >
-          <Menu
-            mode="inline"
-            style={{ height: '100%', borderRight: 0, padding: '0 1rem' }}
-            selectedKeys={
-              hasNavContext
-                ? pathsToStrings([paths[1], paths[2], paths[3]])
-                : pathsToStrings([paths[1], paths[2]])
-            }
-            onSelect={handleSelectMenu}
+        {!disableSider && (
+          <Sider
+            collapsedWidth="0"
+            collapsible
+            theme="light"
+            collapsed={isSiderCollapsed}
+            width={256}
+            className="pt-nav-height h-screen left-0 overflow-x-hidden overflow-y-auto z-10 border-r"
+            style={{
+              position: 'fixed',
+            }}
           >
-            <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
-              {nav.icon &&
-                cloneElement(nav.icon, {
-                  className: 'text-3xl w-full mb-1',
-                })}
-              <Title level={4}>{nav.title}</Title>
-              {!!hasNavContext && (
-                <Select
-                  style={{
-                    color: theme.color.primary,
-                    fontWeight: 600,
-                    fontSize: '1.125rem',
-                  }}
-                  options={navContextOptions}
-                  value={navContext}
-                  labelInValue
-                  bordered={false}
-                  suffixIcon={
-                    <GoChevronDown
-                      style={{ marginTop: 1, marginLeft: -8 }}
-                      className=" text-primary"
-                    />
-                  }
-                  onSelect={(option) => {
-                    let tempPaths = [...paths];
-                    tempPaths[2] = option?.value;
-                    navigate(['', ...tempPaths].join('/'));
-                  }}
-                />
-              )}
-            </div>
-            <Menu.Divider />
-            <div className="mb-5" />
-            <Menu.Item
-              icon={<AiOutlineDashboard />}
-              key={pathsToStrings(
-                navContext
-                  ? [nav.path, navContext.value, 'dashboard']
-                  : [nav.path, 'dashboard']
-              )}
+            <Menu
+              mode="inline"
+              style={{ height: '100%', borderRight: 0, padding: '0 1rem' }}
+              selectedKeys={
+                hasNavContext
+                  ? pathsToStrings([paths[1], paths[2], paths[3]])
+                  : pathsToStrings([paths[1], paths[2]])
+              }
+              onSelect={handleSelectMenu}
             >
-              Bảng điều khiển
-            </Menu.Item>
-            {nav?.children?.map((value) => (
+              <div className="w-full flex-col items-center text-center mb-6 mt-7 pr-1">
+                {nav.icon &&
+                  cloneElement(nav.icon, {
+                    className: 'text-3xl w-full mb-1',
+                  })}
+                <Title level={4}>{nav.title}</Title>
+                {!!hasNavContext && (
+                  <Select
+                    style={{
+                      color: theme.color.primary,
+                      fontWeight: 600,
+                      fontSize: '1.125rem',
+                    }}
+                    options={navContextOptions}
+                    value={navContext}
+                    labelInValue
+                    bordered={false}
+                    suffixIcon={
+                      <GoChevronDown
+                        style={{ marginTop: 1, marginLeft: -8 }}
+                        className=" text-primary"
+                      />
+                    }
+                    onSelect={(option) => {
+                      let tempPaths = [...paths];
+                      tempPaths[2] = option?.value;
+                      navigate(['', ...tempPaths].join('/'));
+                    }}
+                  />
+                )}
+              </div>
+              <Menu.Divider />
+              <div className="mb-5" />
               <Menu.Item
-                icon={value.icon}
+                icon={<AiOutlineDashboard />}
                 key={pathsToStrings(
                   navContext
-                    ? [nav.path, navContext.value, value.path]
-                    : [nav.path, value.path]
+                    ? [nav.path, navContext.value, 'dashboard']
+                    : [nav.path, 'dashboard']
                 )}
               >
-                {value.title}
+                Bảng điều khiển
               </Menu.Item>
-            ))}
-          </Menu>
-        </Sider>
+              {nav?.children?.map((value) => (
+                <Menu.Item
+                  icon={value.icon}
+                  key={pathsToStrings(
+                    navContext
+                      ? [nav.path, navContext.value, value.path]
+                      : [nav.path, value.path]
+                  )}
+                >
+                  {value.title}
+                </Menu.Item>
+              ))}
+            </Menu>
+          </Sider>
+        )}
         <Layout
           className={classNames('pb-6 sm:pb-0 mt-nav-height', {
-            'ml-sider-width': media.isLg,
+            'ml-sider-width': media.isLg && !disableSider,
           })}
         >
-          <div className="bg-white py-4 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
-            <Breadcrumb>
-              <Breadcrumb.Item href="/">
-                {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
-              </Breadcrumb.Item>
-              {menu && (
-                <Breadcrumb.Item>
-                  {subPage ? (
-                    <Link
-                      to={
-                        hasNavContext
-                          ? [paths[1], paths[2], paths[3]].join('/')
-                          : [paths[1], paths[2]].join('/')
-                      }
-                    >
-                      {menu.title}
-                    </Link>
-                  ) : (
-                    menu.title
-                  )}
+          {!disableBreadcrumb && (
+            <div className="bg-white py-4 pl-6 sm:pl-10 md:pl-6 lg:pl-10 border-b">
+              <Breadcrumb>
+                <Breadcrumb.Item href="/">
+                  {menu ? <Link to={nav.path}>{nav.title}</Link> : nav.title}
                 </Breadcrumb.Item>
-              )}
-              {subPage && <Breadcrumb.Item>{subPage.title}</Breadcrumb.Item>}
-            </Breadcrumb>
-          </div>
-          {/* <Divider style={{ margin: '12px 0' }} /> */}
-          <Content className="site-layout-background select-text px-6 sm:px-10 md:px-6 lg:px-10 pt-5">
+                {menu && (
+                  <Breadcrumb.Item>
+                    {subPage ? (
+                      <Link
+                        to={
+                          hasNavContext
+                            ? [paths[1], paths[2], paths[3]].join('/')
+                            : [paths[1], paths[2]].join('/')
+                        }
+                      >
+                        {menu.title}
+                      </Link>
+                    ) : (
+                      menu.title
+                    )}
+                  </Breadcrumb.Item>
+                )}
+                {subPage && <Breadcrumb.Item>{subPage.title}</Breadcrumb.Item>}
+              </Breadcrumb>
+            </div>
+          )}
+          <Content
+            className={classNames({
+              'site-layout-background select-text  pt-3': true,
+              'px-6 sm:px-10 md:px-6 lg:px-10': !disablePx,
+              'px-3': disablePx,
+            })}
+          >
             <Outlet />
           </Content>
         </Layout>

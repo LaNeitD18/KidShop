@@ -1,3 +1,5 @@
+import Moment from 'react-moment';
+
 export function idString(id = 0, idFormat = []) {
   const [prefix = '', digits = 6] = idFormat;
   return prefix.concat(id.toString().padStart(digits, '0'));
@@ -43,4 +45,8 @@ export const currenyInt = (num) => {
 
 export const currency = (num) => {
   return currenyInt(num) + ' VNĐ';
+};
+
+export const date = (time) => {
+  return <Moment format="DD/MM/YYYY">{time}</Moment>;
 };
