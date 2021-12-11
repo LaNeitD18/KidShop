@@ -123,7 +123,7 @@ export class ImportProductReceiptController {
   }
 
   @Get(':id')
-  async fetchAnImportReceipt(@Param('id') id: number, @Res() res: Response) {
+  async fetchImportReceipt(@Param('id') id: number, @Res() res: Response) {
     try {
       const receipt = await this.importProductReceiptService.findOne(id);
       if (!receipt) {
@@ -148,7 +148,7 @@ export class ImportProductReceiptController {
     if (!data) {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: 'New store information is required' });
+        .json({ message: 'New import receipt information is required' });
     }
 
     try {
@@ -232,7 +232,7 @@ export class ImportProductReceiptController {
       if (!receipt) {
         return res
           .status(HttpStatus.NOT_FOUND)
-          .send(`Can not find a store with id ${id} to delete`);
+          .send(`Can not find a receipt with id ${id} to delete`);
       }
 
       for (const chiTiet of receipt.dsCTPhieuNhap) {

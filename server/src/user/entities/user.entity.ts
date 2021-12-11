@@ -37,5 +37,8 @@ export class NguoiDung {
   dsPhieuNhapKho?: PhieuNhapKho[];
 
   @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.nguoiLap)
+  dsPhieuYeuCauNhapHang?: PhieuXuatKho[];
+
+  @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.quanLyKho)
   dsPhieuXuatKho?: PhieuXuatKho[];
 }

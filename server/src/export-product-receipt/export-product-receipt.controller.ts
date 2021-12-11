@@ -46,10 +46,10 @@ export class ExportProductReceiptController {
     }
 
     try {
-      const warehouseManager = await this.userService.findOne(
+      const storeManager = await this.userService.findOne(
         data.idNguoiLap.toString(),
       );
-      if (!warehouseManager) {
+      if (!storeManager) {
         return res.status(HttpStatus.NOT_FOUND).json({
           message: `Can not find a user with id ${data.idNguoiLap} to assign`,
         });
@@ -72,8 +72,10 @@ export class ExportProductReceiptController {
       }
 
       const exportReceiptData: PhieuXuatKho = {
+        trangThai: data.trangThai,
         ghiChu: data.ghiChu,
-        nguoiLap: warehouseManager,
+        nguoiLap: storeManager,
+        quanLyKho: warehouse.quanLyKho,
         kho: warehouse,
         cuaHang: store,
       };
@@ -105,29 +107,104 @@ export class ExportProductReceiptController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.exportProductReceiptService.findAll();
+  @Get('all/:placeId')
+  async fetchAllExportReceipts(
+    @Param('placeId') placeId: number,
+    @Body() place: string,
+    @Res() res: Response,
+  ) {
+    try {
+      if (place == 'warehouse') {
+        const warehouse = await this.warehouseService.findOne(
+          placeId.toString(),
+        );
+        if (!warehouse) {
+          return res
+            .status(HttpStatus.NOT_FOUND)
+            .json({ message: `Can not find a warehouse with id ${placeId}` });
+        }
+      } else if (place == 'store') {
+        const store = await this.storeService.findOne(placeId.toString());
+        if (!store) {
+          return res
+            .status(HttpStatus.NOT_FOUND)
+            .json({ message: `Can not find a store with id ${placeId}` });
+        }
+      }
+
+      const receipts = await this.exportProductReceiptService.findAll(
+        placeId,
+        place,
+      );
+      return res.status(HttpStatus.OK).json(receipts);
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.exportProductReceiptService.findOne(id);
+  async fetchExportReceipt(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const receipt = await this.exportProductReceiptService.findOne(id);
+      if (!receipt) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: `Can not find an export receipt with id ${id}`,
+        });
+      }
+      return res.status(HttpStatus.OK).json(receipt);
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 
   @Patch(':id')
-  update(
+  async updateImportReceipt(
     @Param('id') id: number,
-    @Body() updateExportProductReceiptDto: UpdateExportProductReceiptDto,
+    @Body() data: UpdateExportProductReceiptDto,
+    @Res() res: Response,
   ) {
-    return this.exportProductReceiptService.update(
-      id,
-      updateExportProductReceiptDto,
-    );
+    if (!data) {
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: 'New export receipt information is required' });
+    }
+
+    return this.exportProductReceiptService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.exportProductReceiptService.remove(+id);
+  async deleteExportReceipt(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const receipt = await this.exportProductReceiptService.findOne(id);
+      if (!receipt) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send(`Can not find a receipt with id ${id} to delete`);
+      }
+
+      for (const chiTiet of receipt.dsCTPhieuXuat) {
+        const detail = await this.detailExportService.findOne(chiTiet.id);
+        if (!detail) {
+          return res.status(HttpStatus.NOT_FOUND).json({
+            message: `Can not find a detail with id ${chiTiet.id}`,
+          });
+        }
+        await this.detailExportService.remove(detail.id);
+      }
+
+      await this.exportProductReceiptService
+        .remove(id)
+        .then(() =>
+          res.status(HttpStatus.OK).send('Delete export receipt successfully'),
+        );
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 }

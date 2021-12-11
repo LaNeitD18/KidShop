@@ -18,6 +18,10 @@ export class PhieuXuatKho {
   @PrimaryGeneratedColumn('increment')
   id?: number;
 
+  @ApiProperty()
+  @Column()
+  trangThai: number;
+
   @ApiProperty({ required: false })
   @Column({ nullable: true })
   ghiChu?: string;
@@ -37,8 +41,12 @@ export class PhieuXuatKho {
   cuaHang: CuaHang;
 
   @ApiProperty()
-  @ManyToOne(() => NguoiDung, (nguoiDung) => nguoiDung.dsPhieuXuatKho)
+  @ManyToOne(() => NguoiDung, (nguoiDung) => nguoiDung.dsPhieuYeuCauNhapHang)
   nguoiLap: NguoiDung;
+
+  @ApiProperty({ required: false })
+  @ManyToOne(() => NguoiDung, (nguoiDung) => nguoiDung.dsPhieuXuatKho)
+  quanLyKho?: NguoiDung;
 
   @OneToMany(() => CT_PhieuXuatKho, (ctPhieuXuat) => ctPhieuXuat.phieuXuatKho)
   dsCTPhieuXuat?: CT_PhieuXuatKho[];
