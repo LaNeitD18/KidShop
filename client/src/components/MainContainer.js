@@ -204,7 +204,8 @@ const navMenu = [
 ];
 
 export default function MainContainer() {
-  const [{ disableSider, disableBreadcrumb }] = useLayoutContext();
+  const [{ disableSider, disableBreadcrumb, disablePx, alwaysScrollY }] =
+    useLayoutContext();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -384,7 +385,7 @@ export default function MainContainer() {
         )}
         <Layout
           className={classNames('pb-6 sm:pb-0 mt-nav-height', {
-            'ml-sider-width': media.isLg,
+            'ml-sider-width': media.isLg && !disableSider,
           })}
         >
           {!disableBreadcrumb && (
@@ -414,7 +415,13 @@ export default function MainContainer() {
               </Breadcrumb>
             </div>
           )}
-          <Content className="site-layout-background select-text px-6 sm:px-10 md:px-6 lg:px-10 pt-3">
+          <Content
+            className={classNames({
+              'site-layout-background select-text  pt-3': true,
+              'px-6 sm:px-10 md:px-6 lg:px-10': !disablePx,
+              'px-3': disablePx,
+            })}
+          >
             <Outlet />
           </Content>
         </Layout>

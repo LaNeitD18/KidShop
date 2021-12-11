@@ -19,6 +19,8 @@ export default function AppTable({
   size,
   className,
   defaultPageSize = 7,
+  selectable = true,
+  bordered = true,
   ...rest
 }) {
   const media = useResponsive();
@@ -201,12 +203,16 @@ export default function AppTable({
   return (
     <div>
       <Table
-        bordered
+        bordered={bordered}
         dataSource={withKeys(data)}
         columns={responsiveColumn(getColumns())}
-        rowSelection={{
-          ...rowSelection,
-        }}
+        rowSelection={
+          selectable
+            ? {
+                ...rowSelection,
+              }
+            : null
+        }
         loading={loading}
         pagination={{
           defaultPageSize: defaultPageSize,

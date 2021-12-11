@@ -17,6 +17,7 @@ export function SelectInput({
   showSearch = true,
   showId = true,
   placeholder = 'Chọn',
+  className,
   ...rest
 }) {
   const options = data?.map((d) => ({
@@ -25,6 +26,7 @@ export function SelectInput({
   }));
   return (
     <Select
+      className={className}
       size="large"
       showSearch={showSearch}
       suffixIcon={showSearch ? <SearchOutlined /> : <DownOutlined />}

@@ -5,6 +5,7 @@ import {
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import { useResponsive } from './Media';
 import { useNavigate } from 'react-router-dom';
@@ -48,6 +49,11 @@ const mapType = {
   normal: {
     buttonProps: {},
   },
+  edit: {
+    buttonProps: {
+      icon: <EditOutlined />,
+    },
+  },
 };
 
 export default function AppButton({
@@ -62,6 +68,7 @@ export default function AppButton({
   loading,
   icon,
   buttonType,
+  size = 'middle',
   ...rest
 }) {
   const media = useResponsive();
@@ -97,6 +104,7 @@ export default function AppButton({
       {...mapType[type].buttonProps}
       icon={icon}
       type={buttonType}
+      size={size}
       {...rest}
     >
       {media.isXs || !responsive
