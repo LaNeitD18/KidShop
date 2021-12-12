@@ -14,5 +14,6 @@ import { CounterController } from './counter.controller';
   ],
   controllers: [CounterController],
   providers: [CounterService],
+  exports: [CounterService],
 })
 export class CounterModule {}

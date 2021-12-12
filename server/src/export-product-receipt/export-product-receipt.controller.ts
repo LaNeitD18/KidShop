@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CT_PhieuXuatKho } from './entities/detail-export-receipt.entity';
 import { StoreService } from './../store/store.service';
 import { PhieuXuatKho } from './entities/export-product-receipt.entity';
@@ -15,6 +16,7 @@ import {
   Delete,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ExportProductReceiptService } from './service/export-product-receipt.service';
 import { CreateExportProductReceiptDto } from './dto/create-export-product-receipt.dto';
@@ -24,6 +26,7 @@ import { Response } from 'express';
 
 @ApiTags('export-product-receipt')
 @Controller('export-product-receipt')
+@UseGuards(JwtAuthGuard)
 export class ExportProductReceiptController {
   constructor(
     private readonly exportProductReceiptService: ExportProductReceiptService,

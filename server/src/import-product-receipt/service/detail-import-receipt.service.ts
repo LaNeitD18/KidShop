@@ -1,9 +1,6 @@
-import { CreateDetailImportDto } from './../dto/create-detail-import.dto';
 import { CT_PhieuNhapKho } from '../entities/detail-import-receipt.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateImportProductReceiptDto } from '../dto/create-import-product-receipt.dto';
-import { UpdateImportProductReceiptDto } from '../dto/update-import-product-receipt.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()

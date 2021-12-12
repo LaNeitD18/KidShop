@@ -1,3 +1,4 @@
+import { HoaDon } from 'src/bill/entities/bill.entity';
 import { PhieuXuatKho } from './../../export-product-receipt/entities/export-product-receipt.entity';
 import { PhieuNhapKho } from './../../import-product-receipt/entities/import-product-receipt.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -41,4 +42,7 @@ export class NguoiDung {
 
   @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.quanLyKho)
   dsPhieuXuatKho?: PhieuXuatKho[];
+
+  @OneToMany(() => HoaDon, (hoaDon) => hoaDon.nguoiLap)
+  dsHoaDon?: HoaDon[];
 }
