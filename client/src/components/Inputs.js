@@ -9,6 +9,8 @@ import {
 } from '@ant-design/icons';
 import { IoCloudUploadOutline } from 'react-icons/io5';
 
+const labelValue = () => {};
+
 export function SelectInput({
   data,
   onSelect,
@@ -18,12 +20,24 @@ export function SelectInput({
   showId = true,
   placeholder = 'Chọn',
   className,
+  value,
   ...rest
 }) {
   const options = data?.map((d) => ({
     value: d.value.toString(),
     label: showId ? `${d.label} (${idString(d.value, idFormat)})` : d.label,
   }));
+  console.log(data);
+  console.log(value);
+  if (data && data.length > 0 && value && typeof value !== 'object') {
+    console.log('yes');
+    value = showId
+      ? `${
+          data.find((d) => d.value.toString() === value.toString())?.label
+        } (${idString(value, idFormat)})`
+      : value;
+  }
+
   return (
     <Select
       className={className}
@@ -35,6 +49,7 @@ export function SelectInput({
       options={options}
       onSelect={onSelect}
       allowClear={allowClear}
+      value={value}
       {...rest}
     />
   );

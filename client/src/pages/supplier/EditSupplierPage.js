@@ -13,6 +13,7 @@ import useApiFeedback from '../../hooks/useApiFeedback';
 import { useNavigate, useParams } from 'react-router-dom';
 import { inputRuleNaN } from '../../utils/string';
 import { fireSuccessModal } from '../../utils/feedback';
+import { FormGrid } from '../../components/Grid';
 
 const addConsts = {
   title: 'Tạo nhà cung cấp',
@@ -41,7 +42,7 @@ export default function EditSupplierPage({ mode }) {
   const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
   const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const [getCall] = useApiFeedback();
+  const [getCall, loading] = useApiFeedback();
   const [postCall, postLoad] = useApiFeedback();
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
@@ -101,7 +102,7 @@ export default function EditSupplierPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 xl:gap-14">
+      <FormGrid column={2} loading={loading}>
         <Map
           center={mapCenter}
           mapLocation={mapLocation}
@@ -195,7 +196,7 @@ export default function EditSupplierPage({ mode }) {
             </div>
           </Form>
         </div>
-      </div>
+      </FormGrid>
     </div>
   );
 }

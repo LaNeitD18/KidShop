@@ -37,7 +37,7 @@ export default function EditProductPage({ mode }) {
 
   const [form] = Form.useForm();
 
-  const [getCall] = useApiFeedback();
+  const [getCall, loading] = useApiFeedback();
   const [postCall, postLoad] = useApiFeedback();
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
@@ -86,6 +86,7 @@ export default function EditProductPage({ mode }) {
           title: 'Tạo mặt hàng thành công',
           onOk: () => {
             form.resetFields();
+            setHinhAnh(null);
           },
           onCancel: () => {
             navigate('../');
@@ -116,7 +117,7 @@ export default function EditProductPage({ mode }) {
         onFinish={onFinish}
         autoComplete="off"
       >
-        <FormGrid column={3}>
+        <FormGrid column={3} loading={loading}>
           <div>
             <Form.Item label="Ảnh sản phẩm">
               <ExpandableImage src={hinhAnh} height={352} />

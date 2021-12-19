@@ -45,7 +45,7 @@ export default function EditBranchPage({ mode }) {
   const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
   const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const [getStoreCall] = useApiFeedback();
+  const [getStoreCall, loading] = useApiFeedback();
   const [postStoreCall, postStoreLoading] = useApiFeedback();
   const [editCall, editLoading] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
@@ -120,7 +120,7 @@ export default function EditBranchPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid column={2}>
+      <FormGrid column={2} loading={loading}>
         <Map
           center={mapCenter}
           mapLocation={mapLocation}

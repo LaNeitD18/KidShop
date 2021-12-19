@@ -1,4 +1,11 @@
-export function FormGrid({ children, column = 1 }) {
+import { LoadingOutlined } from '@ant-design/icons';
+export function FormGrid({ children, column = 1, loading }) {
+  if (loading)
+    return (
+      <div className="h-96 flex items-center justify-center">
+        <LoadingOutlined className="text-5xl" />
+      </div>
+    );
   switch (column) {
     case 2:
       return (

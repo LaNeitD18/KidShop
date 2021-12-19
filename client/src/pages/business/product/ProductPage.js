@@ -37,14 +37,14 @@ const columns = [
     sortable: true,
   },
   {
-    title: 'Màu',
-    dataIndex: 'mauSac',
+    title: 'Loại',
+    dataIndex: 'kichThuoc',
     searchable: true,
     sortable: true,
   },
   {
-    title: 'Size',
-    dataIndex: 'kichThuoc',
+    title: 'Màu',
+    dataIndex: 'mauSac',
     searchable: true,
     sortable: true,
   },
