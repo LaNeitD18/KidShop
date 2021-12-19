@@ -8,8 +8,6 @@ const iconMap = {
   store: 'https://i.ibb.co/Bn0XnWm/location-pin.png',
 };
 
-const MAP_API_KEY = 'IsOviojVHPpliKxoC7WZj9WtqaIQ6YPG';
-
 export default function Map({
   mapLocation,
   onChangeMapLocation,
@@ -24,7 +22,7 @@ export default function Map({
     const { coordinates, address } = mapLocation;
     const [long, lat] = coordinates;
     map.current = tt.map({
-      key: MAP_API_KEY,
+      key: process.env.REACT_APP_MAP_API_KEY,
       container: mapElement.current,
       center: [parseFloat(long), parseFloat(lat)],
       zoom: mapZoom,
@@ -67,7 +65,7 @@ export default function Map({
     function handleClickMap(position) {
       ttServices.services
         .reverseGeocode({
-          key: MAP_API_KEY,
+          key: process.env.REACT_APP_MAP_API_KEY,
           position: position,
         })
         .then(function (results) {

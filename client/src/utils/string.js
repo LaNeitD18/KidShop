@@ -47,6 +47,10 @@ export const currency = (num) => {
   return currenyInt(num) + ' VNĐ';
 };
 
+export const currencyShort = (num) => {
+  return [currenyInt(num), <span className="ml-px text-xs opacity-75">đ</span>];
+};
+
 export const date = (time) => {
   return <Moment format="DD/MM/YYYY">{time}</Moment>;
 };

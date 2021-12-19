@@ -119,7 +119,13 @@ export default function EditProductPage({ mode }) {
         <FormGrid column={3}>
           <div>
             <Form.Item label="Ảnh sản phẩm">
-              <ExpandableImage src={hinhAnh} height={454} />
+              <ExpandableImage src={hinhAnh} height={352} />
+            </Form.Item>
+            <Form.Item label="Liên kết hình ảnh">
+              <UploadImageInput
+                onValueChange={setHinhAnh}
+                defaultValue={hinhAnh}
+              />
             </Form.Item>
           </div>
           <div>
@@ -136,13 +142,6 @@ export default function EditProductPage({ mode }) {
               <Input size="large" />
             </Form.Item>
 
-            <Form.Item label="Liên kết hình ảnh">
-              <UploadImageInput
-                onValueChange={setHinhAnh}
-                defaultValue={hinhAnh}
-              />
-            </Form.Item>
-
             <Form.Item label="Đơn vị" name="donVi">
               <Input size="large" />
             </Form.Item>
@@ -154,8 +153,6 @@ export default function EditProductPage({ mode }) {
             <Form.Item label="Kích thước" name="kichThuoc">
               <Input size="large" />
             </Form.Item>
-          </div>
-          <div className="md:col-span-2 xl:col-span-1 md:grid md:grid-cols-2 xl:flex xl:flex-col gap-x-8 self-start">
             <Form.Item
               label="Nhà sản xuất"
               name="idNSX"
@@ -174,7 +171,8 @@ export default function EditProductPage({ mode }) {
                 idFormat={['SX', 4]}
               />
             </Form.Item>
-
+          </div>
+          <div className="md:col-span-2 xl:col-span-1 md:grid md:grid-cols-2 xl:flex xl:flex-col gap-x-8 self-start">
             <Form.Item
               label="Nhà cung cấp"
               name="idNCC"
@@ -226,6 +224,19 @@ export default function EditProductPage({ mode }) {
                 },
               ]}
             >
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+                formatter={(value) =>
+                  value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                size="large"
+                step={1000}
+              />
+            </Form.Item>
+
+            <Form.Item label="Khuyến mãi (VNĐ)" name="khuyenMai">
               <InputNumber
                 style={{ width: '100%' }}
                 min={0}

@@ -21,6 +21,9 @@ import ImportProductPage from './pages/warehouse/import/ImportProductPage';
 import ExportProductPage from './pages/warehouse/export/ExportProductPage';
 import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
 import SalePage from './pages/counter/SalePage';
+import StoreImportPage from './pages/store/import/StoreImportPage';
+import EmployeePage from './pages/admin/employee/EmployeePage';
+import EditEmployeePage from './pages/admin/employee/EditEmployeePage';
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -35,14 +38,22 @@ function App() {
         <Route path="app" element={<MainContainer />}>
           <Route index element={<Navigate to="admin" replace />} />
           <Route path="admin">
-            <Route index element={<Navigate to="branch" replace />} />
+            <Route index element={<Navigate to="employee" replace />} />
+            <Route path="employee">
+              <Route index element={<EmployeePage />} />
+              <Route
+                path="edit/:employeeId"
+                element={<EditEmployeePage mode="edit" />}
+              />
+              <Route path="add" element={<EditEmployeePage mode="add" />} />
+            </Route>
             <Route path="branch">
               <Route index element={<BranchPage />} />
               <Route
                 path="edit/:branchId"
                 element={<EditBranchPage mode="edit" />}
               />
-              <Route path="add" element={<EditBranchPage mode="add" />} />
+              <Route path="add" element={<EditEmployeePage mode="add" />} />
             </Route>
           </Route>
           <Route path="business">
@@ -60,7 +71,7 @@ function App() {
             path="store"
             element={
               <Navigate
-                to={roles?.stores ? roles?.stores[0].toString() : '/error/403'}
+                to={roles?.stores ? roles?.stores[0]?.toString() : '/error/403'}
                 replace
               />
             }
@@ -71,6 +82,14 @@ function App() {
               <Route index element={<CounterPage />} />
               <Route
                 path="edit/:counterId"
+                element={<EditCounterPage mode="edit" />}
+              />
+              <Route path="add" element={<EditCounterPage mode="add" />} />
+            </Route>
+            <Route path="import">
+              <Route index element={<StoreImportPage />} />
+              <Route
+                path="edit/:importFormId"
                 element={<EditCounterPage mode="edit" />}
               />
               <Route path="add" element={<EditCounterPage mode="add" />} />

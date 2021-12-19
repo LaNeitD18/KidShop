@@ -16,6 +16,7 @@
     "classnames": "^2.3.1",
     "craco-less": "^1.20.0",
     "history": "5",
+    "js-sha256": "^0.9.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -23,10 +24,12 @@
     "react-highlight-words": "^0.17.0",
     "react-icons": "^4.3.1",
     "react-moment": "^1.1.1",
+    "react-qr-barcode-scanner": "^1.0.6",
     "react-redux": "^7.2.3",
     "react-responsive": "^9.0.0-beta.4",
     "react-router-dom": "6",
-    "react-scripts": "4.0.3"
+    "react-scripts": "4.0.3",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "craco start",

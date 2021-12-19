@@ -2,6 +2,7 @@ import { Modal, message as antdMessage } from 'antd';
 import { errorString } from './string';
 
 export function fireError(err) {
+  console.error(err);
   if (Array.isArray(err)) err = err[0];
   const { code, codeName, message } = errorString(err);
   if (!code) {

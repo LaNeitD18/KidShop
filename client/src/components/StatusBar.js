@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { GiPlainCircle } from 'react-icons/gi';
+import { StatusIndicator } from './Decorative';
 
 export function StatusBar({ children, className }) {
   return (
@@ -20,12 +21,7 @@ export function ActiveItem({ active, number, text }) {
   if (!number) return null;
   return (
     <span className="flex gap-2 items-center">
-      <GiPlainCircle
-        className={classNames('text-xs', {
-          'text-green-500': active,
-          'text-gray-300': !active,
-        })}
-      />
+      <StatusIndicator active={active} />
       <span style={{ marginBottom: 2 }}>
         {number} {text}
       </span>

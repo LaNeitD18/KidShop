@@ -146,7 +146,7 @@ export class UserController {
       const existingUser = await this.userService.findByUsername(
         data.tenTaiKhoan,
       );
-      if (existingUser) {
+      if (existingUser && existingUser[0].tenTaiKhoan !== data.tenTaiKhoan) {
         return res.status(HttpStatus.CONFLICT).send(`Username taken`);
       }
 

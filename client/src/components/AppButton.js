@@ -98,7 +98,7 @@ export default function AppButton({
 
   return (
     <Button
-      className={className}
+      className={'shadow ' + className}
       onClick={handleClick}
       loading={loading}
       {...mapType[type].buttonProps}

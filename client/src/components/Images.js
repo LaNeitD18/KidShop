@@ -1,16 +1,20 @@
-import { Image } from "antd";
-import classNames from "classnames";
-import { useState, useLayoutEffect } from "react";
-import { IoExpandOutline, IoContractOutline } from "react-icons/io5";
-import { LoadingOutlined } from "@ant-design/icons";
-import fallback from "../assets/fallback.jpg";
-import placeholder from "../assets/placeholder.jpg";
+import { Image } from 'antd';
+import classNames from 'classnames';
+import { useState, useLayoutEffect } from 'react';
+import { IoExpandOutline, IoContractOutline } from 'react-icons/io5';
+import { LoadingOutlined } from '@ant-design/icons';
+import fallback from '../assets/fallback.jpg';
+import placeholder from '../assets/placeholder.jpg';
 
 export function ExpandableImage({ src, height = 400, loading }) {
-  const [contain, setContain] = useState(false);
+  const [contain, setContain] = useState(true);
 
   return (
-    <div className="flex flex-col">
+    <div
+      className={classNames('flex flex-col', {
+        'bg-white': src,
+      })}
+    >
       {loading && (
         <div
           className="bg-black z-10 opacity-0 hover:opacity-100 bg-opacity-10 flex items-center justify-center transition-all"
@@ -27,11 +31,11 @@ export function ExpandableImage({ src, height = 400, loading }) {
           preview={false}
           style={{
             border: `solid 1px #D1D5DB`,
-            backgroundColor: "transparent",
+            backgroundColor: 'transparent',
           }}
-          className={classNames("transition-all  shadow-inner", {
-            "object-contain": contain,
-            "object-cover": !contain,
+          className={classNames('transition-all  shadow-inner', {
+            'object-contain': contain,
+            'object-cover': !contain,
           })}
         />
       )}
