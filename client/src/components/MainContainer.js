@@ -12,10 +12,16 @@ import { FiMenu } from 'react-icons/fi';
 import { AiOutlineDashboard } from 'react-icons/ai';
 import { UserOutlined } from '@ant-design/icons';
 import { AiOutlineApartment } from 'react-icons/ai';
-import { GrGroup, GrUserManager, GrAppsRounded } from 'react-icons/gr';
+import {
+  GrGroup,
+  GrUserManager,
+  GrAppsRounded,
+  GrResources,
+} from 'react-icons/gr';
 import { RiPencilRuler2Line } from 'react-icons/ri';
 import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
+import { GiHandTruck, GiFactory } from 'react-icons/gi';
 import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
 import { useLayoutContext } from '../context/LayoutContext';
@@ -33,6 +39,16 @@ const navMenu = [
         path: 'employee',
         title: 'QL Nhân Viên',
         icon: <UserOutlined />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
       },
       {
         path: 'branch',
@@ -114,10 +130,12 @@ const navMenu = [
   {
     path: 'supply',
     title: 'Nguồn hàng',
+    icon: <GrResources />,
     children: [
       {
         path: 'supplier',
         title: 'QL Nhà Cung Cấp',
+        icon: <GiHandTruck />,
         children: [
           {
             path: 'add',
@@ -132,6 +150,7 @@ const navMenu = [
       {
         path: 'producer',
         title: 'QL Nhà Sản Xuất',
+        icon: <GiFactory />,
         children: [
           {
             path: 'add',

@@ -23,27 +23,10 @@ const columns = [
     searchable: true,
     sortable: true,
   },
-  {
-    title: 'Giá nhập',
-    dataIndex: 'giaNhap',
-    sortable: true,
-    render: (val) => currenyInt(val),
-  },
-  {
-    title: 'Giá bán',
-    dataIndex: 'giaBan',
-    sortable: true,
-    render: (val) => currenyInt(val),
-  },
+
   {
     title: 'Nhà SX',
     dataIndex: ['nhaSX', 'tenNSX'],
-    searchable: true,
-    sortable: true,
-  },
-  {
-    title: 'Nhà CC',
-    dataIndex: ['nhaCC', 'tenNCC'],
     searchable: true,
     sortable: true,
   },
@@ -64,6 +47,18 @@ const columns = [
     dataIndex: 'kichThuoc',
     searchable: true,
     sortable: true,
+  },
+  {
+    title: 'Giá nhập',
+    dataIndex: 'giaNhap',
+    sortable: true,
+    render: (val) => currenyInt(val),
+  },
+  {
+    title: 'Giá bán',
+    dataIndex: 'giaBan',
+    sortable: true,
+    render: (val) => currenyInt(val),
   },
 ];
 
@@ -120,7 +115,6 @@ export default function ProductPage() {
         onSelectRows={setSelectedRows}
         itemName="mặt hàng"
         defaultPageSize={10}
-        minCols={4}
       />
     </div>
   );

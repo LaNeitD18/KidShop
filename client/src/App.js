@@ -53,7 +53,7 @@ function App() {
                 path="edit/:branchId"
                 element={<EditBranchPage mode="edit" />}
               />
-              <Route path="add" element={<EditEmployeePage mode="add" />} />
+              <Route path="add" element={<EditBranchPage mode="add" />} />
             </Route>
           </Route>
           <Route path="business">
@@ -138,7 +138,7 @@ function App() {
               <Navigate
                 to={
                   roles?.warehouses
-                    ? roles?.warehouses[0].toString()
+                    ? roles?.warehouses[0]?.toString()
                     : '/error/403'
                 }
                 replace

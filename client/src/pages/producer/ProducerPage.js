@@ -30,10 +30,6 @@ const columns = [
     dataIndex: 'sdt',
     searchable: true,
   },
-  {
-    createdTime: true,
-    sortable: true,
-  },
 ];
 
 export default function ProducerPage() {

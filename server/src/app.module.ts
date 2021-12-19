@@ -28,6 +28,9 @@ import { ExportProductReceiptModule } from './export-product-receipt/export-prod
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
 
     UserModule,

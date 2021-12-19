@@ -14,6 +14,9 @@ export class UpdateProductDto {
   giaBan: number;
 
   @ApiProperty()
+  khuyenMai?: number;
+
+  @ApiProperty()
   kichThuoc?: string;
 
   @ApiProperty()

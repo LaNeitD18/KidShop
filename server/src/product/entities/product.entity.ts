@@ -6,7 +6,7 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CT_PhieuNhapKho } from '../../import-product-receipt/entities/detail-import-receipt.entity';
@@ -34,6 +34,10 @@ export class MatHang {
   giaBan: number;
 
   @ApiProperty()
+  @Column({ nullable: true, default: 0 })
+  khuyenMai?: number;
+
+  @ApiProperty()
   @Column({ nullable: true })
   kichThuoc?: string;
 
@@ -45,11 +49,11 @@ export class MatHang {
   @Column({ nullable: true })
   hinhAnh?: string;
 
-  @OneToOne(() => NhaSanXuat)
+  @ManyToOne(() => NhaSanXuat)
   @JoinColumn()
   nhaSX: NhaSanXuat;
 
-  @OneToOne(() => NhaCungCap)
+  @ManyToOne(() => NhaCungCap)
   @JoinColumn()
   nhaCC: NhaCungCap;
 
