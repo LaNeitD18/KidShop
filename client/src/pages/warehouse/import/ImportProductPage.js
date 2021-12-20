@@ -19,15 +19,16 @@ const columns = [
     sortable: true,
   },
   {
-    title: 'Tổng tiền',
-    dataIndex: 'tongTien',
-    searchable: true,
-  },
-  {
     title: 'Kho',
     dataIndex: ['kho', 'diaChi'],
     searchable: true,
   },
+  {
+    title: 'Tổng tiền',
+    dataIndex: 'tongTien',
+    searchable: true,
+  },
+
   {
     title: 'Người lập',
     dataIndex: ['nguoiLap', 'hoTen'],

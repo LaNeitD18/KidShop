@@ -17,6 +17,7 @@ import { fireSuccessModal } from '../../../utils/feedback';
 import { FormGrid } from '../../../components/Grid';
 import AppTable from '../../../components/AppTable';
 import { PlusOutlined } from '@ant-design/icons';
+import Loading from '../../../components/Loading';
 
 const { Text } = Typography;
 
@@ -57,7 +58,7 @@ export default function EditImportReceiptPage({ mode }) {
   const [listNewDetails, setListNewDetails] = useState([]);
   const [sumMoney, setSumMoney] = useState(0);
 
-  const [getCall] = useApiFeedback();
+  const [getCall, loading] = useApiFeedback();
   const [postCall, postLoad] = useApiFeedback();
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
@@ -111,6 +112,8 @@ export default function EditImportReceiptPage({ mode }) {
       },
     ]);
 
+    console.log(formAddReceipt.getFieldsValue());
+
     setSumMoney(sumMoney + values?.soLuong * product?.giaNhap);
     formAddDetail.resetFields();
   };
@@ -135,6 +138,7 @@ export default function EditImportReceiptPage({ mode }) {
         };
       }),
     };
+    console.log();
 
     if (isEdit) {
       editCall(editImportReceipt(importReceiptId, receiptData), () => {
@@ -164,128 +168,132 @@ export default function EditImportReceiptPage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <div>
-        <Form
-          className="sm:grid grid-cols-12 gap-x-5"
-          form={formAddDetail}
-          name="create-import-detail"
-          layout="vertical"
-          onFinish={onFinishAddDetail}
-          autoComplete="off"
-        >
-          <div className="col-span-4">
-            <Form.Item
-              label="Mặt hàng"
-              name="idMatHang"
-              rules={[
-                inputRuleNaN(),
-                {
-                  required: true,
-                  message: 'Vui lòng chọn mặt hàng',
-                },
-              ]}
-            >
-              <SelectInput
-                data={products.map((p) => ({
-                  label: p.tenMH,
-                  value: p.id,
-                }))}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Số lượng"
-              name="soLuong"
-              rules={[
-                inputRuleNaN(),
-                {
-                  required: true,
-                  message: 'Vui lòng nhập số lượng',
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-
-            <Form.Item>
-              <AppButton
-                type="add"
-                className="w-full mt-4"
-                htmlType="submit"
-                size="large"
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="mb-4">
+          <Form
+            className="sm:grid grid-cols-12 gap-x-5"
+            form={formAddDetail}
+            name="create-import-detail"
+            layout="vertical"
+            onFinish={onFinishAddDetail}
+            autoComplete="off"
+          >
+            <div className="col-span-4">
+              <Form.Item
+                label="Mặt hàng"
+                name="idMatHang"
+                rules={[
+                  inputRuleNaN(),
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn mặt hàng',
+                  },
+                ]}
               >
-                Thêm vào phiếu
-              </AppButton>
-            </Form.Item>
-          </div>
+                <SelectInput
+                  data={products.map((p) => ({
+                    label: p.tenMH,
+                    value: p.id,
+                  }))}
+                />
+              </Form.Item>
 
-          <div className="col-span-8">
-            <Form.Item label="Chi tiết phiếu">
-              <AppTable columns={columns} data={listNewDetails} minCols={3} />
-            </Form.Item>
-          </div>
-        </Form>
+              <Form.Item
+                label="Số lượng"
+                name="soLuong"
+                rules={[
+                  inputRuleNaN(),
+                  {
+                    required: true,
+                    message: 'Vui lòng nhập số lượng',
+                  },
+                ]}
+              >
+                <Input size="large" />
+              </Form.Item>
 
-        <Form
-          className="col-span-12 sm:grid grid-cols-2 gap-x-5"
-          form={formAddReceipt}
-          name="create-import-receipt"
-          layout="vertical"
-          onFinish={onFinishAddReceipt}
-          autoComplete="off"
-        >
-          <Form.Item label="Ghi chú" name="ghiChu">
-            <Input.TextArea
-              size="large"
-              autoSize={{ minRows: 5, maxRows: 5 }}
-              showCount
-              maxLength={300}
-            />
-          </Form.Item>
-          <div className="flex flex-col">
-            <Form.Item label="Thời gian tạo" name="thoiGian">
-              <div className="flex gap-x-2">
-                <DatePicker size="large" className="flex-1" />
-                <TimePicker size="large" className="flex-1" format="HH:mm" />
-              </div>
-            </Form.Item>
-            <div className="flex justify-between gap-y-1 -mt-2">
-              <Text>Tổng tiền</Text>
-              <Text className="font-semibold">{currency(sumMoney)}</Text>
-            </div>
-            <div className="xs:flex flex-row-reverse items-center gap-6 mt-4">
-              <Form.Item className="flex-1">
+              <Form.Item>
                 <AppButton
-                  loading={postLoad || editLoad}
-                  type="done"
-                  className="w-full"
+                  type="add"
+                  className="w-full mt-4"
                   htmlType="submit"
                   size="large"
-                  // onClick={handleAddNewReceipt}
+                  onClick={() => {}}
                 >
-                  {byModes.okText}
+                  Thêm vào phiếu
                 </AppButton>
               </Form.Item>
-              {!!isEdit && (
+            </div>
+
+            <div className="col-span-8">
+              <Form.Item label="Chi tiết phiếu">
+                <AppTable
+                  columns={columns}
+                  data={listNewDetails}
+                  minCols={3}
+                  defaultPageSize={5}
+                />
+              </Form.Item>
+            </div>
+          </Form>
+
+          <Form
+            className="col-span-12 sm:grid grid-cols-2 gap-x-5"
+            form={formAddReceipt}
+            name="create-import-receipt"
+            layout="vertical"
+            onFinish={onFinishAddReceipt}
+            autoComplete="off"
+          >
+            <Form.Item label="Ghi chú" name="ghiChu">
+              <Input.TextArea
+                size="large"
+                autoSize={{ minRows: 2, maxRows: 2 }}
+                showCount
+                maxLength={300}
+              />
+            </Form.Item>
+            <div className="flex flex-col">
+              <div className="flex justify-between gap-y-1 -mt-2 text-2xl">
+                <Text>Tổng tiền</Text>
+                <Text className="font-semibold">{currency(sumMoney)}</Text>
+              </div>
+              <div className="xs:flex flex-row-reverse items-center gap-6 mt-4">
                 <Form.Item className="flex-1">
                   <AppButton
-                    onClick={handleDelete}
-                    type="delete"
+                    loading={postLoad || editLoad}
+                    type="done"
                     className="w-full"
+                    htmlType="submit"
                     size="large"
-                    loading={deleteLoad}
-                    confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
-                    }}
+                    // onClick={handleAddNewReceipt}
                   >
-                    Xóa phiếu nhập kho
+                    {byModes.okText}
                   </AppButton>
                 </Form.Item>
-              )}
+                {!!isEdit && (
+                  <Form.Item className="flex-1">
+                    <AppButton
+                      onClick={handleDelete}
+                      type="delete"
+                      className="w-full"
+                      size="large"
+                      loading={deleteLoad}
+                      confirm={{
+                        title: 'Bạn có muốn xóa chi nhánh này?',
+                      }}
+                    >
+                      Xóa phiếu nhập kho
+                    </AppButton>
+                  </Form.Item>
+                )}
+              </div>
             </div>
-          </div>
-        </Form>
-      </div>
+          </Form>
+        </div>
+      )}
     </div>
   );
 }

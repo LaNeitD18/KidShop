@@ -8,7 +8,7 @@ import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from 'antd';
 import theme from '../constants/theme';
 
 import { IoLogOutOutline, IoCloseSharp, IoBusiness } from 'react-icons/io5';
-import { FiMenu } from 'react-icons/fi';
+import { FiMenu, FiPackage } from 'react-icons/fi';
 import { AiOutlineDashboard } from 'react-icons/ai';
 import { UserOutlined } from '@ant-design/icons';
 import { AiOutlineApartment } from 'react-icons/ai';
@@ -22,6 +22,8 @@ import { RiPencilRuler2Line } from 'react-icons/ri';
 import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
 import { GiHandTruck, GiFactory } from 'react-icons/gi';
+import { FaWarehouse } from 'react-icons/fa';
+import { BiImport, BiExport } from 'react-icons/bi';
 import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
 import { useLayoutContext } from '../context/LayoutContext';
@@ -167,10 +169,12 @@ const navMenu = [
   {
     path: 'storage',
     title: 'Trữ hàng',
+    icon: <FiPackage />,
     children: [
       {
         path: 'warehouses',
         title: 'QL Các Kho',
+        icon: <FaWarehouse />,
         children: [
           {
             path: 'add',
@@ -189,10 +193,12 @@ const navMenu = [
     title: 'Kho',
     context: 'warehouses',
     idFormat: ['KH', 4],
+    icon: <FaWarehouse />,
     children: [
       {
         path: 'import-product',
         title: 'QL Nhập kho',
+        icon: <BiImport />,
         children: [
           {
             path: 'add',
@@ -207,6 +213,7 @@ const navMenu = [
       {
         path: 'export-product',
         title: 'QL Xuất kho',
+        icon: <BiExport />,
         children: [
           {
             path: 'add',

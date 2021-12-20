@@ -59,7 +59,6 @@ export default function EditProductPage({ mode }) {
   useEffect(() => {
     if (isEdit) {
       getCall(getProduct(productId), ({ data }) => {
-        console.log('get product', data);
         form.setFieldsValue({
           ...data,
           idNCC: data?.nhaCC?.id,
@@ -75,7 +74,6 @@ export default function EditProductPage({ mode }) {
       ...values,
       hinhAnh,
     };
-    console.log(dto);
     if (isEdit) {
       editCall(editProduct(productId, dto), () => {
         message.success('Đã lưu thay đổi thành công');

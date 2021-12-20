@@ -83,7 +83,7 @@ export default function AppTable({
               );
       }
       if (createdTime) {
-        title = title || 'Ngày tạo';
+        title = title || 'Tạo lúc';
         dataIndex = dataIndex || 'taoLuc';
         render = render
           ? render

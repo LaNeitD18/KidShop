@@ -27,10 +27,7 @@ export function SelectInput({
     value: d.value.toString(),
     label: showId ? `${d.label} (${idString(d.value, idFormat)})` : d.label,
   }));
-  console.log(data);
-  console.log(value);
   if (data && data.length > 0 && value && typeof value !== 'object') {
-    console.log('yes');
     value = showId
       ? `${
           data.find((d) => d.value.toString() === value.toString())?.label

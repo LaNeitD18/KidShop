@@ -46,7 +46,7 @@ export default function EditWarehousePage({ mode }) {
   const [mapCenter, setMapCenter] = useState(defaultMapLct.coordinates);
   const [mapLocation, setMapLocation] = useState(defaultMapLct);
 
-  const [getCall] = useApiFeedback();
+  const [getCall, loading] = useApiFeedback();
   const [postCall, postLoad] = useApiFeedback();
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
@@ -84,6 +84,7 @@ export default function EditWarehousePage({ mode }) {
       viTri: mapLocation?.address,
     };
     if (isEdit) {
+      console.log('dto', dto);
       editCall(editWarehouse(warehouseId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });
@@ -120,7 +121,7 @@ export default function EditWarehousePage({ mode }) {
           Hủy bỏ
         </AppButton>
       </ContentHeader>
-      <FormGrid column={2}>
+      <FormGrid column={2} loading={loading}>
         <Map
           center={mapCenter}
           mapLocation={mapLocation}

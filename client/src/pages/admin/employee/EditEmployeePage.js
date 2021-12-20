@@ -52,7 +52,6 @@ export default function EditEmployeePage({ mode }) {
       matKhau: defaultPassword,
     };
     if (isEdit) {
-      console.log(dto);
       editCall(editUser(employeeId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });

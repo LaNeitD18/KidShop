@@ -82,7 +82,6 @@ export default function EditBranchPage({ mode }) {
       viDo: mapLocation?.coordinates[1],
       viTri: mapLocation?.address,
     };
-    console.log(dto);
     if (isEdit) {
       editCall(editStore(branchId, dto), () => {
         message.success('Đã lưu thay đổi thành công');

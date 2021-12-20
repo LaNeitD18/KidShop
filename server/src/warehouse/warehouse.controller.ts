@@ -90,7 +90,7 @@ export class WarehouseController {
   @Patch(':id')
   async updateWarehouse(
     @Param('id') id: string,
-    @Body() data: Kho,
+    @Body() data: CreateWarehouseDto,
     @Res() res: Response,
   ) {
     if (!data) {
@@ -98,6 +98,8 @@ export class WarehouseController {
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: 'New warehouse information is required' });
     }
+
+    const { idQuanLyKho, ...restData } = data;
 
     try {
       const warehouse = await this.warehouseService.findOne(id);
@@ -107,7 +109,19 @@ export class WarehouseController {
         });
       }
 
-      const updatedWarehouse = await this.warehouseService.update(id, data);
+      const warehouseManager = await this.userService.findOne(idQuanLyKho);
+      if (!warehouseManager) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .send(
+            `Can not find user with id ${idQuanLyKho} to set warehouse manager`,
+          );
+      }
+
+      const updatedWarehouse = await this.warehouseService.update(id, {
+        ...restData,
+        quanLyKho: warehouseManager,
+      });
       return res.status(HttpStatus.OK).json(updatedWarehouse);
     } catch (error) {
       return res
