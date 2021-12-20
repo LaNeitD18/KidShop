@@ -15,12 +15,14 @@ export class StoreService {
   }
 
   async findAll() {
-    return await this.storeRepository.find({ relations: ['chuCuaHang'] });
+    return await this.storeRepository.find({
+      relations: ['chuCuaHang', 'dsQuay'],
+    });
   }
 
   async findOne(id: string) {
     return await this.storeRepository.findOne(id, {
-      relations: ['chuCuaHang'],
+      relations: ['chuCuaHang', 'dsQuay'],
     });
   }
 

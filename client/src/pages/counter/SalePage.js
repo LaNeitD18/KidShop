@@ -15,6 +15,7 @@ import {
   Typography,
   Modal,
   message,
+  Form,
 } from 'antd';
 import {
   UserOutlined,
@@ -42,6 +43,10 @@ import { fireError, fireSuccessModal } from '../../utils/feedback';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { sha256 } from 'js-sha256';
+import useApiFeedback from '../../hooks/useApiFeedback';
+import { getStoreList } from '../../api/store';
+import { getCounterList } from '../../api/counter';
+import { arrayFind } from '../../utils/array';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -102,6 +107,11 @@ export default function SalePage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [momoModal, setMomoModal] = useState(null);
   const [total, setTotal] = useState(150000);
+  const [selectedStore, setSelectedStore] = useState();
+  const [selectedCounter, setSelectedCounter] = useState();
+  const [assignedUser, setAssignerUser] = useState();
+  const [getStoresCall, getStoresLoading, getStoresError, { data: stores }] =
+    useApiFeedback();
   const paymentMethodRef = useRef(null);
   useLayoutEffect(() => {
     setLayout({
@@ -115,13 +125,39 @@ export default function SalePage() {
     };
   }, [setLayout]);
 
+  useEffect(() => {
+    getStoresCall(getStoreList(), (res) => {
+      console.log('get store list', res);
+      setSelectedStore(res.data[0]);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedStore?.dsQuay?.length > 0)
+      setSelectedCounter(selectedStore.dsQuay[0]);
+  }, [selectedStore]);
+
   return (
     <div className="flex mb-10 gap-3 flex-col lg:flex-row">
       <div className="flex-1 flex flex-col items-stretch gap-3">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch">
           <div className="flex gap-3 flex-1">
-            <SelectInput className="flex-1" placeholder="Cửa hàng" />
-            <SelectInput className="flex-1" placeholder="Quầy" />
+            <SelectInput
+              value={selectedStore?.id}
+              data={stores?.map((d) => ({
+                value: d.id,
+                label: d.diaChi,
+              }))}
+              idFormat={['CH', 4]}
+              className="flex-1"
+              placeholder="Cửa hàng"
+              onSelect={(ch) => setSelectedStore(arrayFind(stores, ch, 'id'))}
+            />
+            <SelectInput
+              disabled={!selectedStore}
+              className="flex-1"
+              placeholder="Quầy"
+            />
           </div>
           <div className="flex flex-1 gap-3">
             <SelectInput className="flex-1" placeholder="Nhân viên trực" />

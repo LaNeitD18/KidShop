@@ -24,13 +24,13 @@ export function SelectInput({
   ...rest
 }) {
   const options = data?.map((d) => ({
-    value: d.value.toString(),
+    value: d.value?.toString(),
     label: showId ? `${d.label} (${idString(d.value, idFormat)})` : d.label,
   }));
   if (data && data.length > 0 && value && typeof value !== 'object') {
     value = showId
       ? `${
-          data.find((d) => d.value.toString() === value.toString())?.label
+          data.find((d) => d.value?.toString() === value?.toString())?.label
         } (${idString(value, idFormat)})`
       : value;
   }
