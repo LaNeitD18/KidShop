@@ -1,3 +1,4 @@
+import { NguoiDung } from './../user/entities/user.entity';
 import { CuaHang } from './entities/store.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';

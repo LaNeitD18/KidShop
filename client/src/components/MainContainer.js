@@ -24,6 +24,7 @@ import { GoChevronDown } from 'react-icons/go';
 import { GiHandTruck, GiFactory } from 'react-icons/gi';
 import { FaWarehouse } from 'react-icons/fa';
 import { BiImport, BiExport } from 'react-icons/bi';
+import { VscSmiley } from 'react-icons/vsc';
 import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
 import { useLayoutContext } from '../context/LayoutContext';
@@ -108,6 +109,21 @@ const navMenu = [
     context: 'stores',
     idFormat: ['CH', 4],
     children: [
+      {
+        path: 'staff',
+        title: 'QL Nhân Viên',
+        icon: <VscSmiley />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
       {
         path: 'counter',
         title: 'QL Quầy',

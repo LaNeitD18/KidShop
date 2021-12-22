@@ -141,7 +141,7 @@ export default function SalePage() {
     <div className="flex mb-10 gap-3 flex-col lg:flex-row">
       <div className="flex-1 flex flex-col items-stretch gap-3">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch">
-          <div className="flex gap-3 flex-1">
+          <div className="flex gap-3 flex-1 flex-col lg:flex-row">
             <SelectInput
               value={selectedStore?.id}
               data={stores?.map((d) => ({
@@ -154,7 +154,14 @@ export default function SalePage() {
               onSelect={(ch) => setSelectedStore(arrayFind(stores, ch, 'id'))}
             />
             <SelectInput
-              disabled={!selectedStore}
+              style={{ minWidth: '144px' }}
+              disabled={!selectedStore?.id}
+              data={selectedStore?.dsQuay?.map((q) => ({
+                value: q.id,
+                label: q.tenQuay,
+              }))}
+              value={selectedCounter?.id}
+              idFormat={['Q', 4]}
               className="flex-1"
               placeholder="Quầy"
             />
@@ -163,7 +170,7 @@ export default function SalePage() {
             <SelectInput className="flex-1" placeholder="Nhân viên trực" />
             <div className="flex items-center gap-2 shadow rounded-lg px-3 bg-primary text-white">
               <BsCheckCircleFill />
-              <span className="font-semibold">Quầy mở</span>
+              <span className="font-semibold">Mở</span>
             </div>
           </div>
         </div>

@@ -11,6 +11,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -44,6 +46,12 @@ export class CuaHang {
 
   @OneToMany(() => Quay, (quay) => quay.cuaHang)
   dsQuay?: Quay[];
+
+  @ManyToMany(() => NguoiDung, {
+    cascade: true,
+  })
+  @JoinTable()
+  dsNhanVien?: NguoiDung[];
 
   @CreateDateColumn()
   taoLuc?: Date;
