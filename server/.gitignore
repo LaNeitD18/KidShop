@@ -2,6 +2,7 @@
 /dist
 /node_modules
 
+
 # Logs
 logs
 *.log
@@ -37,3 +38,5 @@ lerna-debug.log*
 yarn.lock
 package-lock.json
 .env
+
+/secrets
