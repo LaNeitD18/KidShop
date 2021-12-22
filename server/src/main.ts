@@ -6,15 +6,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 // import cors from 'cors';
 
-const httpsOptions = {
-  key: fs.readFileSync(path.resolve(__dirname, '../secrets/key.pem')),
-  cert: fs.readFileSync(path.resolve(__dirname, '../secrets/cert.pem')),
-};
-
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions,
-  });
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
 
