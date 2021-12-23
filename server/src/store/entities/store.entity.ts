@@ -47,9 +47,7 @@ export class CuaHang {
   @OneToMany(() => Quay, (quay) => quay.cuaHang)
   dsQuay?: Quay[];
 
-  @ManyToMany(() => NguoiDung, {
-    cascade: true,
-  })
+  @OneToMany(() => NguoiDung, (user) => user.cuaHang)
   @JoinTable()
   dsNhanVien?: NguoiDung[];
 

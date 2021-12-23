@@ -16,14 +16,32 @@ export class UserService {
 
   async findAll() {
     return await this.userRepository.find({
-      select: ['id', 'tenTaiKhoan', 'hoTen', 'diaChi', 'sdt', 'gioiTinh'],
+      relations: ['cuaHang'],
+      select: [
+        'id',
+        'tenTaiKhoan',
+        'hoTen',
+        'diaChi',
+        'sdt',
+        'gioiTinh',
+        'cuaHang',
+      ],
     });
   }
 
   async findOne(id: string) {
     try {
       const user = await this.userRepository.findOne(id, {
-        select: ['id', 'tenTaiKhoan', 'hoTen', 'diaChi', 'sdt', 'gioiTinh'],
+        relations: ['cuaHang'],
+        select: [
+          'id',
+          'tenTaiKhoan',
+          'hoTen',
+          'diaChi',
+          'sdt',
+          'gioiTinh',
+          'cuaHang',
+        ],
       });
       return user;
     } catch (error) {
@@ -47,7 +65,15 @@ export class UserService {
       .createQueryBuilder('user')
       .update(data)
       .where('id = :id', { id: id })
-      .returning(['id', 'tenTaiKhoan', 'hoTen', 'diaChi', 'sdt', 'gioiTinh'])
+      .returning([
+        'id',
+        'tenTaiKhoan',
+        'hoTen',
+        'diaChi',
+        'sdt',
+        'gioiTinh',
+        'cuaHang',
+      ])
       .updateEntity(true)
       .execute();
 

@@ -24,5 +24,6 @@ export class Quay {
   nhanVienTruc?: NguoiDung;
 
   @ManyToOne(() => CuaHang, (cuaHang) => cuaHang.dsQuay)
+  @JoinColumn()
   cuaHang: CuaHang;
 }

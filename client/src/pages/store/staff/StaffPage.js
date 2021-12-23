@@ -7,6 +7,8 @@ import { message } from 'antd';
 import { useRoles } from '../../../context/RolesContext';
 import { deleteUser, getUserList } from '../../../api/user';
 import { SelectInput } from '../../../components/Inputs';
+import { assignUser, getStore } from '../../../api/store';
+import { useParams } from 'react-router-dom';
 
 const columns = [
   {
@@ -28,45 +30,59 @@ const columns = [
     searchable: true,
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
-    searchable: true,
-  },
-  {
     title: 'Giới tính',
     dataIndex: 'gioiTinh',
     searchable: true,
   },
+  {
+    title: 'Trạng thái',
+  },
 ];
 
 export default function StaffPage() {
+  const { storeId } = useParams();
   const [selectedRows, setSelectedRows] = useState([]);
+  const [user, setUser] = useState();
   const [userListCall, userListLoading, error, { data: userList }] =
     useApiFeedback();
-  const [deleteCall, deleteLoading] = useApiFeedback();
+  const [removeCall, removeLoading] = useApiFeedback();
 
-  const [roles, updateRoles] = useRoles();
+  const [storeCall, storeLoading, storeError, { data: store }] =
+    useApiFeedback();
+
+  const [assignCall, assignLoading] = useApiFeedback();
+
+  const dsNhanVien = store?.dsNhanVien;
 
   function fetchUser() {
     userListCall(getUserList());
+  }
+
+  function fetchStore() {
+    storeCall(getStore(storeId));
   }
 
   useEffect(() => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    fetchStore();
+  }, [storeId]);
+
   function handleDelete() {
-    deleteCall(
+    removeCall(
       Promise.all(
         selectedRows.map((row) => {
-          return deleteUser(row);
+          return assignUser(-1, row);
         })
       ),
       () => {
-        updateRoles();
-        message.success('Xóa thành công');
-        setSelectedRows([]);
+        fetchStore();
         fetchUser();
+        setUser(null);
+        message.success('Bỏ thành công');
+        setSelectedRows([]);
       }
     );
   }
@@ -80,15 +96,30 @@ export default function StaffPage() {
         {!selectedRows.length && (
           <div className="flex gap-3 items-center">
             <SelectInput
-              data={userList?.map((u) => ({
-                value: u.id,
-                label: u.hoTen,
-              }))}
+              data={userList
+                ?.filter((u) => !u?.cuaHang?.id)
+                .map((u) => ({
+                  value: u.id,
+                  label: u.hoTen,
+                }))}
               size="normal"
               style={{ minWidth: '256px' }}
               placeholder="Chọn nhân viên"
+              value={user}
+              onSelect={(v) => setUser(v)}
             />
-            <AppButton type="add" link="add">
+            <AppButton
+              loading={assignLoading}
+              type="add"
+              link="add"
+              onClick={() => {
+                assignCall(assignUser(storeId, user), () => {
+                  fetchStore();
+                  fetchUser();
+                  setUser(null);
+                });
+              }}
+            >
               Thêm
             </AppButton>
           </div>
@@ -97,16 +128,16 @@ export default function StaffPage() {
           <AppButton
             type="delete"
             onClick={handleDelete}
-            loading={deleteLoading}
+            loading={removeLoading}
           >
             Xóa khỏi cửa hàng
           </AppButton>
         )}
       </ContentHeader>
       <AppTable
-        loading={userListLoading}
+        loading={storeLoading}
         columns={columns}
-        data={userList}
+        data={dsNhanVien}
         onSelectRows={setSelectedRows}
         itemName="nhân viên"
       />

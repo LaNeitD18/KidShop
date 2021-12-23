@@ -5,3 +5,5 @@ export const getStoreList = () => API.get('/store');
 export const getStore = (id) => API.get(`/store/${id}`);
 export const deleteStore = (id) => API.delete(`/store/${id}`);
 export const editStore = (id, data) => API.patch(`/store/${id}`, data);
+export const assignUser = (id, userId) =>
+  API.patch(`/store/${id}/assign/${userId}`);

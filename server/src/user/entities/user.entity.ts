@@ -8,6 +8,9 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  JoinTable,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -46,8 +49,7 @@ export class NguoiDung {
   @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.nguoiLap)
   dsPhieuXuatKho?: PhieuXuatKho[];
 
-  @ManyToMany(() => CuaHang, {
-    cascade: true,
-  })
-  dsCuaHang?: CuaHang[];
+  @ManyToOne(() => CuaHang, (store) => store.dsNhanVien)
+  @JoinColumn()
+  cuaHang?: CuaHang;
 }

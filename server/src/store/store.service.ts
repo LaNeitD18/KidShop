@@ -2,7 +2,7 @@ import { NguoiDung } from './../user/entities/user.entity';
 import { CuaHang } from './entities/store.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class StoreService {
@@ -21,15 +21,19 @@ export class StoreService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(
+    id: string,
+    relations = ['chuCuaHang', 'dsQuay', 'dsNhanVien'],
+  ) {
     return await this.storeRepository.findOne(id, {
-      relations: ['chuCuaHang', 'dsQuay'],
+      relations: relations,
     });
   }
 
   async update(id: string, data: CuaHang) {
     const response = await this.storeRepository
       .createQueryBuilder('store')
+      .leftJoin('store.dsQuay', 'counter')
       .update(data)
       .where('id = :id', { id: id })
       .returning('*')
@@ -38,6 +42,10 @@ export class StoreService {
 
     const updatedStore = response.raw[0] as CuaHang;
     return updatedStore;
+  }
+
+  async updateV2(store: CuaHang): Promise<UpdateResult> {
+    return await this.storeRepository.update(store.id, store);
   }
 
   remove(id: string) {
