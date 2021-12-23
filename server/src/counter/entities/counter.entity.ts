@@ -19,7 +19,7 @@ export class Quay {
   @Column()
   tenQuay?: string;
 
-  @OneToOne(() => NguoiDung)
+  @OneToOne(() => NguoiDung, (user) => user.quay, { cascade: true })
   @JoinColumn()
   nhanVienTruc?: NguoiDung;
 

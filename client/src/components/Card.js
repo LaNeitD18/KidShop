@@ -83,18 +83,29 @@ export function CounterCard({ employeeName, name, id, active }) {
   );
 }
 
-export function ProductCard() {
+export function ProductCard({
+  id,
+  tenMH,
+  giaBan = 0,
+  khuyenMai = 0,
+  kichThuoc,
+  mauSac,
+  hinhAnh,
+  onAdd = (id, tenMH, count, giaBan, khuyenMai) => {},
+  disabled,
+}) {
   const [showActions, setShowActions] = useState(false);
+  const [count, setCount] = useState(1);
   return (
     <Card
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       size="small"
-      className="border shadow hover:border-green-600 transition-all hover:shadow-lg"
+      className="border shadow transition-all hover:shadow-lg"
       cover={
         <img
           alt="example"
-          src="https://primedia.primark.com/s/primark/210171290_ms?locale=en-*,sl-*,*&$product-thumbnail$"
+          src={hinhAnh}
           className={classNames({
             'object-cover transition-all h-48': true,
             'lg:h-32': !showActions,
@@ -109,27 +120,54 @@ export function ProductCard() {
           style={{ margin: 0 }}
           ellipsis={{ rows: 2 }}
         >
-          Tên mặt hàng đầy đủ luôn nè màu xanh Tên mặt hàng đầy đủ luôn nè màu
-          xanh
+          {tenMH}
         </Paragraph>
         <div className="flex flex-wrap items-center gap-1">
-          <Tooltip title="Màu sắc">
-            <Tag
-              style={{ fontSize: 12, padding: '0 6px', margin: 0, height: 24 }}
-            >
-              Đen
-            </Tag>
-          </Tooltip>
-          <Tooltip title="Kích thước">
-            <Tag
-              style={{ fontSize: 12, padding: '0 6px', margin: 0, height: 24 }}
-            >
-              2XL
-            </Tag>
-          </Tooltip>
+          {!!mauSac && (
+            <Tooltip title="Màu sắc">
+              <Tag
+                style={{
+                  fontSize: 12,
+                  padding: '0 6px',
+                  margin: 0,
+                  height: 24,
+                }}
+              >
+                {mauSac}
+              </Tag>
+            </Tooltip>
+          )}
+          {!!kichThuoc && (
+            <Tooltip title="Kích thước">
+              <Tag
+                style={{
+                  fontSize: 12,
+                  padding: '0 6px',
+                  margin: 0,
+                  height: 24,
+                }}
+              >
+                {kichThuoc}
+              </Tag>
+            </Tooltip>
+          )}
         </div>
         <div className={classNames('flex items-center justify-between')}>
-          <span className="text-primary">{currencyShort(25000)}</span>
+          <span className="flex gap-1 items-end">
+            <span
+              className={classNames({
+                'text-primary': !khuyenMai,
+                'line-through': khuyenMai,
+              })}
+            >
+              {currencyShort(giaBan)}
+            </span>
+            {!!khuyenMai && (
+              <span className="text-primary">
+                {currencyShort(giaBan - khuyenMai)}
+              </span>
+            )}
+          </span>
           <span className="text-gray-400">{50} có sẵn</span>
         </div>
         <div
@@ -146,8 +184,20 @@ export function ProductCard() {
             'lg:hidden': !showActions,
           })}
         >
-          <InputNumber min={1} max={10} keyboard defaultValue={1} />
-          <AppButton className="flex-1" type="add">
+          <InputNumber
+            min={1}
+            max={10}
+            keyboard
+            value={count}
+            onChange={(v) => setCount(v)}
+            disabled={disabled}
+          />
+          <AppButton
+            disabled={disabled}
+            className="flex-1"
+            type="add"
+            onClick={() => onAdd(id, tenMH, count, giaBan, khuyenMai)}
+          >
             Thêm
           </AppButton>
         </div>

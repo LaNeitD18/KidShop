@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLayoutContext } from '../../context/LayoutContext';
 import {
   Button,
@@ -16,6 +16,7 @@ import {
   Modal,
   message,
   Form,
+  Affix,
 } from 'antd';
 import {
   UserOutlined,
@@ -25,10 +26,12 @@ import {
   SearchOutlined,
   BarcodeOutlined,
   QrcodeOutlined,
+  CloseCircleOutlined,
 } from '@ant-design/icons';
 import { MdOutlineCake } from 'react-icons/md';
 import { IoIosCash } from 'react-icons/io';
 import { BsCheckCircleFill } from 'react-icons/bs';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { SelectInput } from '../../components/Inputs';
 import AppButton from '../../components/AppButton';
 import { HorizontalDivider, VerticalDivider } from '../../components/Divider';
@@ -44,9 +47,11 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { sha256 } from 'js-sha256';
 import useApiFeedback from '../../hooks/useApiFeedback';
-import { getStoreList } from '../../api/store';
-import { getCounterList } from '../../api/counter';
+import { getStore, getStoreList } from '../../api/store';
+import { editCounter, getCounter, getCounterList } from '../../api/counter';
 import { arrayFind } from '../../utils/array';
+import { getProductList } from '../../api/product';
+import Loading from '../../components/Loading';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -87,12 +92,15 @@ function ChildDetail({ male, name, dob }) {
 const billColumns = [
   {
     title: 'Mặt hàng',
+    dataIndex: 'tenMH',
   },
   {
     title: 'Số lượng',
+    dataIndex: 'count',
   },
   {
     title: 'Thành tiền',
+    dataIndex: 'money',
   },
 ];
 
@@ -106,13 +114,23 @@ export default function SalePage() {
   const [scannedCode, setScannedCode] = useState('Đang nhận diện...');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [momoModal, setMomoModal] = useState(null);
-  const [total, setTotal] = useState(150000);
   const [selectedStore, setSelectedStore] = useState();
   const [selectedCounter, setSelectedCounter] = useState();
-  const [assignedUser, setAssignerUser] = useState();
   const [getStoresCall, getStoresLoading, getStoresError, { data: stores }] =
     useApiFeedback();
+  const [dsNhanVien, setDsNhanVien] = useState([]);
+  const [
+    getCounterCall,
+    getCounterLoading,
+    getCounterError,
+    { data: getCounterData },
+  ] = useApiFeedback();
   const paymentMethodRef = useRef(null);
+  const [updateCounterCall, updateCounterLoading] = useApiFeedback();
+  const [productsCall, productsLoading, productsError, { data: products }] =
+    useApiFeedback();
+  const [items, setItems] = useState([]);
+
   useLayoutEffect(() => {
     setLayout({
       disableSider: true,
@@ -125,17 +143,70 @@ export default function SalePage() {
     };
   }, [setLayout]);
 
-  useEffect(() => {
+  const fetchAllStore = () => {
     getStoresCall(getStoreList(), (res) => {
-      console.log('get store list', res);
       setSelectedStore(res.data[0]);
     });
+  };
+  useEffect(() => {
+    fetchAllStore();
   }, []);
 
   useEffect(() => {
-    if (selectedStore?.dsQuay?.length > 0)
-      setSelectedCounter(selectedStore.dsQuay[0]);
+    setSelectedCounter(getCounterData);
+  }, [getCounterData]);
+
+  useEffect(() => {
+    if (selectedStore?.dsQuay?.length > 0) {
+      getCounter(selectedStore.dsQuay[0].id).then(({ data }) => {
+        setSelectedCounter(data);
+      });
+    }
   }, [selectedStore]);
+
+  console.log(selectedStore?.dsNhanVien);
+
+  const manuallySelectCounterAssignee = (idUser, onFinish) => {
+    editCounter(selectedCounter?.id, {
+      idNhanVienTruc: idUser,
+      idCuaHang: selectedStore?.id,
+    })
+      .then((res) =>
+        getCounter(selectedCounter?.id).then((res) => {
+          setSelectedCounter(res.data);
+        })
+      )
+      .catch((err) => fireError(err));
+  };
+
+  useEffect(() => {
+    productsCall(getProductList());
+  }, []);
+
+  const total = useMemo(
+    () =>
+      items.reduce(
+        (prev, curr) => prev + (curr.giaBan - curr.khuyenMai) * curr.count,
+        0
+      ),
+    [items]
+  );
+
+  const rawPrice = useMemo(
+    () => items.reduce((prev, curr) => prev + curr.giaBan * curr.count, 0),
+    [items]
+  );
+
+  const discount = useMemo(
+    () => items.reduce((prev, curr) => prev + curr.khuyenMai * curr.count, 0),
+    [items]
+  );
+
+  useEffect(() => {
+    if (!selectedCounter?.nhanVienTruc?.id) {
+      setItems([]);
+    }
+  }, [selectedCounter?.nhanVienTruc?.id]);
 
   return (
     <div className="flex mb-10 gap-3 flex-col lg:flex-row">
@@ -161,17 +232,48 @@ export default function SalePage() {
                 label: q.tenQuay,
               }))}
               value={selectedCounter?.id}
+              onSelect={(v) =>
+                getCounterCall(getCounter(v), ({ data }) =>
+                  setSelectedCounter(data)
+                )
+              }
               idFormat={['Q', 4]}
               className="flex-1"
               placeholder="Quầy"
             />
           </div>
           <div className="flex flex-1 gap-3">
-            <SelectInput className="flex-1" placeholder="Nhân viên trực" />
-            <div className="flex items-center gap-2 shadow rounded-lg px-3 bg-primary text-white">
-              <BsCheckCircleFill />
-              <span className="font-semibold">Mở</span>
-            </div>
+            <SelectInput
+              className="flex-1"
+              placeholder="Nhân viên trực"
+              data={selectedStore?.dsNhanVien
+                ?.filter((nv) => !nv.quay?.id)
+                .map((u) => ({
+                  value: u.id,
+                  label: u.hoTen,
+                }))}
+              value={selectedCounter?.nhanVienTruc?.id}
+              idFormat={['NV', 4]}
+              onSelect={(v) => {
+                manuallySelectCounterAssignee(v);
+              }}
+            />
+            <AppButton
+              disabled={!selectedCounter?.nhanVienTruc?.id}
+              size="large"
+              type="delete"
+              icon={<CloseCircleOutlined />}
+              confirm={{
+                title: 'Xác nhận đóng quầy',
+                content: 'Bạn sẽ xóa nhân viên trực ra khỏi quầy',
+              }}
+              loading={updateCounterLoading}
+              onClick={() => {
+                manuallySelectCounterAssignee(null);
+              }}
+            >
+              {selectedCounter?.nhanVienTruc?.id ? 'Đóng quầy' : 'Đang đóng'}
+            </AppButton>
           </div>
         </div>
         <div className="flex gap-3">
@@ -209,102 +311,153 @@ export default function SalePage() {
           </Button>
         </div>
         <div className="grid gap-3  sm:grid-cols-3 xl:grid-cols-4">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-        </div>
-      </div>
-      <div className="bg-white rounded-lg shadow-lg-soft p-4 flex flex-col gap-2 w-full lg:w-96 self-start pb-8">
-        <SelectInput placeholder="Khách hàng thành viên" />
-        <div className="flex items-center gap-2">
-          <UserOutlined className="text-5xl p-3 opacity-80" />
-          <div className="flex flex-col">
-            <span className="font-bold text-xl">Nguyễn Thành Trung</span>
-            <span>Thành viên Trung Thành</span>
-          </div>
-        </div>
-        {false && (
-          <AppButton type="add" icon={<UserAddOutlined />} className="mx-4">
-            Tạo khách hàng
-          </AppButton>
-        )}
-        {true && (
-          <Collapse defaultActiveKey={['1']}>
-            <Panel header="Thông tin khách hàng">
-              <div className="flex tracking-wide">
-                <CustomerDetailsCol label="TUỔI">28</CustomerDetailsCol>
-                <VerticalDivider />
-                <Popover
-                  content={
-                    <div>
-                      <ChildDetail name="Ngô Công Hậu" dob={moment()} male />
-                      <HorizontalDivider />
-                      <ChildDetail name="Ngô Công Hậu" dob={moment()} />
-                      <HorizontalDivider />
-                      <ChildDetail name="Ngô Công Hậu" dob={moment()} male />
-                    </div>
+          {!!productsLoading && <Loading />}
+          {products?.map((p) => (
+            <ProductCard
+              disabled={!selectedCounter?.nhanVienTruc?.id}
+              {...p}
+              onAdd={(id, tenMH, count, giaBan, khuyenMai) =>
+                setItems((prev) => {
+                  let found = false;
+                  const updatedList = prev.map((item) => {
+                    if (item.id === id) {
+                      found = true;
+                      return { ...item, count: item.count + count };
+                    }
+                    return item;
+                  });
+                  if (found) {
+                    return updatedList;
+                  } else {
+                    return prev.concat({
+                      id,
+                      tenMH,
+                      count,
+                      giaBan,
+                      khuyenMai,
+                      money: giaBan - khuyenMai,
+                    });
                   }
-                  title="Các con"
-                  placement="left"
-                >
-                  <div className="flex-1">
-                    <CustomerDetailsCol label="SỐ CON">3</CustomerDetailsCol>
-                  </div>
-                </Popover>
-                <VerticalDivider />
-                <CustomerDetailsCol label="LẦN MUA">9</CustomerDetailsCol>
-              </div>
-              <div className="mx-4 mt-4">
-                <AppButton type="edit" className="w-full">
-                  Chỉnh sửa
-                </AppButton>
-              </div>
-            </Panel>
-          </Collapse>
-        )}
-        <AppTable
-          columns={billColumns}
-          selectable={false}
-          size="small"
-          bordered={false}
-          minCols={3}
-        />
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between font-semibold text-2xl px-2 mt-4">
-            <span>Tổng cộng</span>
-            <span>{currency(total)}</span>
-          </div>
-          <div className="flex items-center justify-between px-2">
-            <span>Tiền gốc</span>
-            <span>{currency(1250000)}</span>
-          </div>
-          <div className="flex items-center justify-between px-2">
-            <span>Giảm giá</span>
-            <span>{currency(250000)}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <AppButton type="cancel" size="large" className="mt-3">
-            Hủy
-          </AppButton>
-          <AppButton
-            type="done"
-            size="large"
-            className="mt-3 flex-1"
-            onClick={() => {
-              setShowPaymentModal(true);
-            }}
-          >
-            Thanh toán
-          </AppButton>
+                })
+              }
+            />
+          ))}
         </div>
       </div>
+      <Affix offsetTop={68}>
+        <div className="bg-white rounded-lg shadow-lg-soft p-4 flex flex-col gap-2 w-full lg:w-96 self-start pb-8">
+          {false && (
+            <>
+              <SelectInput placeholder="Khách hàng thành viên" />
+              <div className="flex items-center gap-2">
+                <UserOutlined className="text-5xl p-3 opacity-80" />
+                <div className="flex flex-col">
+                  <span className="font-bold text-xl">Nguyễn Thành Trung</span>
+                  <span>Thành viên Trung Thành</span>
+                </div>
+              </div>
+              {false && (
+                <AppButton
+                  type="add"
+                  icon={<UserAddOutlined />}
+                  className="mx-4"
+                >
+                  Tạo khách hàng
+                </AppButton>
+              )}
+              {true && (
+                <Collapse defaultActiveKey={['1']}>
+                  <Panel header="Thông tin khách hàng">
+                    <div className="flex tracking-wide">
+                      <CustomerDetailsCol label="TUỔI">28</CustomerDetailsCol>
+                      <VerticalDivider />
+                      <Popover
+                        content={
+                          <div>
+                            <ChildDetail
+                              name="Ngô Công Hậu"
+                              dob={moment()}
+                              male
+                            />
+                            <HorizontalDivider />
+                            <ChildDetail name="Ngô Công Hậu" dob={moment()} />
+                            <HorizontalDivider />
+                            <ChildDetail
+                              name="Ngô Công Hậu"
+                              dob={moment()}
+                              male
+                            />
+                          </div>
+                        }
+                        title="Các con"
+                        placement="left"
+                      >
+                        <div className="flex-1">
+                          <CustomerDetailsCol label="SỐ CON">
+                            3
+                          </CustomerDetailsCol>
+                        </div>
+                      </Popover>
+                      <VerticalDivider />
+                      <CustomerDetailsCol label="LẦN MUA">9</CustomerDetailsCol>
+                    </div>
+                    <div className="mx-4 mt-4">
+                      <AppButton type="edit" className="w-full">
+                        Chỉnh sửa
+                      </AppButton>
+                    </div>
+                  </Panel>
+                </Collapse>
+              )}
+            </>
+          )}
+          <AppTable
+            data={items}
+            columns={billColumns}
+            selectable={false}
+            size="small"
+            bordered={false}
+            minCols={3}
+            defaultPageSize={4}
+          />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between font-semibold text-2xl px-2 mt-4">
+              <span>Tổng cộng</span>
+              <span>{currency(total)}</span>
+            </div>
+            <div className="flex items-center justify-between px-2">
+              <span>Tiền gốc</span>
+              <span>{currency(rawPrice)}</span>
+            </div>
+            <div className="flex items-center justify-between px-2">
+              <span>Giảm giá</span>
+              <span>{currency(discount)}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <AppButton
+              type="delete"
+              size="large"
+              className="mt-3"
+              disabled={!items.length}
+              onClick={() => setItems([])}
+            >
+              Hủy
+            </AppButton>
+            <AppButton
+              type="done"
+              size="large"
+              className="mt-3 flex-1"
+              onClick={() => {
+                setShowPaymentModal(true);
+              }}
+              disabled={!items.length}
+            >
+              Thanh toán
+            </AppButton>
+          </div>
+        </div>
+      </Affix>
       <Modal
         visible={momoModal}
         width={1080}

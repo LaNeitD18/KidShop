@@ -1,4 +1,5 @@
 import { CuaHang } from 'src/store/entities/store.entity';
+import { Quay } from 'src/counter/entities/counter.entity';
 import { PhieuXuatKho } from './../../export-product-receipt/entities/export-product-receipt.entity';
 import { PhieuNhapKho } from './../../import-product-receipt/entities/import-product-receipt.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -11,6 +12,7 @@ import {
   JoinTable,
   JoinColumn,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 
 @Entity()
@@ -52,4 +54,8 @@ export class NguoiDung {
   @ManyToOne(() => CuaHang, (store) => store.dsNhanVien)
   @JoinColumn()
   cuaHang?: CuaHang;
+
+  @OneToOne(() => Quay, (quay) => quay.nhanVienTruc)
+  @JoinColumn()
+  quay?: Quay;
 }

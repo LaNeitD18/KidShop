@@ -2,6 +2,7 @@ import { Quay } from './entities/counter.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NguoiDung } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class CounterService {
@@ -41,5 +42,14 @@ export class CounterService {
 
   delete(id: string) {
     return this.counterRepository.delete(id);
+  }
+
+  async isAvailable(id: string) {
+    return this.counterRepository.findOne({
+      where: {
+        id: id,
+        nhanVienTruc: null,
+      },
+    });
   }
 }

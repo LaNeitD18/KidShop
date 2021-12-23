@@ -16,7 +16,7 @@ export class UserService {
 
   async findAll() {
     return await this.userRepository.find({
-      relations: ['cuaHang'],
+      relations: ['cuaHang', 'quay'],
       select: [
         'id',
         'tenTaiKhoan',
@@ -25,6 +25,7 @@ export class UserService {
         'sdt',
         'gioiTinh',
         'cuaHang',
+        'quay',
       ],
     });
   }
@@ -32,7 +33,7 @@ export class UserService {
   async findOne(id: string) {
     try {
       const user = await this.userRepository.findOne(id, {
-        relations: ['cuaHang'],
+        relations: ['cuaHang', 'quay'],
         select: [
           'id',
           'tenTaiKhoan',
@@ -41,6 +42,7 @@ export class UserService {
           'sdt',
           'gioiTinh',
           'cuaHang',
+          'quay',
         ],
       });
       return user;

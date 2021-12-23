@@ -21,7 +21,7 @@ import { Response } from 'express';
 
 @ApiTags('store')
 @Controller('store')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class StoreController {
   constructor(
     private readonly storeService: StoreService,

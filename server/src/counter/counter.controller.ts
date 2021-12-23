@@ -22,7 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('counter')
 @Controller('counter')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class CounterController {
   constructor(
     private readonly counterService: CounterService,
@@ -130,6 +130,15 @@ export class CounterController {
             .status(HttpStatus.NOT_FOUND)
             .send(`Can not find a user with id ${idNhanVienTruc} to assign`);
         }
+      }
+
+      if (
+        idNhanVienTruc !== null &&
+        !(await this.counterService.isAvailable(idNhanVienTruc))
+      ) {
+        return res
+          .status(HttpStatus.CONFLICT)
+          .json({ message: 'Người dùng đang trực ở quầy khác' });
       }
 
       const newData: Quay = {
