@@ -11,6 +11,9 @@ export class CreateExportProductReceiptDto {
   @ApiProperty()
   idCuaHang: number;
 
+  @ApiProperty()
+  trangThai: number;
+
   @ApiProperty({ required: false })
   ghiChu?: string;
 

@@ -8,7 +8,8 @@ export const editWarehouse = (id, data) => API.patch(`/warehouse/${id}`, data);
 export const deleteWarehouse = (id) => API.delete(`/warehouse/${id}`);
 
 // import-product-receipt
-export const fetchAllImportReceipts = () => API.get('/import-product-receipt');
+export const fetchAllImportReceipts = (warehouseId) =>
+  API.get(`/import-product-receipt/all/${warehouseId}`);
 export const fetchImportReceipt = (id) =>
   API.get(`/import-product-receipt/${id}`);
 export const createImportReceipt = (data) =>

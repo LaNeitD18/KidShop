@@ -16,19 +16,42 @@ export class ExportProductReceiptService {
     return this.exportReceiptRepo.save(newExportReceipt);
   }
 
-  findAll() {
-    return this.exportReceiptRepo.find({ relations: ['kho', 'nguoiLap'] });
+  findAll(placeId: number, place: string) {
+    if (place == 'warehouse') {
+      return this.exportReceiptRepo.find({
+        relations: ['cuaHang', 'nguoiLap'],
+        where: {
+          kho: {
+            id: placeId,
+          },
+        },
+      });
+    }
+    return this.exportReceiptRepo.find({
+      relations: ['kho', 'nguoiLap'],
+      where: {
+        cuaHang: {
+          id: placeId,
+        },
+      },
+    });
   }
 
   findOne(id: number) {
     return this.exportReceiptRepo.findOne(id, {
-      relations: ['kho', 'nguoiLap', 'dsCTPhieuXuat'],
+      relations: [
+        'kho',
+        'cuaHang',
+        'nguoiLap',
+        'dsCTPhieuXuat',
+        'dsCTPhieuXuat.matHang',
+      ],
     });
   }
 
   async update(id: number, data: UpdateExportProductReceiptDto) {
     const response = await this.exportReceiptRepo
-      .createQueryBuilder('imReceipt')
+      .createQueryBuilder('exReceipt')
       .update(data)
       .where('id = :id', { id: id })
       .returning('*')

@@ -13,6 +13,8 @@ import { ProducerModule } from './producer/producer.module';
 import { AuthModule } from './auth/auth.module';
 import { ImportProductReceiptModule } from './import-product-receipt/import-product-receipt.module';
 import { ExportProductReceiptModule } from './export-product-receipt/export-product-receipt.module';
+import { BillModule } from './bill/bill.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -52,6 +54,10 @@ import { ExportProductReceiptModule } from './export-product-receipt/export-prod
     ImportProductReceiptModule,
 
     ExportProductReceiptModule,
+
+    BillModule,
+
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

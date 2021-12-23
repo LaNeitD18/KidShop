@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateExportProductReceiptDto } from './create-export-product-receipt.dto';
+import { ApiProperty } from '@nestjs/swagger';
+export class UpdateExportProductReceiptDto {
+  @ApiProperty()
+  trangThai: number;
 
-export class UpdateExportProductReceiptDto extends PartialType(CreateExportProductReceiptDto) {}
+  @ApiProperty({ required: false })
+  ghiChu?: string;
+}

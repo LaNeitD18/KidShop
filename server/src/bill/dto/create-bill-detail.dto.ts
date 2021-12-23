@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-export class CreateDetailImportDto {
+
+export class CreateBillDetailDto {
   @ApiProperty()
   id?: number;
 
@@ -8,4 +9,10 @@ export class CreateDetailImportDto {
 
   @ApiProperty()
   soLuong: number;
+
+  @ApiProperty()
+  tongTien: number;
+
+  @ApiProperty()
+  giamGia?: number;
 }

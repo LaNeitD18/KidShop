@@ -16,8 +16,15 @@ export class ImportProductReceiptService {
     return this.importReceiptRepo.save(newImportReceipt);
   }
 
-  findAll() {
-    return this.importReceiptRepo.find({ relations: ['kho', 'nguoiLap'] });
+  findAll(warehouseId) {
+    return this.importReceiptRepo.find({
+      relations: ['kho', 'nguoiLap'],
+      where: {
+        kho: {
+          id: warehouseId,
+        },
+      },
+    });
   }
 
   findOne(id: number) {

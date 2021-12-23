@@ -1,3 +1,4 @@
+import { CT_HOADON } from './../../bill/entities/bill-detail.entity';
 import { NhaCungCap } from './../../supplier/entities/supplier.entity';
 import { NhaSanXuat } from './../../producer/entities/producer.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -62,4 +63,7 @@ export class MatHang {
 
   @OneToMany(() => CT_PhieuXuatKho, (ctPhieuXuatKho) => ctPhieuXuatKho.matHang)
   dsCTPhieuXuatKho?: CT_PhieuXuatKho[];
+
+  @OneToMany(() => CT_HOADON, (ctHoaDon) => ctHoaDon.matHang)
+  dsCTHoaDon?: CT_HOADON[];
 }

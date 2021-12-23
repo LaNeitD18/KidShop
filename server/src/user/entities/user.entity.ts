@@ -1,5 +1,6 @@
 import { CuaHang } from 'src/store/entities/store.entity';
 import { Quay } from 'src/counter/entities/counter.entity';
+import { HoaDon } from 'src/bill/entities/bill.entity';
 import { PhieuXuatKho } from './../../export-product-receipt/entities/export-product-receipt.entity';
 import { PhieuNhapKho } from './../../import-product-receipt/entities/import-product-receipt.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -49,6 +50,9 @@ export class NguoiDung {
   dsPhieuNhapKho?: PhieuNhapKho[];
 
   @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.nguoiLap)
+  dsPhieuYeuCauNhapHang?: PhieuXuatKho[];
+
+  @OneToMany(() => PhieuXuatKho, (phieuXuat) => phieuXuat.quanLyKho)
   dsPhieuXuatKho?: PhieuXuatKho[];
 
   @ManyToOne(() => CuaHang, (store) => store.dsNhanVien)
@@ -58,4 +62,6 @@ export class NguoiDung {
   @OneToOne(() => Quay, (quay) => quay.nhanVienTruc)
   @JoinColumn()
   quay?: Quay;
+  @OneToMany(() => HoaDon, (hoaDon) => hoaDon.nguoiLap)
+  dsHoaDon?: HoaDon[];
 }

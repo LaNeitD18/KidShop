@@ -1,3 +1,4 @@
+import { HoaDon } from 'src/bill/entities/bill.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CuaHang } from 'src/store/entities/store.entity';
 import { NguoiDung } from 'src/user/entities/user.entity';
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -26,4 +28,7 @@ export class Quay {
   @ManyToOne(() => CuaHang, (cuaHang) => cuaHang.dsQuay)
   @JoinColumn()
   cuaHang: CuaHang;
+
+  @OneToMany(() => HoaDon, (hoaDon) => hoaDon.quay)
+  dsHoaDon?: HoaDon[];
 }
