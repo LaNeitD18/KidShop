@@ -3,10 +3,10 @@ import { CreateDetailImportDto } from './create-detail-import.dto';
 
 export class CreateImportProductReceiptDto {
   @ApiProperty()
-  idNguoiLap: number;
+  idNguoiLap?: number;
 
   @ApiProperty()
-  idKho: number;
+  idKho?: number;
 
   @ApiProperty()
   tongTien?: number;
@@ -15,5 +15,5 @@ export class CreateImportProductReceiptDto {
   ghiChu?: string;
 
   @ApiProperty()
-  dsChiTietPhieuNhap: CreateDetailImportDto[];
+  dsChiTietPhieuNhap?: CreateDetailImportDto[];
 }

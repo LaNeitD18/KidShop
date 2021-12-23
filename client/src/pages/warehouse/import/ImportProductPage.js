@@ -9,19 +9,15 @@ import {
 } from '../../../api/warehouse';
 import { message } from 'antd';
 import CommonString from '../../../constants/string';
+import { useParams } from 'react-router-dom';
 
 const columns = [
   {
     title: 'Mã phiếu nhập kho',
     id: true,
-    idFormat: ['PNK', 4],
+    idFormat: ['NK', 4],
     searchable: true,
     sortable: true,
-  },
-  {
-    title: 'Kho',
-    dataIndex: ['kho', 'diaChi'],
-    searchable: true,
   },
   {
     title: 'Tổng tiền',
@@ -46,6 +42,8 @@ const columns = [
 ];
 
 export default function ImportProductPage() {
+  const { warehouseId } = useParams();
+
   const [selectedRows, setSelectedRows] = useState([]);
   const [apiCall, loading, error, result] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
@@ -56,7 +54,7 @@ export default function ImportProductPage() {
 
   useEffect(() => {
     fetchImportReceipts();
-  }, []);
+  }, [warehouseId]);
 
   function handleDelete() {
     deleteCall(
@@ -93,7 +91,9 @@ export default function ImportProductPage() {
       <AppTable
         loading={loading}
         columns={columns}
-        data={result?.data}
+        data={result?.data?.filter(
+          (item) => item?.kho.id.toString() === warehouseId.toString()
+        )}
         onSelectRows={setSelectedRows}
         itemName="phiếu nhập kho"
       />

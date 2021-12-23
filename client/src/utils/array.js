@@ -3,7 +3,7 @@ export const arrayFind = (array, value, key = 'key') => {
 };
 
 export const withKeys = (array) => {
-  return array.map((item) => ({ ...item, key: item.id }));
+  return array.map((item, i) => ({ ...item, key: item.id || i }));
 };
 
 export const autoSorter = (a, b) => {

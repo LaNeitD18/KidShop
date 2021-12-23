@@ -50,7 +50,7 @@ export default function EditImportReceiptPage({ mode }) {
   const isEdit = mode === 'edit';
   const byModes = isEdit ? editConsts : addConsts;
 
-  const { importReceiptId } = useParams();
+  const { importReceiptId, warehouseId } = useParams();
   const navigate = useNavigate();
 
   const [formAddDetail] = Form.useForm();
@@ -58,7 +58,7 @@ export default function EditImportReceiptPage({ mode }) {
   const [listNewDetails, setListNewDetails] = useState([]);
   const [sumMoney, setSumMoney] = useState(0);
 
-  const [getCall, loading] = useApiFeedback();
+  const [getCall, loading, getError, { data: getData }] = useApiFeedback();
   const [postCall, postLoad] = useApiFeedback();
   const [editCall, editLoad] = useApiFeedback();
   const [deleteCall, deleteLoad] = useApiFeedback();
@@ -100,6 +100,10 @@ export default function EditImportReceiptPage({ mode }) {
     });
   }, [sumMoney]);
 
+  useEffect(() => {
+    if (getData?.tongTien) setSumMoney(getData?.tongTien);
+  }, [getData?.tongTien]);
+
   const onFinishAddDetail = (values) => {
     const product = products.filter((p) => p.id == values?.idMatHang)[0];
     setListNewDetails([
@@ -127,8 +131,8 @@ export default function EditImportReceiptPage({ mode }) {
 
   const onFinishAddReceipt = (values) => {
     const receiptData = {
-      idNguoiLap: 1, // thay = user dang dang nhap
-      idKho: 2, //
+      idNguoiLap: JSON.parse(localStorage.getItem('user'))?.id,
+      idKho: warehouseId,
       tongTien: sumMoney,
       ghiChu: values?.ghiChu,
       dsChiTietPhieuNhap: listNewDetails.map((detail) => {
@@ -141,7 +145,10 @@ export default function EditImportReceiptPage({ mode }) {
     console.log();
 
     if (isEdit) {
-      editCall(editImportReceipt(importReceiptId, receiptData), () => {
+      console.log(receiptData);
+      const { idNguoiLap, idKho, dsChiTietPhieuNhap, ...editedData } =
+        receiptData;
+      editCall(editImportReceipt(importReceiptId, editedData), () => {
         message.success('Đã lưu thay đổi thành công');
       });
     } else {
