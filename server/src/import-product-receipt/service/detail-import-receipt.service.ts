@@ -10,7 +10,7 @@ export class DetailImportReceiptService {
     private readonly detailImportReceiptRepo: Repository<CT_PhieuNhapKho>,
   ) {}
 
-  create(newDetailImport) {
+  create(newDetailImport: CT_PhieuNhapKho) {
     return this.detailImportReceiptRepo.save(newDetailImport);
   }
 

@@ -106,15 +106,31 @@ export default function EditImportReceiptPage({ mode }) {
 
   const onFinishAddDetail = (values) => {
     const product = products.filter((p) => p.id == values?.idMatHang)[0];
-    setListNewDetails([
-      ...listNewDetails,
-      {
-        idMatHang: values?.idMatHang,
-        tenMH: product?.tenMH,
-        giaNhap: product?.giaNhap,
-        soLuong: values?.soLuong,
-      },
-    ]);
+    setListNewDetails((prev) => {
+      let found = false;
+      const updatedList = prev.map((item) => {
+        if (item.idMatHang.toString() === values?.idMatHang.toString()) {
+          found = true;
+          const sl = parseInt(item.soLuong);
+          const newSl = parseInt(values?.soLuong);
+          return {
+            ...item,
+            soLuong: sl + newSl,
+          };
+        }
+        return item;
+      });
+      if (found) {
+        return updatedList;
+      } else {
+        return prev.concat({
+          idMatHang: values?.idMatHang,
+          tenMH: product?.tenMH,
+          giaNhap: product?.giaNhap,
+          soLuong: values?.soLuong,
+        });
+      }
+    });
 
     console.log(formAddReceipt.getFieldsValue());
 
@@ -145,9 +161,7 @@ export default function EditImportReceiptPage({ mode }) {
     console.log();
 
     if (isEdit) {
-      console.log(receiptData);
-      const { idNguoiLap, idKho, dsChiTietPhieuNhap, ...editedData } =
-        receiptData;
+      const { idNguoiLap, idKho, ...editedData } = receiptData;
       editCall(editImportReceipt(importReceiptId, editedData), () => {
         message.success('Đã lưu thay đổi thành công');
       });

@@ -48,12 +48,12 @@ export default function ImportProductPage() {
   const [apiCall, loading, error, result] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
 
-  function fetchImportReceipts() {
-    apiCall(fetchAllImportReceipts());
+  function fetchImportReceipts(warehouseId) {
+    apiCall(fetchAllImportReceipts(warehouseId));
   }
 
   useEffect(() => {
-    fetchImportReceipts();
+    if (warehouseId) fetchImportReceipts(warehouseId);
   }, [warehouseId]);
 
   function handleDelete() {
@@ -66,7 +66,7 @@ export default function ImportProductPage() {
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchImportReceipts();
+        fetchImportReceipts(warehouseId);
       }
     );
   }
@@ -91,9 +91,7 @@ export default function ImportProductPage() {
       <AppTable
         loading={loading}
         columns={columns}
-        data={result?.data?.filter(
-          (item) => item?.kho.id.toString() === warehouseId.toString()
-        )}
+        data={result?.data}
         onSelectRows={setSelectedRows}
         itemName="phiếu nhập kho"
       />

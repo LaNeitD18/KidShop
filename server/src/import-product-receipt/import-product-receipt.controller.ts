@@ -26,7 +26,7 @@ import { Response } from 'express';
 
 @ApiTags('import-product-receipt')
 @Controller('import-product-receipt')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class ImportProductReceiptController {
   constructor(
     private readonly importProductReceiptService: ImportProductReceiptService,
@@ -163,7 +163,10 @@ export class ImportProductReceiptController {
       }
 
       let warehouseManager;
-      if (data.idNguoiLap.toString() != receipt.nguoiLap.id) {
+      if (
+        data.idNguoiLap &&
+        data.idNguoiLap.toString() != receipt.nguoiLap.id
+      ) {
         warehouseManager = await this.userService.findOne(
           data.idNguoiLap.toString(),
         );
@@ -177,7 +180,7 @@ export class ImportProductReceiptController {
       }
 
       let warehouse;
-      if (data.idKho != receipt.kho.id) {
+      if (data.idKho && data.idKho != receipt.kho.id) {
         warehouse = await this.warehouseService.findOne(data.idKho.toString());
         if (!warehouse) {
           return res.status(HttpStatus.NOT_FOUND).json({
@@ -188,26 +191,44 @@ export class ImportProductReceiptController {
         warehouse = receipt.kho;
       }
 
-      for (const chiTiet of data.dsChiTietPhieuNhap) {
-        const detail = await this.detailImportService.findOne(chiTiet.id);
-        if (!detail) {
-          return res.status(HttpStatus.NOT_FOUND).json({
-            message: `Can not find a detail with id ${chiTiet.id}`,
-          });
-        }
+      // for (const chiTiet of data.dsChiTietPhieuNhap) {
+      //   const detail = await this.detailImportService.findOne(chiTiet.id);
+      //   if (!detail) {
+      //     return res.status(HttpStatus.NOT_FOUND).json({
+      //       message: `Can not find a detail with id ${chiTiet.id}`,
+      //     });
+      //   }
 
-        const product = await this.productService.findOne(chiTiet.idMatHang);
+      // const product = await this.productService.findOne(chiTiet.idMatHang);
+      // if (!product) {
+      //   return res.status(HttpStatus.NOT_FOUND).json({
+      //     message: `Can not find a product with id ${chiTiet.idMatHang}`,
+      //   });
+      // }
+
+      //   detail.matHang = product;
+      //   detail.soLuong = chiTiet.soLuong;
+      //   detail.phieuNhapKho = receipt;
+      //   await this.detailImportService.update(detail.id, detail);
+      // }
+
+      receipt.dsCTPhieuNhap.forEach(async (ct) => {
+        await this.detailImportService.remove(ct.id);
+      });
+
+      data.dsChiTietPhieuNhap.forEach(async (ct) => {
+        const product = await this.productService.findOne(ct.idMatHang);
         if (!product) {
           return res.status(HttpStatus.NOT_FOUND).json({
-            message: `Can not find a product with id ${chiTiet.idMatHang}`,
+            message: `Can not find a product with id ${ct.idMatHang}`,
           });
         }
-
-        detail.matHang = product;
-        detail.soLuong = chiTiet.soLuong;
-        detail.phieuNhapKho = receipt;
-        await this.detailImportService.update(detail.id, detail);
-      }
+        await this.detailImportService.create({
+          matHang: product,
+          soLuong: ct.soLuong,
+          phieuNhapKho: receipt,
+        });
+      });
 
       const importReceiptData: PhieuNhapKho = {
         tongTien: data.tongTien,
