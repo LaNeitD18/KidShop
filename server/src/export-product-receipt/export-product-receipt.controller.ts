@@ -110,10 +110,10 @@ export class ExportProductReceiptController {
     }
   }
 
-  @Get('all/:placeId')
+  @Get(':place/:placeId')
   async fetchAllExportReceipts(
     @Param('placeId') placeId: number,
-    @Body() place: string,
+    @Param('place') place: string,
     @Res() res: Response,
   ) {
     try {
@@ -165,7 +165,7 @@ export class ExportProductReceiptController {
   }
 
   @Patch(':id')
-  async updateImportReceipt(
+  async updateExportReceipt(
     @Param('id') id: number,
     @Body() data: UpdateExportProductReceiptDto,
     @Res() res: Response,
@@ -173,10 +173,84 @@ export class ExportProductReceiptController {
     if (!data) {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .json({ message: 'New export receipt information is required' });
+        .json({ message: 'New import receipt information is required' });
     }
 
-    return this.exportProductReceiptService.update(id, data);
+    try {
+      const receipt = await this.exportProductReceiptService.findOne(id);
+      if (!receipt) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: `Can not find an import receipt with id ${id}`,
+        });
+      }
+
+      let warehouseManager;
+      if (
+        data.idNguoiLap &&
+        data.idNguoiLap.toString() != receipt.nguoiLap.id
+      ) {
+        warehouseManager = await this.userService.findOne(
+          data.idNguoiLap.toString(),
+        );
+        if (!warehouseManager) {
+          return res.status(HttpStatus.NOT_FOUND).json({
+            message: `Can not find a user with id ${data.idNguoiLap} to assign`,
+          });
+        }
+      } else {
+        warehouseManager = receipt.nguoiLap;
+      }
+
+      let warehouse;
+      if (data.idKho && data.idKho != receipt.kho.id) {
+        warehouse = await this.warehouseService.findOne(data.idKho.toString());
+        if (!warehouse) {
+          return res.status(HttpStatus.NOT_FOUND).json({
+            message: `Can not find a warehouse with id ${data.idKho}`,
+          });
+        }
+      } else {
+        warehouse = receipt.kho;
+      }
+
+      receipt.dsCTPhieuXuat.forEach(async (ct) => {
+        await this.detailExportService.remove(ct.id);
+      });
+
+      data.dsChiTietPhieuXuat.forEach(async (ct) => {
+        const product = await this.productService.findOne(ct.idMatHang);
+        if (!product) {
+          return res.status(HttpStatus.NOT_FOUND).json({
+            message: `Can not find a product with id ${ct.idMatHang}`,
+          });
+        }
+        await this.detailExportService.create({
+          matHang: product,
+          soLuong: ct.soLuong,
+          phieuXuatKho: receipt,
+        });
+      });
+
+      const store = await this.storeService.findOne(data.idCuaHang.toString());
+
+      const exportReceiptData: PhieuXuatKho = {
+        ghiChu: data.ghiChu,
+        nguoiLap: warehouseManager,
+        kho: warehouse,
+        trangThai: data.trangThai,
+        cuaHang: store,
+      };
+
+      const updatedReceipt = await this.exportProductReceiptService.update(
+        id,
+        exportReceiptData,
+      );
+      return res.status(HttpStatus.OK).json(updatedReceipt);
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
   }
 
   @Delete(':id')

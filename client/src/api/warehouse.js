@@ -19,7 +19,8 @@ export const editImportReceipt = (id, data) =>
 export const deleteImportReceipt = (id) =>
   API.delete(`/import-product-receipt/${id}`);
 
-export const fetchExportReceipts = () => API.get('/export-product-receipt');
+export const fetchExportReceipts = (place, placeId) =>
+  API.get(`/export-product-receipt/${place}/${placeId}`);
 export const fetchExportReceipt = (id) =>
   API.get(`/export-product-receipt/${id}`);
 export const createExportReceipt = (data) =>

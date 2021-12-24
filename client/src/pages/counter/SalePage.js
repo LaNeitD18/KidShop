@@ -52,6 +52,7 @@ import { editCounter, getCounter, getCounterList } from '../../api/counter';
 import { arrayFind } from '../../utils/array';
 import { getProductList } from '../../api/product';
 import Loading from '../../components/Loading';
+import { fetchExportReceipt, fetchExportReceipts } from '../../api/warehouse';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -130,6 +131,7 @@ export default function SalePage() {
   const [productsCall, productsLoading, productsError, { data: products }] =
     useApiFeedback();
   const [items, setItems] = useState([]);
+  const [ton, setTon] = useState({});
 
   useLayoutEffect(() => {
     setLayout({
@@ -152,9 +154,33 @@ export default function SalePage() {
     fetchAllStore();
   }, []);
 
+  const fetchTon = async () => {
+    const tonResult = {};
+    if (selectedStore?.id) {
+      const exps = await fetchExportReceipts('store', selectedStore?.id);
+
+      exps.data.forEach(async (exp) => {
+        const ct = await fetchExportReceipt(exp.id);
+
+        if (ct.data.trangThai?.toString() === '1') {
+          ct.data.dsCTPhieuXuat.forEach((item, i, arr) => {
+            tonResult[item.matHang.id] =
+              parseInt(tonResult[item.matHang.id] || 0) + item.soLuong;
+            if (i === arr.length - 1) {
+              console.log('enddddd');
+              setTon(tonResult);
+            }
+          });
+        } else {
+        }
+      });
+    }
+  };
   useEffect(() => {
     setSelectedCounter(getCounterData);
   }, [getCounterData]);
+
+  console.log(ton);
 
   useEffect(() => {
     if (selectedStore?.dsQuay?.length > 0) {
@@ -162,9 +188,8 @@ export default function SalePage() {
         setSelectedCounter(data);
       });
     }
+    fetchTon();
   }, [selectedStore]);
-
-  console.log(selectedStore?.dsNhanVien);
 
   const manuallySelectCounterAssignee = (idUser, onFinish) => {
     editCounter(selectedCounter?.id, {
@@ -315,6 +340,11 @@ export default function SalePage() {
           {products?.map((p) => (
             <ProductCard
               disabled={!selectedCounter?.nhanVienTruc?.id}
+              soLuong={
+                (ton[p.id] || 0) -
+                (items?.find((item) => item.id.toString() === p.id.toString())
+                  ?.count || 0)
+              }
               {...p}
               onAdd={(id, tenMH, count, giaBan, khuyenMai) =>
                 setItems((prev) => {

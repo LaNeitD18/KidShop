@@ -93,6 +93,7 @@ export function ProductCard({
   hinhAnh,
   onAdd = (id, tenMH, count, giaBan, khuyenMai) => {},
   disabled,
+  soLuong,
 }) {
   const [showActions, setShowActions] = useState(false);
   const [count, setCount] = useState(1);
@@ -153,11 +154,11 @@ export function ProductCard({
           )}
         </div>
         <div className={classNames('flex items-center justify-between')}>
-          <span className="flex gap-1 items-end">
+          <span className="flex gap-1 items-center">
             <span
               className={classNames({
                 'text-primary': !khuyenMai,
-                'line-through': khuyenMai,
+                'line-through text-xs': khuyenMai,
               })}
             >
               {currencyShort(giaBan)}
@@ -168,7 +169,7 @@ export function ProductCard({
               </span>
             )}
           </span>
-          <span className="text-gray-400">{50} có sẵn</span>
+          <span className="text-gray-400">{soLuong} có sẵn</span>
         </div>
         <div
           className={classNames({
@@ -186,14 +187,14 @@ export function ProductCard({
         >
           <InputNumber
             min={1}
-            max={10}
+            max={soLuong}
             keyboard
             value={count}
             onChange={(v) => setCount(v)}
-            disabled={disabled}
+            disabled={disabled || soLuong < 1}
           />
           <AppButton
-            disabled={disabled}
+            disabled={disabled || soLuong < 1}
             className="flex-1"
             type="add"
             onClick={() => onAdd(id, tenMH, count, giaBan, khuyenMai)}

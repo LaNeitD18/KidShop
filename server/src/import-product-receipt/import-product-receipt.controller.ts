@@ -191,27 +191,6 @@ export class ImportProductReceiptController {
         warehouse = receipt.kho;
       }
 
-      // for (const chiTiet of data.dsChiTietPhieuNhap) {
-      //   const detail = await this.detailImportService.findOne(chiTiet.id);
-      //   if (!detail) {
-      //     return res.status(HttpStatus.NOT_FOUND).json({
-      //       message: `Can not find a detail with id ${chiTiet.id}`,
-      //     });
-      //   }
-
-      // const product = await this.productService.findOne(chiTiet.idMatHang);
-      // if (!product) {
-      //   return res.status(HttpStatus.NOT_FOUND).json({
-      //     message: `Can not find a product with id ${chiTiet.idMatHang}`,
-      //   });
-      // }
-
-      //   detail.matHang = product;
-      //   detail.soLuong = chiTiet.soLuong;
-      //   detail.phieuNhapKho = receipt;
-      //   await this.detailImportService.update(detail.id, detail);
-      // }
-
       receipt.dsCTPhieuNhap.forEach(async (ct) => {
         await this.detailImportService.remove(ct.id);
       });

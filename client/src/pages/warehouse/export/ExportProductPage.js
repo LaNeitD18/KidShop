@@ -22,8 +22,8 @@ const columns = [
     sortable: true,
   },
   {
-    title: 'Tổng tiền',
-    dataIndex: 'tongTien',
+    title: 'Cửa hàng',
+    dataIndex: ['cuaHang', 'diaChi'],
     searchable: true,
   },
 
@@ -51,7 +51,7 @@ export default function ExportProductPage() {
   const [deleteCall, deleteLoading] = useApiFeedback();
 
   function getExportReceipts() {
-    apiCall(fetchExportReceipts());
+    apiCall(fetchExportReceipts('warehouse', warehouseId));
   }
 
   useEffect(() => {
@@ -93,9 +93,7 @@ export default function ExportProductPage() {
       <AppTable
         loading={loading}
         columns={columns}
-        data={result?.data?.filter(
-          (item) => item?.kho.id.toString() === warehouseId.toString()
-        )}
+        data={result?.data}
         onSelectRows={setSelectedRows}
         itemName="phiếu xuất kho"
       />

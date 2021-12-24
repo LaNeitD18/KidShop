@@ -25,6 +25,7 @@ import StoreImportPage from './pages/store/import/StoreImportPage';
 import EmployeePage from './pages/admin/employee/EmployeePage';
 import EditEmployeePage from './pages/admin/employee/EditEmployeePage';
 import StaffPage from './pages/store/staff/StaffPage';
+import EditExportReceiptPage from './pages/warehouse/export/EditExportProductReceipt';
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -160,10 +161,10 @@ function App() {
             <Route path="export-product">
               <Route index element={<ExportProductPage />} />
               <Route
-                path="edit/:id"
-                element={<EditWarehousePage mode="edit" />}
+                path="edit/:exportReceiptId"
+                element={<EditExportReceiptPage mode="edit" />}
               />
-              <Route path="add" element={<EditWarehousePage />} />
+              <Route path="add" element={<EditExportReceiptPage />} />
             </Route>
           </Route>
         </Route>
