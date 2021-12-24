@@ -197,7 +197,10 @@ export function ProductCard({
             disabled={disabled || soLuong < 1}
             className="flex-1"
             type="add"
-            onClick={() => onAdd(id, tenMH, count, giaBan, khuyenMai)}
+            onClick={() => {
+              onAdd(id, tenMH, count, giaBan, khuyenMai);
+              setCount(1);
+            }}
           >
             Thêm
           </AppButton>

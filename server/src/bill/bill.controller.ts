@@ -27,7 +27,7 @@ import { CustomerService } from 'src/customer/customer.service';
 
 @ApiTags('bill')
 @Controller('bill')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class BillController {
   constructor(
     private readonly billService: BillService,
@@ -58,11 +58,6 @@ export class BillController {
       }
 
       const customer = await this.customerService.findOne(data.idKhachHang);
-      if (!customer) {
-        return res.status(HttpStatus.NOT_FOUND).json({
-          message: `Can not find a customer with id ${data.idKhachHang} to assign`,
-        });
-      }
 
       const counter = await this.counterService.findOne(data.idQuay.toString());
       if (!counter) {

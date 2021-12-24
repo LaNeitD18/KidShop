@@ -8,7 +8,7 @@ import { Breadcrumb, Divider, Layout, Menu, Select, Typography } from 'antd';
 import theme from '../constants/theme';
 
 import { IoLogOutOutline, IoCloseSharp, IoBusiness } from 'react-icons/io5';
-import { FiMenu, FiPackage } from 'react-icons/fi';
+import { FiMenu, FiPackage, FiTruck } from 'react-icons/fi';
 import { AiOutlineDashboard } from 'react-icons/ai';
 import { UserOutlined } from '@ant-design/icons';
 import { AiOutlineApartment } from 'react-icons/ai';
@@ -128,6 +128,21 @@ const navMenu = [
         path: 'counter',
         title: 'QL Quầy',
         icon: <MdPointOfSale />,
+        children: [
+          {
+            path: 'add',
+            title: 'Tạo mới',
+          },
+          {
+            path: 'edit',
+            title: 'Sửa',
+          },
+        ],
+      },
+      {
+        path: 'import',
+        title: 'QL nhập hàng',
+        icon: <FiTruck />,
         children: [
           {
             path: 'add',

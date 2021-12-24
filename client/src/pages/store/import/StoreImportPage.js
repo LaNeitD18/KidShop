@@ -3,72 +3,87 @@ import AppButton from '../../../components/AppButton';
 import { ContentHeader } from '../../../components/Content';
 import AppTable from '../../../components/AppTable';
 import useApiFeedback from '../../../hooks/useApiFeedback';
-import { deleteWarehouse, fetchAllWarehouses } from '../../../api/warehouse';
+import {
+  deleteExportReceipt,
+  deleteImportReceipt,
+  fetchAllImportReceipts,
+  fetchExportReceipts,
+} from '../../../api/warehouse';
 import { message } from 'antd';
 import CommonString from '../../../constants/string';
+import { useParams } from 'react-router-dom';
+import { EXPORT_STATE } from '../../../constants/enum';
 
 const columns = [
   {
     title: 'Mã phiếu xuất kho',
     id: true,
-    idFormat: ['PXK', 4],
+    idFormat: ['XK', 4],
     searchable: true,
     sortable: true,
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
+    title: 'Từ kho',
+    dataIndex: ['kho', 'diaChi'],
     searchable: true,
   },
   {
-    title: 'SDT',
-    dataIndex: 'sdt',
-    searchable: true,
+    title: 'Trạng thái',
+    dataIndex: 'trangThai',
+    sortable: true,
+    render: (ele) => EXPORT_STATE[ele],
   },
   {
-    title: 'Quản lý kho',
-    dataIndex: ['quanLyKho', 'hoTen'],
+    title: 'Người lập',
+    dataIndex: ['nguoiLap', 'hoTen'],
     searchable: true,
   },
   {
     createdTime: true,
     sortable: true,
   },
+  {
+    title: 'Ghi chú',
+    dataIndex: 'ghiChu',
+    searchable: false,
+  },
 ];
 
 export default function StoreImportPage() {
+  const { storeId } = useParams();
+
   const [selectedRows, setSelectedRows] = useState([]);
   const [apiCall, loading, error, result] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
 
-  function fetchWarehouses() {
-    apiCall(fetchAllWarehouses());
+  function getExportReceipts() {
+    apiCall(fetchExportReceipts('store', storeId));
   }
 
   useEffect(() => {
-    fetchWarehouses();
-  }, []);
+    getExportReceipts();
+  }, [storeId]);
 
   function handleDelete() {
     deleteCall(
       Promise.all(
         selectedRows.map((row) => {
-          return deleteWarehouse(row);
+          return deleteExportReceipt(row);
         })
       ),
       () => {
         message.success('Xóa thành công');
         setSelectedRows([]);
-        fetchWarehouses();
+        getExportReceipts();
       }
     );
   }
 
   return (
     <div>
-      <ContentHeader title={CommonString.WAREHOUSE_TITLE}>
+      <ContentHeader title="Quản lý nhập hàng">
         <AppButton type="add" link="add" responsive>
-          Tạo phiếu xuất kho
+          Tạo phiếu nhập hàng
         </AppButton>
         {!!selectedRows.length && (
           <AppButton
@@ -77,7 +92,7 @@ export default function StoreImportPage() {
             onClick={handleDelete}
             loading={deleteLoading}
           >
-            {CommonString.WAREHOUSE_DELETE}
+            Xóa phiếu nhập hàng
           </AppButton>
         )}
       </ContentHeader>
@@ -86,7 +101,7 @@ export default function StoreImportPage() {
         columns={columns}
         data={result?.data}
         onSelectRows={setSelectedRows}
-        itemName="phiếu xuất kho"
+        itemName="phiếu nhập hàng"
       />
     </div>
   );

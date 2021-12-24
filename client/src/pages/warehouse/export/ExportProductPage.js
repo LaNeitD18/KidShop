@@ -12,6 +12,7 @@ import {
 import { message } from 'antd';
 import CommonString from '../../../constants/string';
 import { useParams } from 'react-router-dom';
+import { EXPORT_STATE } from '../../../constants/enum';
 
 const columns = [
   {
@@ -26,7 +27,12 @@ const columns = [
     dataIndex: ['cuaHang', 'diaChi'],
     searchable: true,
   },
-
+  {
+    title: 'Trạng thái',
+    dataIndex: 'trangThai',
+    sortable: true,
+    render: (ele) => EXPORT_STATE[ele],
+  },
   {
     title: 'Người lập',
     dataIndex: ['nguoiLap', 'hoTen'],

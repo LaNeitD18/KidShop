@@ -114,7 +114,7 @@ export default function EditExportReceiptPage({ mode }) {
     storesCall(getStoreList());
     formAddReceipt.setFieldsValue({
       trangThai: {
-        value: 0,
+        value: 1,
       },
     });
   }, []);

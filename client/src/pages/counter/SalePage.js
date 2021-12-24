@@ -53,6 +53,8 @@ import { arrayFind } from '../../utils/array';
 import { getProductList } from '../../api/product';
 import Loading from '../../components/Loading';
 import { fetchExportReceipt, fetchExportReceipts } from '../../api/warehouse';
+import { createBill } from '../../api/bill';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -132,6 +134,7 @@ export default function SalePage() {
     useApiFeedback();
   const [items, setItems] = useState([]);
   const [ton, setTon] = useState({});
+  const [billCall, billLoad, billErr, bill] = useApiFeedback();
 
   useLayoutEffect(() => {
     setLayout({
@@ -167,7 +170,6 @@ export default function SalePage() {
             tonResult[item.matHang.id] =
               parseInt(tonResult[item.matHang.id] || 0) + item.soLuong;
             if (i === arr.length - 1) {
-              console.log('enddddd');
               setTon(tonResult);
             }
           });
@@ -179,8 +181,6 @@ export default function SalePage() {
   useEffect(() => {
     setSelectedCounter(getCounterData);
   }, [getCounterData]);
-
-  console.log(ton);
 
   useEffect(() => {
     if (selectedStore?.dsQuay?.length > 0) {
@@ -545,7 +545,28 @@ export default function SalePage() {
                 setMomoModal({ url: data.payUrl });
               })
               .catch((err) => fireError(err));
+          } else {
+            billCall(
+              createBill({
+                idNguoiLap: JSON.parse(localStorage.getItem('user')).id,
+                idQuay: selectedCounter?.id,
+                tongHoaDon: total,
+                dsCTHoaDon: items.map((item) => {
+                  return {
+                    idMatHang: item.id,
+                    soLuong: item.count,
+                    tongTien: item.giaBan * item.count,
+                    giamGia: item.khuyenMai * item.count,
+                  };
+                }),
+              }),
+              () => {
+                message.success('Đã tạo hóa đơn thành công');
+                setItems([]);
+              }
+            );
           }
+          setShowPaymentModal(false);
         }}
       >
         <form ref={paymentMethodRef} className="mb-3">

@@ -6,7 +6,7 @@ export class CreateBillDto {
   idNguoiLap: number;
 
   @ApiProperty()
-  idKhachHang: number;
+  idKhachHang?: number;
 
   @ApiProperty()
   idQuay: number;
