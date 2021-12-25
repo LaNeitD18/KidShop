@@ -45,11 +45,12 @@ export default function AppTable({
       title,
       dataIndex,
       render,
+      onValClick,
     }) => {
       if (id) {
         title = title || 'ID';
         dataIndex = dataIndex || 'id';
-        render = render
+        const clickableVal = (render = render
           ? render
           : (id) =>
               preview ? (
@@ -76,18 +77,29 @@ export default function AppTable({
                     {idFormat ? idString(id, idFormat) : id}
                   </Link>
                 </Popover>
+              ) : onValClick ? (
+                <span
+                  className="font-semibold text-primary cursor-pointer"
+                  onClick={() => onValClick(id)}
+                >
+                  {idFormat ? idString(id, idFormat) : id}
+                </span>
               ) : (
                 <Link to={link || `./edit/${id}`} className="font-semibold">
                   {idFormat ? idString(id, idFormat) : id}
                 </Link>
-              );
+              ));
       }
       if (createdTime) {
         title = title || 'Tạo lúc';
         dataIndex = dataIndex || 'taoLuc';
         render = render
           ? render
-          : (createdTime) => <Moment fromNow>{createdTime}</Moment>;
+          : (createdTime) => (
+              <Moment fromNow add={{ hours: 7 }}>
+                {createdTime}
+              </Moment>
+            );
       }
       if (link && !id && !createdTime) {
         render = render
