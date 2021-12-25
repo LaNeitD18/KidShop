@@ -1,41 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../../components/AppButton';
-import { ContentHeader } from '../../../components/Content';
-import AppTable from '../../../components/AppTable';
-import useApiFeedback from '../../../hooks/useApiFeedback';
+import React, { useEffect, useState } from "react";
+import AppButton from "../../../components/AppButton";
+import { ContentHeader } from "../../../components/Content";
+import AppTable from "../../../components/AppTable";
+import useApiFeedback from "../../../hooks/useApiFeedback";
 import {
   deleteExportReceipt,
   deleteImportReceipt,
   fetchAllImportReceipts,
   fetchExportReceipts,
-} from '../../../api/warehouse';
-import { message } from 'antd';
-import CommonString from '../../../constants/string';
-import { useParams } from 'react-router-dom';
-import { EXPORT_STATE } from '../../../constants/enum';
+} from "../../../api/warehouse";
+import { message } from "antd";
+import CommonString from "../../../constants/string";
+import { useParams } from "react-router-dom";
+import { EXPORT_STATE } from "../../../constants/enum";
 
 const columns = [
   {
-    title: 'Mã phiếu xuất kho',
+    title: "Mã phiếu nhập hàng",
     id: true,
-    idFormat: ['XK', 4],
+    idFormat: ["XK", 4],
     searchable: true,
     sortable: true,
   },
   {
-    title: 'Từ kho',
-    dataIndex: ['kho', 'diaChi'],
+    title: "Từ kho",
+    dataIndex: ["kho", "diaChi"],
     searchable: true,
   },
   {
-    title: 'Trạng thái',
-    dataIndex: 'trangThai',
+    title: "Trạng thái",
+    dataIndex: "trangThai",
     sortable: true,
     render: (ele) => EXPORT_STATE[ele],
   },
   {
-    title: 'Người lập',
-    dataIndex: ['nguoiLap', 'hoTen'],
+    title: "Người lập",
+    dataIndex: ["nguoiLap", "hoTen"],
     searchable: true,
   },
   {
@@ -43,8 +43,8 @@ const columns = [
     sortable: true,
   },
   {
-    title: 'Ghi chú',
-    dataIndex: 'ghiChu',
+    title: "Ghi chú",
+    dataIndex: "ghiChu",
     searchable: false,
   },
 ];
@@ -57,7 +57,7 @@ export default function StoreImportPage() {
   const [deleteCall, deleteLoading] = useApiFeedback();
 
   function getExportReceipts() {
-    apiCall(fetchExportReceipts('store', storeId));
+    apiCall(fetchExportReceipts("store", storeId));
   }
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function StoreImportPage() {
         })
       ),
       () => {
-        message.success('Xóa thành công');
+        message.success("Xóa thành công");
         setSelectedRows([]);
         getExportReceipts();
       }

@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import AppButton from '../../../components/AppButton';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import AppButton from "../../../components/AppButton";
 import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   message,
   Select,
   TimePicker,
   Typography,
-} from 'antd';
-import { ContentHeader } from '../../../components/Content';
+} from "antd";
+import { ContentHeader } from "../../../components/Content";
 import {
   createExportReceipt,
   deleteExportReceipt,
@@ -19,45 +20,45 @@ import {
   fetchExportReceipt,
   fetchExportReceipts,
   fetchImportReceipt,
-} from '../../../api/warehouse';
-import { getProductList } from '../../../api/product';
-import { SelectInput } from '../../../components/Inputs';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { useNavigate, useParams } from 'react-router-dom';
-import { currency, inputRuleNaN } from '../../../utils/string';
-import { fireSuccessModal } from '../../../utils/feedback';
-import { FormGrid } from '../../../components/Grid';
-import AppTable from '../../../components/AppTable';
-import { PlusOutlined } from '@ant-design/icons';
-import Loading from '../../../components/Loading';
-import { getStoreList } from '../../../api/store';
-import { EXPORT_STATE } from '../../../constants/enum';
+} from "../../../api/warehouse";
+import { getProductList } from "../../../api/product";
+import { SelectInput } from "../../../components/Inputs";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { useNavigate, useParams } from "react-router-dom";
+import { currency, inputRuleNaN } from "../../../utils/string";
+import { fireSuccessModal } from "../../../utils/feedback";
+import { FormGrid } from "../../../components/Grid";
+import AppTable from "../../../components/AppTable";
+import { PlusOutlined } from "@ant-design/icons";
+import Loading from "../../../components/Loading";
+import { getStoreList } from "../../../api/store";
+import { EXPORT_STATE } from "../../../constants/enum";
 
 const { Text } = Typography;
 
 const addConsts = {
-  title: 'Tạo phiếu nhập hàng',
-  okText: 'Hoàn tất',
+  title: "Tạo phiếu nhập hàng",
+  okText: "Hoàn tất",
 };
 
 const editConsts = {
-  title: 'Sửa phiếu nhập hàng',
-  okText: 'Lưu thay đổi',
+  title: "Sửa phiếu nhập hàng",
+  okText: "Lưu thay đổi",
 };
 
 const columns = [
   {
-    title: 'Tên mặt hàng',
-    dataIndex: 'tenMH',
+    title: "Tên mặt hàng",
+    dataIndex: "tenMH",
   },
   {
-    title: 'Số lượng',
-    dataIndex: 'soLuong',
+    title: "Số lượng",
+    dataIndex: "soLuong",
   },
 ];
 
 export default function EditStoreImportPage({ mode }) {
-  const isEdit = mode === 'edit';
+  const isEdit = mode === "edit";
   const byModes = isEdit ? editConsts : addConsts;
 
   const { exportReceiptId, storeId } = useParams();
@@ -80,11 +81,12 @@ export default function EditStoreImportPage({ mode }) {
   const [warehouseGoods, setWarehouseGoods] = useState({});
   const [tonKho, setTonKho] = useState(0);
   const [warehouseGoodsLoading, setWarehouseGoodsLoading] = useState(false);
-  const [readOnly, setReadOnly] = useState(true);
+  const [readOnly, setReadOnly] = useState(isEdit);
+
   const fetchWarehouseGoods = useCallback(async () => {
     setWarehouseGoodsLoading(true);
     const imports = await fetchAllImportReceipts(storeId);
-    const exportReceipts = await fetchExportReceipts('warehouse', storeId);
+    const exportReceipts = await fetchExportReceipts("warehouse", storeId);
     const result = {};
     await imports?.data?.forEach(async (imp) => {
       const ds = await fetchImportReceipt(imp.id);
@@ -130,14 +132,12 @@ export default function EditStoreImportPage({ mode }) {
           ...data,
         });
 
-        console.log(data);
-
         formAddReceipt.setFieldsValue({
           idCuaHang: data.cuaHang.id,
           idKho: data.kho.id,
           trangThai: { value: data.trangThai },
         });
-
+        setReadOnly(data?.trangThai !== 0);
         console.log(data);
 
         const curDetails = data?.dsCTPhieuXuat?.map((detail) => {
@@ -171,7 +171,7 @@ export default function EditStoreImportPage({ mode }) {
     const product = products.find(
       (p) => p.id.toString() === values?.idMatHang.toString()
     );
-    console.log('### product', product);
+    console.log("### product", product);
     setTonKho(0);
     setListNewDetails((prev) => {
       let found = false;
@@ -205,14 +205,14 @@ export default function EditStoreImportPage({ mode }) {
 
   function handleDelete() {
     deleteCall(deleteExportReceipt(exportReceiptId), () => {
-      message.success('Đã xóa thành công');
-      navigate('../');
+      message.success("Đã xóa thành công");
+      navigate("../");
     });
   }
 
   const onFinishAddReceipt = (values) => {
     const receiptData = {
-      idNguoiLap: JSON.parse(localStorage.getItem('user'))?.id,
+      idNguoiLap: JSON.parse(localStorage.getItem("user"))?.id,
       idKho: values.idKho,
       idCuaHang: storeId,
       trangThai: values.trangThai.value,
@@ -230,25 +230,25 @@ export default function EditStoreImportPage({ mode }) {
       console.log(editedData);
 
       editCall(editExportReceipt(exportReceiptId, editedData), () => {
-        message.success('Đã lưu thay đổi thành công');
+        message.success("Đã lưu thay đổi thành công");
       });
     } else {
       postCall(createExportReceipt(receiptData), () => {
         fireSuccessModal({
-          title: 'Tạo phiếu nhập hàng thành công',
+          title: "Tạo phiếu nhập hàng thành công",
           onOk: () => {
             setListNewDetails([]);
             formAddReceipt.resetFields();
             setSumMoney(0);
           },
           onCancel: () => {
-            navigate('../');
+            navigate("../");
           },
         });
       });
     }
   };
-  const tempMess = formAddDetail.getFieldInstance('idMatHang');
+  const tempMess = formAddDetail.getFieldInstance("idMatHang");
 
   return (
     <div>
@@ -277,7 +277,7 @@ export default function EditStoreImportPage({ mode }) {
                   inputRuleNaN(),
                   {
                     required: true,
-                    message: 'Vui lòng chọn mặt hàng',
+                    message: "Vui lòng chọn mặt hàng",
                   },
                 ]}
               >
@@ -286,7 +286,7 @@ export default function EditStoreImportPage({ mode }) {
                   onSelect={(v) => {
                     setTonKho(
                       (warehouseGoods[
-                        formAddDetail.getFieldValue('idMatHang')
+                        formAddDetail.getFieldValue("idMatHang")
                       ] || 0) -
                         (listNewDetails?.find(
                           (d) => d.idMatHang?.toString() === v.toString()
@@ -306,12 +306,26 @@ export default function EditStoreImportPage({ mode }) {
                 rules={[
                   inputRuleNaN(),
                   {
+                    transform: (val) => (val == "" ? -1 : parseInt(val)),
+                    type: "number",
+                    max: tonKho,
+                    message:
+                      "Số lượng hàng nhập không thể lớn hơn số lượng hàng tồn kho",
+                  },
+                  {
+                    transform: (val) =>
+                      val == "" ? tonKho + 1 : parseInt(val),
+                    type: "number",
+                    min: 1,
+                    message: "Số lượng hàng nhập phải lớn hơn 0",
+                  },
+                  {
                     required: true,
-                    message: 'Vui lòng nhập số lượng',
+                    message: "Vui lòng nhập số lượng",
                   },
                 ]}
               >
-                <Input size="large" disabled={readOnly} />
+                <Input for size="large" disabled={readOnly} />
               </Form.Item>
 
               <Form.Item>
@@ -355,7 +369,7 @@ export default function EditStoreImportPage({ mode }) {
                 rules={[
                   {
                     required: true,
-                    message: 'Vui lòng chọn cửa hàng',
+                    message: "Vui lòng chọn cửa hàng",
                   },
                 ]}
               >
@@ -369,6 +383,7 @@ export default function EditStoreImportPage({ mode }) {
               </Form.Item>
               <Form.Item label="Trạng thái" name="trangThai">
                 <Select
+                  disabled={!isEdit}
                   labelInValue
                   options={EXPORT_STATE.map((s, i) => ({
                     value: i,
@@ -410,7 +425,7 @@ export default function EditStoreImportPage({ mode }) {
                     size="large"
                     loading={deleteLoad}
                     confirm={{
-                      title: 'Bạn có muốn xóa chi nhánh này?',
+                      title: "Bạn có muốn xóa phiếu nhập hàng này?",
                     }}
                   >
                     Xóa phiếu nhập hàng

@@ -1,33 +1,33 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useRoles } from './context/RolesContext';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useRoles } from "./context/RolesContext";
 
-import ErrorPage from './pages/ErrorPage';
-import BranchPage from './pages/admin/branch/BranchPage';
-import EditBranchPage from './pages/admin/branch/EditBranchPage';
-import EditSupplierPage from './pages/supplier/EditSupplierPage';
-import SupplierPage from './pages/supplier/SupplierPage';
-import WarehousePage from './pages/warehouse/WarehousePage';
-import MainContainer from './components/MainContainer';
-import EditWarehousePage from './pages/warehouse/EditWarehousePage';
-import ProducerPage from './pages/producer/ProducerPage';
-import EditProducerPage from './pages/producer/EditProducerPage';
-import CounterPage from './pages/store/counter/CounterPage';
-import EditCounterPage from './pages/store/counter/EditCounterPage';
-import { LoginPage } from './pages/LoginPage';
-import ProductPage from './pages/business/product/ProductPage';
-import EditProductPage from './pages/business/product/EditProductPage';
-import ImportProductPage from './pages/warehouse/import/ImportProductPage';
-import ExportProductPage from './pages/warehouse/export/ExportProductPage';
-import EditImportReceiptPage from './pages/warehouse/import/EditImportProductReceipt';
-import SalePage from './pages/counter/SalePage';
-import StoreImportPage from './pages/store/import/StoreImportPage';
-import EmployeePage from './pages/admin/employee/EmployeePage';
-import EditEmployeePage from './pages/admin/employee/EditEmployeePage';
-import StaffPage from './pages/store/staff/StaffPage';
-import EditExportReceiptPage from './pages/warehouse/export/EditExportProductReceipt';
-import EditStoreImportPage from './pages/store/import/EditStoreImportPage';
-import StoreDashboard from './pages/store/dashboard/StoreDashboard';
+import ErrorPage from "./pages/ErrorPage";
+import BranchPage from "./pages/admin/branch/BranchPage";
+import EditBranchPage from "./pages/admin/branch/EditBranchPage";
+import EditSupplierPage from "./pages/supplier/EditSupplierPage";
+import SupplierPage from "./pages/supplier/SupplierPage";
+import WarehousePage from "./pages/warehouse/WarehousePage";
+import MainContainer from "./components/MainContainer";
+import EditWarehousePage from "./pages/warehouse/EditWarehousePage";
+import ProducerPage from "./pages/producer/ProducerPage";
+import EditProducerPage from "./pages/producer/EditProducerPage";
+import CounterPage from "./pages/store/counter/CounterPage";
+import EditCounterPage from "./pages/store/counter/EditCounterPage";
+import { LoginPage } from "./pages/LoginPage";
+import ProductPage from "./pages/business/product/ProductPage";
+import EditProductPage from "./pages/business/product/EditProductPage";
+import ImportProductPage from "./pages/warehouse/import/ImportProductPage";
+import ExportProductPage from "./pages/warehouse/export/ExportProductPage";
+import EditImportReceiptPage from "./pages/warehouse/import/EditImportProductReceipt";
+import SalePage from "./pages/counter/SalePage";
+import StoreImportPage from "./pages/store/import/StoreImportPage";
+import EmployeePage from "./pages/admin/employee/EmployeePage";
+import EditEmployeePage from "./pages/admin/employee/EditEmployeePage";
+import StaffPage from "./pages/store/staff/StaffPage";
+import EditExportReceiptPage from "./pages/warehouse/export/EditExportProductReceipt";
+import EditStoreImportPage from "./pages/store/import/EditStoreImportPage";
+import StoreDashboard from "./pages/store/dashboard/StoreDashboard";
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -75,7 +75,7 @@ function App() {
             path="store"
             element={
               <Navigate
-                to={roles?.stores ? roles?.stores[0]?.toString() : '/error/403'}
+                to={roles?.stores ? roles?.stores[0]?.toString() : "/error/403"}
                 replace
               />
             }
@@ -145,7 +145,7 @@ function App() {
                 to={
                   roles?.warehouses
                     ? roles?.warehouses[0]?.toString()
-                    : '/error/403'
+                    : "/error/403"
                 }
                 replace
               />

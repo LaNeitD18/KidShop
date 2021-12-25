@@ -26,7 +26,7 @@ import { Response } from 'express';
 
 @ApiTags('export-product-receipt')
 @Controller('export-product-receipt')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class ExportProductReceiptController {
   constructor(
     private readonly exportProductReceiptService: ExportProductReceiptService,
