@@ -31,8 +31,6 @@ export default function StoreDashboard() {
     fetchStore();
   }, [storeId]);
 
-  console.log(bills);
-
   const columns = useMemo(
     () => [
       {

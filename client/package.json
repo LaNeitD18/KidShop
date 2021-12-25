@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@tomtom-international/web-sdk-maps": "^6.15.0",
     "@tomtom-international/web-sdk-services": "^6.15.0",
+    "aes-js": "^3.1.2",
     "antd": "^4.16.13",
     "axios": "^0.24.0",
     "classnames": "^2.3.1",

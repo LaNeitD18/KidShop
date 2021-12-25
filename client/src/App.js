@@ -28,6 +28,8 @@ import StaffPage from './pages/store/staff/StaffPage';
 import EditExportReceiptPage from './pages/warehouse/export/EditExportProductReceipt';
 import EditStoreImportPage from './pages/store/import/EditStoreImportPage';
 import StoreDashboard from './pages/store/dashboard/StoreDashboard';
+import UserDetailPage from './pages/user/detail/UserDetailPage';
+import UserPasswordPage from './pages/user/password/UserPasswordPage';
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -40,7 +42,12 @@ function App() {
       <Route path="/">
         <Route index element={<Navigate to="app" replace />} />
         <Route path="app" element={<MainContainer />}>
-          <Route index element={<Navigate to="admin" replace />} />
+          <Route index element={<Navigate to="user" replace />} />
+          <Route path="user">
+            <Route index element={<Navigate to="detail" replace />} />
+            <Route path="detail" element={<UserDetailPage />} />
+            <Route path="password" element={<UserPasswordPage />} />
+          </Route>
           <Route path="admin">
             <Route index element={<Navigate to="employee" replace />} />
             <Route path="employee">

@@ -26,6 +26,7 @@ export class UserService {
         'gioiTinh',
         'cuaHang',
         'quay',
+        'quyen',
       ],
     });
   }
@@ -43,6 +44,7 @@ export class UserService {
           'gioiTinh',
           'cuaHang',
           'quay',
+          'quyen',
         ],
       });
       return user;
@@ -75,6 +77,7 @@ export class UserService {
         'sdt',
         'gioiTinh',
         'cuaHang',
+        'quyen',
       ])
       .updateEntity(true)
       .execute();

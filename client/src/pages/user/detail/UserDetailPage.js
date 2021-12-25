@@ -11,11 +11,7 @@ import { FormGrid } from '../../../components/Grid';
 import { useRoles } from '../../../context/RolesContext';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { GROUP } from '../../../constants/enum';
-
-const addConsts = {
-  title: 'Thêm nhân viên',
-  okText: 'Hoàn tất',
-};
+import useLocalStorage from '../../../hooks/useLocalStorage';
 
 const editConsts = {
   title: 'Sửa nhân viên',
@@ -24,11 +20,12 @@ const editConsts = {
 
 const defaultPassword = '12345678';
 
-export default function EditEmployeePage({ mode }) {
-  const isEdit = mode === 'edit';
-  const byModes = isEdit ? editConsts : addConsts;
+export default function UserDetailPage({ mode }) {
+  const isEdit = true;
+  const byModes = editConsts;
+  const [user, setUser] = useLocalStorage('user');
+  const userId = user?.id;
 
-  const { employeeId } = useParams();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -37,19 +34,24 @@ export default function EditEmployeePage({ mode }) {
   const [postUserCall, postUserLoading] = useApiFeedback();
   const [editCall, editLoading] = useApiFeedback();
   const [deleteCall, deleteLoading] = useApiFeedback();
+  const [name, setName] = useState();
 
   const [group, setGroup] = useState([]);
 
+  const fetchUser = () => {
+    getUserCall(getUser(userId), ({ data }) => {
+      form.setFieldsValue({
+        ...data,
+      });
+      setName(data.hoTen);
+      const quyen = data?.quyen || '[]';
+      const quyenArr = JSON.parse(quyen)?.filter((e) => e);
+      setGroup(quyenArr);
+    });
+  };
   useEffect(() => {
     if (isEdit) {
-      getUserCall(getUser(employeeId), ({ data }) => {
-        form.setFieldsValue({
-          ...data,
-        });
-        const quyen = data?.quyen || '[]';
-        const quyenArr = JSON.parse(quyen)?.filter((e) => e);
-        setGroup(quyenArr);
-      });
+      fetchUser();
     }
   }, []);
 
@@ -60,8 +62,9 @@ export default function EditEmployeePage({ mode }) {
       quyen: JSON.stringify(group),
     };
     if (isEdit) {
-      editCall(editUser(employeeId, dto), () => {
+      editCall(editUser(userId, dto), ({ data }) => {
         message.success('Đã lưu thay đổi thành công');
+        fetchUser();
       });
     } else {
       postUserCall(createUser(dto), () => {
@@ -79,7 +82,7 @@ export default function EditEmployeePage({ mode }) {
   };
 
   function handleDelete() {
-    deleteCall(deleteUser(employeeId), () => {
+    deleteCall(deleteUser(userId), () => {
       message.success('Đã xóa thành công');
       navigate('../');
     });
@@ -87,11 +90,7 @@ export default function EditEmployeePage({ mode }) {
 
   return (
     <div>
-      <ContentHeader title={byModes.title}>
-        <AppButton type="cancel" responsive>
-          Hủy bỏ
-        </AppButton>
-      </ContentHeader>
+      <ContentHeader title={name || 'Đang tải'} />
       <Form
         form={form}
         name="create-branch"
@@ -166,6 +165,7 @@ export default function EditEmployeePage({ mode }) {
           <div>
             <Form.Item label="Nhóm quyền">
               <Select
+                disabled
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}
@@ -194,22 +194,6 @@ export default function EditEmployeePage({ mode }) {
                   {byModes.okText}
                 </AppButton>
               </Form.Item>
-              {!!isEdit && (
-                <Form.Item className="flex-1">
-                  <AppButton
-                    onClick={handleDelete}
-                    type="delete"
-                    className="w-full"
-                    size="large"
-                    loading={deleteLoading}
-                    confirm={{
-                      title: 'Bạn có muốn xóa nhân viên này?',
-                    }}
-                  >
-                    Xóa nhân viên
-                  </AppButton>
-                </Form.Item>
-              )}
             </div>
             {!isEdit && (
               <p className="text-center text-gray-400">

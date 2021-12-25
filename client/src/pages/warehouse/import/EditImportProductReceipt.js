@@ -158,7 +158,6 @@ export default function EditImportReceiptPage({ mode }) {
         };
       }),
     };
-    console.log();
 
     if (isEdit) {
       const { idNguoiLap, idKho, ...editedData } = receiptData;

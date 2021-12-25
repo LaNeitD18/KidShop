@@ -56,6 +56,7 @@ import { fetchExportReceipt, fetchExportReceipts } from '../../api/warehouse';
 import { createBill } from '../../api/bill';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Bill from '../../components/Bill';
+import { useRoles } from '../../context/RolesContext';
 
 const momoAPI = axios.create({
   baseURL: 'https://test-payment.momo.vn/v2/gateway/api/create',
@@ -85,6 +86,7 @@ export default function SalePage() {
   const [items, setItems] = useState([]);
   const [ton, setTon] = useState({});
   const [billCall, billLoad, billErr, bill] = useApiFeedback();
+  const [roles] = useRoles();
 
   useLayoutEffect(() => {
     setLayout({
@@ -99,13 +101,15 @@ export default function SalePage() {
   }, [setLayout]);
 
   const fetchAllStore = () => {
-    getStoresCall(getStoreList(), (res) => {
-      setSelectedStore(res.data[0]);
-    });
+    if (roles?.bh) {
+      getStoresCall(getStore(roles?.bh), (res) => {
+        setSelectedStore(res.data);
+      });
+    }
   };
   useEffect(() => {
     fetchAllStore();
-  }, []);
+  }, [roles?.bh]);
 
   const fetchTon = async () => {
     const tonResult = {};
@@ -189,15 +193,17 @@ export default function SalePage() {
         <div className="flex flex-col lg:flex-row gap-3 items-stretch">
           <div className="flex gap-3 flex-1 flex-col lg:flex-row">
             <SelectInput
+              disabled
               value={selectedStore?.id}
-              data={stores?.map((d) => ({
-                value: d.id,
-                label: d.diaChi,
-              }))}
+              data={[
+                {
+                  value: selectedStore?.id,
+                  label: selectedStore?.diaChi,
+                },
+              ]}
               idFormat={['CH', 4]}
               className="flex-1"
               placeholder="Cửa hàng"
-              onSelect={(ch) => setSelectedStore(arrayFind(stores, ch, 'id'))}
             />
             <SelectInput
               style={{ minWidth: '144px' }}

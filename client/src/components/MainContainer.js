@@ -18,12 +18,16 @@ import {
   GrAppsRounded,
   GrResources,
 } from 'react-icons/gr';
-import { RiPencilRuler2Line } from 'react-icons/ri';
-import { MdPointOfSale, MdOutlineStore } from 'react-icons/md';
+import { RiPencilRuler2Line, RiLockPasswordLine } from 'react-icons/ri';
+import {
+  MdPointOfSale,
+  MdOutlineStore,
+  MdFormatListBulleted,
+} from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
 import { GiHandTruck, GiFactory } from 'react-icons/gi';
 import { FaWarehouse } from 'react-icons/fa';
-import { BiImport, BiExport } from 'react-icons/bi';
+import { BiImport, BiExport, BiUserCircle } from 'react-icons/bi';
 import { VscSmiley } from 'react-icons/vsc';
 import { useRoles } from '../context/RolesContext';
 import { idString } from '../utils/string';
@@ -37,6 +41,7 @@ const navMenu = [
     path: 'admin',
     title: 'Quản trị',
     icon: <GrUserManager />,
+    role: 'qt',
     children: [
       {
         path: 'employee',
@@ -68,21 +73,12 @@ const navMenu = [
           },
         ],
       },
-      {
-        path: 'group',
-        title: 'QL Nhóm Quyền',
-        icon: <GrGroup />,
-      },
-      {
-        path: 'config',
-        title: 'Cài Đặt Cấu Hình',
-        icon: <RiPencilRuler2Line />,
-      },
     ],
   },
   {
     path: 'business',
     title: 'Kinh doanh',
+    role: 'kd',
     icon: <IoBusiness />,
     children: [
       {
@@ -107,8 +103,14 @@ const navMenu = [
     title: 'Cửa hàng',
     icon: <MdOutlineStore />,
     context: 'stores',
+    role: 'stores',
     idFormat: ['CH', 4],
     children: [
+      {
+        path: 'dashboard',
+        title: 'Thống kê',
+        icon: <AiOutlineDashboard />,
+      },
       {
         path: 'staff',
         title: 'QL Nhân Viên',
@@ -159,10 +161,12 @@ const navMenu = [
   {
     path: 'counter',
     title: 'Bán hàng',
+    role: 'bh',
   },
   {
     path: 'supply',
     title: 'Nguồn hàng',
+    role: 'ng',
     icon: <GrResources />,
     children: [
       {
@@ -199,7 +203,8 @@ const navMenu = [
   },
   {
     path: 'storage',
-    title: 'Trữ hàng',
+    title: 'Các kho',
+    role: 'ck',
     icon: <FiPackage />,
     children: [
       {
@@ -223,6 +228,7 @@ const navMenu = [
     path: 'warehouse',
     title: 'Kho',
     context: 'warehouses',
+    role: 'warehouses',
     idFormat: ['KH', 4],
     icon: <FaWarehouse />,
     children: [
@@ -255,6 +261,24 @@ const navMenu = [
             title: 'Sửa',
           },
         ],
+      },
+    ],
+  },
+  {
+    path: 'user',
+    title: 'Tài khoản',
+    role: 'default',
+    icon: <BiUserCircle />,
+    children: [
+      {
+        path: 'detail',
+        title: 'Thông tin',
+        icon: <MdFormatListBulleted />,
+      },
+      {
+        path: 'password',
+        title: 'Mật khẩu',
+        icon: <RiLockPasswordLine />,
       },
     ],
   },
@@ -310,6 +334,8 @@ export default function MainContainer() {
 
   const navContext = arrayFind(navContextOptions, paths[2], 'value');
 
+  console.log('roles', roles);
+
   useEffect(() => {
     if (navContextOptions && !navContext && paths[2]) {
       navigate('/error/403', { replace: true });
@@ -344,9 +370,11 @@ export default function MainContainer() {
           selectedKeys={[nav?.path]}
           onSelect={handleSelectNav}
         >
-          {navMenu?.map((value) => (
-            <Menu.Item key={value.path}>{value.title}</Menu.Item>
-          ))}
+          {navMenu?.map((value) => {
+            const showItem = value.role === 'default' || roles[value.role];
+            if (!showItem) return null;
+            return <Menu.Item key={value.path}>{value.title}</Menu.Item>;
+          })}
           <Menu.Item key="logout" className="lg:pointer-events-none">
             {!media.isLg && 'Đăng xuất'}
           </Menu.Item>
@@ -415,16 +443,6 @@ export default function MainContainer() {
               </div>
               <Menu.Divider />
               <div className="mb-5" />
-              <Menu.Item
-                icon={<AiOutlineDashboard />}
-                key={pathsToStrings(
-                  navContext
-                    ? [nav.path, navContext.value, 'dashboard']
-                    : [nav.path, 'dashboard']
-                )}
-              >
-                Bảng điều khiển
-              </Menu.Item>
               {nav?.children?.map((value) => (
                 <Menu.Item
                   icon={value.icon}
