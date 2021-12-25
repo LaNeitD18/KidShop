@@ -23,11 +23,7 @@ import { CustomerModule } from './customer/customer.module';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: parseInt(<string>process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DATABASE,
+      url: 'postgres://fzlxlrverfgkre:f12d36e5dd11876d84d02c88c6a00f7bb4c03e9c317d14e978667f2d23660932@ec2-52-18-185-208.eu-west-1.compute.amazonaws.com:5432/darer5ral7fbo4',
       autoLoadEntities: true,
       synchronize: true,
       ssl: {

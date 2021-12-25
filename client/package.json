@@ -32,7 +32,7 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set SSL_CRT_FILE=./secrets/cert.pem&&set SSL_KEY_FILE=./secrets/key.pem&&craco start",
+    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"

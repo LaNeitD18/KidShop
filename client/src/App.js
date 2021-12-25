@@ -27,6 +27,7 @@ import EditEmployeePage from './pages/admin/employee/EditEmployeePage';
 import StaffPage from './pages/store/staff/StaffPage';
 import EditExportReceiptPage from './pages/warehouse/export/EditExportProductReceipt';
 import EditStoreImportPage from './pages/store/import/EditStoreImportPage';
+import StoreDashboard from './pages/store/dashboard/StoreDashboard';
 
 function App() {
   const [roles, updateRoles] = useRoles();
@@ -80,7 +81,8 @@ function App() {
             }
           />
           <Route path="store/:storeId">
-            <Route index element={<Navigate to="staff" replace />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<StoreDashboard />} />
             <Route path="staff" element={<StaffPage />} />
             <Route path="counter">
               <Route index element={<CounterPage />} />
