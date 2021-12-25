@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CT_KhachHang } from './customer-detail.entity';
 
 @Entity()
 export class KhachHang {
@@ -42,4 +43,7 @@ export class KhachHang {
 
   @OneToMany(() => HoaDon, (hoaDon) => hoaDon.khachHang)
   dsHoaDon?: HoaDon[];
+
+  @OneToMany(() => CT_KhachHang, (ctKhachHang) => ctKhachHang.khachHang)
+  dsCTKhachHang?: CT_KhachHang[]
 }

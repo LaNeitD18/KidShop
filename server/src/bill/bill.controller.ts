@@ -23,7 +23,7 @@ import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { Response } from 'express';
 import { BillDetailService } from './service/bill-detail.service';
-import { CustomerService } from 'src/customer/customer.service';
+import { CustomerService } from 'src/customer/service/customer.service';
 
 @ApiTags('bill')
 @Controller('bill')

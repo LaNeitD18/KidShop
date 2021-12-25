@@ -1,8 +1,6 @@
-import { KhachHang } from './entities/customer.entity';
+import { KhachHang } from '../entities/customer.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,13 +16,13 @@ export class CustomerService {
 
   findAll() {
     return this.customerRepo.find({
-      relations: ['dsHoaDon'],
+      relations: ['dsHoaDon', 'dsCTKhachHang'],
     });
   }
 
   findOne(id: number) {
     return this.customerRepo.findOne(id, {
-      relations: ['dsHoaDon'],
+      relations: ['dsHoaDon', 'dsCTKhachHang'],
     });
   }
 
