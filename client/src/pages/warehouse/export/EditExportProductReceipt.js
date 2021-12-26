@@ -131,7 +131,6 @@ export default function EditExportReceiptPage({ mode }) {
           idCuaHang: data.cuaHang.id,
           trangThai: { value: data.trangThai },
         });
-        console.log(data);
 
         const curDetails = data?.dsCTPhieuXuat?.map((detail) => {
           return {
@@ -164,7 +163,6 @@ export default function EditExportReceiptPage({ mode }) {
     const product = products.find(
       (p) => p.id.toString() === values?.idMatHang.toString()
     );
-    console.log("### product", product);
     setTonKho(0);
     setListNewDetails((prev) => {
       let found = false;
@@ -220,7 +218,6 @@ export default function EditExportReceiptPage({ mode }) {
 
     if (isEdit) {
       const { idNguoiLap, idKho, ...editedData } = receiptData;
-      console.log(editedData);
 
       editCall(editExportReceipt(exportReceiptId, editedData), () => {
         message.success("Đã lưu thay đổi thành công");

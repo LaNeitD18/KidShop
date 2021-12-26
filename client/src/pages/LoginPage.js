@@ -4,10 +4,11 @@ import useApiFeedback from '../hooks/useApiFeedback';
 import { login, verifyToken } from '../api/auth';
 import { fireError, fireSuccessModal } from '../utils/feedback';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserByUsername } from '../api/user';
 import { LoginOutlined } from '@ant-design/icons';
+import { useRoles } from '../context/RolesContext';
 
 export function LoginPage() {
   const [form] = Form.useForm();
@@ -15,6 +16,7 @@ export function LoginPage() {
 
   const navigate = useNavigate();
   const [user, setUser] = useLocalStorage('user');
+  const [roles, updateRoles, setRoles] = useRoles();
 
   useEffect(() => {
     if (user?.token) {
@@ -33,13 +35,13 @@ export function LoginPage() {
       (res) => {
         getUserByUsername(values.username)
           .then(({ data }) => {
-            console.log('user data', data);
             setUser({
               id: data[0].id,
               hoTen: data[0].hoTen,
               gioiTinh: data[0].gioiTinh,
               token: res.data.accessToken,
             });
+            updateRoles();
           })
           .catch((err) => fireError(err));
         form.resetFields();

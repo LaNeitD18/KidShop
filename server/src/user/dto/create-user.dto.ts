@@ -8,4 +8,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   phone?: string;
+
+  @ApiProperty()
+  quyen?: string;
 }

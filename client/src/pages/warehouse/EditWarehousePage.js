@@ -84,7 +84,6 @@ export default function EditWarehousePage({ mode }) {
       viTri: mapLocation?.address,
     };
     if (isEdit) {
-      console.log('dto', dto);
       editCall(editWarehouse(warehouseId, dto), () => {
         message.success('Đã lưu thay đổi thành công');
       });

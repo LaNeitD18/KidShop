@@ -7,10 +7,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
-  JoinTable,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -44,6 +42,10 @@ export class NguoiDung {
   @ApiProperty({ required: false })
   @Column({ nullable: true })
   gioiTinh?: string;
+
+  @ApiProperty({ required: false })
+  @Column({ nullable: true, default: '' })
+  quyen?: string;
 
   // maNhom: string
   @OneToMany(() => PhieuNhapKho, (phieuNhap) => phieuNhap.nguoiLap)
