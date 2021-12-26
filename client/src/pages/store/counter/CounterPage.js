@@ -1,36 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import AppButton from '../../../components/AppButton';
-import { ContentHeader } from '../../../components/Content';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import { ActiveItem, StatusBar } from '../../../components/StatusBar';
+import React, { useEffect, useState } from "react";
+import AppButton from "../../../components/AppButton";
+import { ContentHeader } from "../../../components/Content";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import { ActiveItem, StatusBar } from "../../../components/StatusBar";
 
-import { Grid } from '../../../components/Grid';
-import { message } from 'antd';
-import { CounterCard } from '../../../components/Card';
-import { getCounterList } from '../../../api/counter';
-import { useParams } from 'react-router-dom';
+import { Grid } from "../../../components/Grid";
+import { message } from "antd";
+import { CounterCard } from "../../../components/Card";
+import { getCounterList } from "../../../api/counter";
+import { useParams } from "react-router-dom";
 
 const columns = [
   {
-    title: 'Mã cửa hàng',
+    title: "Mã cửa hàng",
     id: true,
-    idFormat: ['CH', 4],
+    idFormat: ["CH", 4],
     searchable: true,
     sortable: true,
   },
   {
-    title: 'Địa chỉ',
-    dataIndex: 'diaChi',
+    title: "Địa chỉ",
+    dataIndex: "diaChi",
     searchable: true,
   },
   {
-    title: 'SDT',
-    dataIndex: 'sdt',
+    title: "SDT",
+    dataIndex: "sdt",
     searchable: true,
   },
   {
-    title: 'Chủ cửa hàng',
-    dataIndex: ['chuCuaHang', 'hoTen'],
+    title: "Chủ cửa hàng",
+    dataIndex: ["chuCuaHang", "hoTen"],
     searchable: true,
   },
   {

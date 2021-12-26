@@ -1,15 +1,15 @@
-import { RowJustifyBetween } from '../components/Layout';
-import { BsBarChartLine } from 'react-icons/bs';
-import { MdPointOfSale } from 'react-icons/md';
-import { GiPlainCircle } from 'react-icons/gi';
-import { Card, InputNumber, Tag, Tooltip } from 'antd';
-import classNames from 'classnames';
-import { SingleLineSkeleton } from './Skeleton';
-import { Link } from 'react-router-dom';
-import { currencyShort } from '../utils/string';
-import { Typography } from 'antd';
-import AppButton from './AppButton';
-import { useRef, useState } from 'react';
+import { RowJustifyBetween } from "../components/Layout";
+import { BsBarChartLine } from "react-icons/bs";
+import { MdPointOfSale } from "react-icons/md";
+import { GiPlainCircle } from "react-icons/gi";
+import { Card, InputNumber, Tag, Tooltip } from "antd";
+import classNames from "classnames";
+import { SingleLineSkeleton } from "./Skeleton";
+import { Link } from "react-router-dom";
+import { currencyShort } from "../utils/string";
+import { Typography } from "antd";
+import AppButton from "./AppButton";
+import { useRef, useState } from "react";
 
 const { Paragraph } = Typography;
 
@@ -17,22 +17,22 @@ export function CounterCard({ employeeName, name, id, active }) {
   return (
     <Card
       headStyle={{
-        backgroundColor: '#F9FAFB',
+        backgroundColor: "#F9FAFB",
       }}
       className="hover:shadow-lg-soft transition-all"
       style={
         active
           ? {
-              border: 'solid 2px #1DA57A',
+              border: "solid 2px #1DA57A",
             }
           : {}
       }
       title={
         <span className="font-semibold flex items-center gap-2">
           <GiPlainCircle
-            className={classNames('text-sm', {
-              'text-green-500': active,
-              'text-gray-300': !active,
+            className={classNames("text-sm", {
+              "text-green-500": active,
+              "text-gray-300": !active,
             })}
             style={{ marginTop: 2 }}
           />
@@ -73,7 +73,7 @@ export function CounterCard({ employeeName, name, id, active }) {
         <RowJustifyBetween>
           <span>Nhân viên trực</span>
           {active ? (
-            <span className="font-semibold">{employeeName}</span>
+            <span className="font-semibold">{employeeName ?? "Trống"}</span>
           ) : (
             <SingleLineSkeleton />
           )}
@@ -108,9 +108,9 @@ export function ProductCard({
           alt="example"
           src={hinhAnh}
           className={classNames({
-            'object-cover transition-all h-48': true,
-            'lg:h-32': !showActions,
-            'lg:h-20': showActions,
+            "object-cover transition-all h-48": true,
+            "lg:h-32": !showActions,
+            "lg:h-20": showActions,
           })}
         />
       }
@@ -129,7 +129,7 @@ export function ProductCard({
               <Tag
                 style={{
                   fontSize: 12,
-                  padding: '0 6px',
+                  padding: "0 6px",
                   margin: 0,
                   height: 24,
                 }}
@@ -143,7 +143,7 @@ export function ProductCard({
               <Tag
                 style={{
                   fontSize: 12,
-                  padding: '0 6px',
+                  padding: "0 6px",
                   margin: 0,
                   height: 24,
                 }}
@@ -153,12 +153,12 @@ export function ProductCard({
             </Tooltip>
           )}
         </div>
-        <div className={classNames('flex items-center justify-between')}>
+        <div className={classNames("flex items-center justify-between")}>
           <span className="flex gap-1 items-center">
             <span
               className={classNames({
-                'text-primary': !khuyenMai,
-                'line-through text-xs': khuyenMai,
+                "text-primary": !khuyenMai,
+                "line-through text-xs": khuyenMai,
               })}
             >
               {currencyShort(giaBan)}
@@ -173,16 +173,16 @@ export function ProductCard({
         </div>
         <div
           className={classNames({
-            'h-0': !showActions,
-            'lg:h-12': showActions,
-            'transition-all': true,
+            "h-0": !showActions,
+            "lg:h-12": showActions,
+            "transition-all": true,
           })}
         />
         <div
           className={classNames({
-            'items-center gap-2 flex lg:absolute left-3 right-3': true,
-            'lg:bottom-4': showActions,
-            'lg:hidden': !showActions,
+            "items-center gap-2 flex lg:absolute left-3 right-3": true,
+            "lg:bottom-4": showActions,
+            "lg:hidden": !showActions,
           })}
         >
           <InputNumber
