@@ -67,6 +67,7 @@ export default function Bill({
   onCancel = () => {},
   onOk,
   readonly,
+  onChange = () => {},
   className,
 }) {
   const [customersCall, customersLoad, customersError, { data: customers }] =
@@ -79,6 +80,12 @@ export default function Bill({
       customersCall(fetchCustomers());
     }
   }, [readonly]);
+
+  useEffect(() => {
+    onChange({
+      khId: selectedCus.id,
+    });
+  }, [onChange, selectedCus.id]);
 
   const selectedCusId = selectedCus?.id;
 
@@ -96,7 +103,7 @@ export default function Bill({
           cus={selectedCus}
           onUpdated={() => {
             customersCall(fetchCustomers(), ({ data }) => {
-              setSelectedCus((prev) => arrayFind(data, prev.id, 'id'));
+              setSelectedCus({});
             });
           }}
         />

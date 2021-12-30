@@ -90,6 +90,7 @@ export default function SalePage() {
   const [billCall, billLoad, billErr, bill] = useApiFeedback();
   const [roles] = useRoles();
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [khId, setKhId] = useState(null);
 
   useLayoutEffect(() => {
     setLayout({
@@ -357,6 +358,9 @@ export default function SalePage() {
         items={items}
         discount={discount}
         onCancel={setItems}
+        onChange={(v) => {
+          setKhId(v.khId);
+        }}
         onOk={() => setShowPaymentModal(true)}
       />
       <Modal
@@ -417,11 +421,13 @@ export default function SalePage() {
               })
               .catch((err) => fireError(err));
           } else {
+            console.log('idkhachhang', khId);
             billCall(
               createBill({
                 idNguoiLap: selectedCounter?.nhanVienTruc?.id,
                 idQuay: selectedCounter?.id,
                 tongHoaDon: total,
+                idKhachHang: khId,
                 dsCTHoaDon: items.map((item) => {
                   return {
                     idMatHang: item.id,

@@ -70,7 +70,7 @@ export default function CustomerModal({
           });
         }
       }}
-      title="Tạo khách hàng"
+      title={cus.id ? 'Sửa khách hàng' : 'Tạo khách hàng'}
       width={1024}
       centered
       className="overflow-hidden"
