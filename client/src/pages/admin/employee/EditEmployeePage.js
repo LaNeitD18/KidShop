@@ -94,7 +94,7 @@ export default function EditEmployeePage({ mode }) {
       </ContentHeader>
       <Form
         form={form}
-        name="create-branch"
+        name="edit-employee"
         layout="vertical"
         onFinish={onFinish}
         autoComplete="off"

@@ -132,8 +132,6 @@ export default function EditImportReceiptPage({ mode }) {
       }
     });
 
-    console.log(formAddReceipt.getFieldsValue());
-
     setSumMoney(sumMoney + values?.soLuong * product?.giaNhap);
     formAddDetail.resetFields();
   };

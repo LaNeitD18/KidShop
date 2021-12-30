@@ -69,6 +69,7 @@ export default function AppButton({
   icon,
   buttonType,
   size = 'middle',
+  htmlType,
   ...rest
 }) {
   const media = useResponsive();
@@ -105,6 +106,7 @@ export default function AppButton({
       icon={icon}
       type={buttonType}
       size={size}
+      htmlType={htmlType}
       {...rest}
     >
       {media.isXs || !responsive

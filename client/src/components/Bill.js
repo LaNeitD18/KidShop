@@ -35,6 +35,11 @@ import { SelectInput } from './Inputs';
 import { MdOutlineCake } from 'react-icons/md';
 import Moment from 'react-moment';
 import classNames from 'classnames';
+import useApiFeedback from '../hooks/useApiFeedback';
+import { useEffect, useState } from 'react';
+import { fetchCustomers } from '../api/customer';
+import { arrayFind } from '../utils/array';
+import CustomerModal from './CustomerModal';
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -64,53 +69,124 @@ export default function Bill({
   readonly,
   className,
 }) {
+  const [customersCall, customersLoad, customersError, { data: customers }] =
+    useApiFeedback();
+  const [selectedCus, setSelectedCus] = useState({});
+  const [cusModal, setCusModal] = useState(false);
+
+  useEffect(() => {
+    if (!readonly) {
+      customersCall(fetchCustomers());
+    }
+  }, [readonly]);
+
+  const selectedCusId = selectedCus?.id;
+
+  console.log('selected cus', selectedCus);
+
   return (
     <div
       className={classNames('flex flex-col gap-2 w-full self-start pb-8', {
         'bg-white rounded-lg shadow-lg-soft p-4 lg:w-96': !readonly,
       })}
     >
-      {!readonly && <SelectInput placeholder="Khách hàng thành viên" />}
+      {!!cusModal && (
+        <CustomerModal
+          onCancel={setCusModal}
+          cus={selectedCus}
+          onUpdated={() => {
+            customersCall(fetchCustomers(), ({ data }) => {
+              setSelectedCus((prev) => arrayFind(data, prev.id, 'id'));
+            });
+          }}
+        />
+      )}
+      {!readonly && (
+        <SelectInput
+          placeholder="Khách hàng thành viên"
+          data={customers?.map((c) => ({
+            value: c.id,
+            label: c.hoTen,
+          }))}
+          idFormat={['KH', 6]}
+          value={selectedCus?.id}
+          onSelect={(v) => {
+            setSelectedCus(arrayFind(customers, v, 'id'));
+          }}
+          onClear={() => {
+            setSelectedCus({});
+          }}
+        />
+      )}
       <div className="flex items-center gap-2">
         <UserOutlined className="text-5xl p-3 opacity-80" />
         <div className="flex flex-col">
-          <span className="font-bold text-xl">Nguyễn Thành Trung</span>
-          <span>Thành viên Trung Thành</span>
+          {selectedCusId ? (
+            <span className="font-bold text-xl">{selectedCus.hoTen}</span>
+          ) : (
+            <span className="font-bold text-xl">Khách</span>
+          )}
+
+          {selectedCusId ? <span>Thành viên</span> : <span>Chưa đăng ký</span>}
         </div>
       </div>
-      {false && (
-        <AppButton type="add" icon={<UserAddOutlined />} className="mx-4">
+      {!selectedCusId && (
+        <AppButton
+          type="add"
+          icon={<UserAddOutlined />}
+          className="mx-4"
+          onClick={() => setCusModal(true)}
+        >
           Tạo khách hàng
         </AppButton>
       )}
-      {true && (
+      {selectedCusId && (
         <Collapse defaultActiveKey={['1']}>
           <Panel header="Thông tin khách hàng">
             <div className="flex tracking-wide">
-              <CustomerDetailsCol label="TUỔI">28</CustomerDetailsCol>
+              <CustomerDetailsCol label="TUỔI">
+                {moment().diff(selectedCus?.ngaySinh, 'years')}
+              </CustomerDetailsCol>
               <VerticalDivider />
               <Popover
                 content={
                   <div>
-                    <ChildDetail name="Ngô Công Hậu" dob={moment()} male />
-                    <HorizontalDivider />
-                    <ChildDetail name="Ngô Công Hậu" dob={moment()} />
-                    <HorizontalDivider />
-                    <ChildDetail name="Ngô Công Hậu" dob={moment()} male />
+                    {selectedCus.dsCTKhachHang?.map((con, i) => (
+                      <>
+                        <ChildDetail
+                          name={con.hoTenCon}
+                          dob={con.ngaySinhCon}
+                          male={con.gioiTinhCon === 'nam'}
+                        />
+                        {i < selectedCus.dsCTKhachHang?.length - 1 && (
+                          <HorizontalDivider />
+                        )}
+                      </>
+                    ))}
                   </div>
                 }
                 title="Các con"
                 placement="left"
               >
                 <div className="flex-1">
-                  <CustomerDetailsCol label="SỐ CON">3</CustomerDetailsCol>
+                  <CustomerDetailsCol label="SỐ CON">
+                    {selectedCus.dsCTKhachHang?.length}
+                  </CustomerDetailsCol>
                 </div>
               </Popover>
               <VerticalDivider />
-              <CustomerDetailsCol label="LẦN MUA">9</CustomerDetailsCol>
+              <CustomerDetailsCol label="LẦN MUA">
+                {selectedCus.dsHoaDon?.length}
+              </CustomerDetailsCol>
             </div>
             <div className="mx-4 mt-4">
-              <AppButton type="edit" className="w-full">
+              <AppButton
+                type="edit"
+                className="w-full"
+                onClick={() => {
+                  setCusModal(true);
+                }}
+              >
                 Chỉnh sửa
               </AppButton>
             </div>
@@ -187,15 +263,7 @@ function ChildDetail({ male, name, dob }) {
       <div className="flex items-center gap-2">
         <MdOutlineCake />
         <span>{date(dob)}</span>
-        <span>
-          (
-          {
-            <Moment diff={moment()} unit="years">
-              {dob}
-            </Moment>
-          }{' '}
-          tuổi)
-        </span>
+        <span>({moment().diff(dob, 'years')} tuổi)</span>
       </div>
     </>
   );

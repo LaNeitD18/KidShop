@@ -334,8 +334,6 @@ export default function MainContainer() {
 
   const navContext = arrayFind(navContextOptions, paths[2], 'value');
 
-  console.log('roles', roles);
-
   useEffect(() => {
     if (navContextOptions && !navContext && paths[2]) {
       navigate('/error/403', { replace: true });
