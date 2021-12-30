@@ -35,7 +35,13 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { SelectInput } from "../../components/Inputs";
 import AppButton from "../../components/AppButton";
 import { HorizontalDivider, VerticalDivider } from "../../components/Divider";
-import { currency, currencyShort, date, idString } from "../../utils/string";
+import {
+  currency,
+  currencyShort,
+  date,
+  extractNumber,
+  idString,
+} from "../../utils/string";
 import moment from "moment";
 import Moment from "react-moment";
 import AppTable from "../../components/AppTable";
@@ -67,7 +73,6 @@ const momoAPI = axios.create({
 
 export default function SalePage() {
   const [layout, setLayout] = useLayoutContext();
-  const [scannedCode, setScannedCode] = useState("Đang nhận diện...");
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [momoModal, setMomoModal] = useState(null);
   const [selectedStore, setSelectedStore] = useState();
@@ -218,6 +223,42 @@ export default function SalePage() {
     }
   };
 
+  const renderProductCard = (p) => (
+    <ProductCard
+      disabled={!selectedCounter?.nhanVienTruc?.id}
+      soLuong={
+        (ton[p.id] || 0) -
+        (items?.find((item) => item.id.toString() === p.id.toString())?.count ||
+          0)
+      }
+      {...p}
+      onAdd={(id, tenMH, count, giaBan, khuyenMai) =>
+        setItems((prev) => {
+          let found = false;
+          const updatedList = prev.map((item) => {
+            if (item.id === id) {
+              found = true;
+              return { ...item, count: item.count + count };
+            }
+            return item;
+          });
+          if (found) {
+            return updatedList;
+          } else {
+            return prev.concat({
+              id,
+              tenMH,
+              count,
+              giaBan,
+              khuyenMai,
+              money: giaBan - khuyenMai,
+            });
+          }
+        })
+      }
+    />
+  );
+
   return (
     <div className="flex mb-10 gap-3 flex-col lg:flex-row">
       <div className="flex-1 flex flex-col items-stretch gap-3">
@@ -310,10 +351,42 @@ export default function SalePage() {
                 content: (
                   <BarcodeScannerComponent
                     delay={5000}
-                    onUpdate={(err, result) => {
-                      if (result) {
-                        message.success("Đã thêm " + result.text);
-                      } else setScannedCode("Đang nhận diện...");
+                    onUpdate={(err, resultObj) => {
+                      if (resultObj) {
+                        console.log("result", resultObj);
+                        const { text: result } = resultObj;
+                        const foundProduct = filteredProducts?.find(
+                          (p) =>
+                            p.id.toString() === extractNumber(result).toString()
+                        );
+                        if (foundProduct) {
+                          console.log("found product", foundProduct);
+                          const { id, tenMH, count, giaBan, khuyenMai } =
+                            foundProduct;
+                          setItems((prev) => {
+                            let found = false;
+                            const updatedList = prev.map((item) => {
+                              if (item.id === id) {
+                                found = true;
+                                return { ...item, count: item.count + count };
+                              }
+                              return item;
+                            });
+                            if (found) {
+                              return updatedList;
+                            } else {
+                              return prev.concat({
+                                id,
+                                tenMH,
+                                count: 1,
+                                giaBan,
+                                khuyenMai,
+                                money: giaBan - khuyenMai,
+                              });
+                            }
+                          });
+                        }
+                      }
                     }}
                   />
                 ),
@@ -325,41 +398,7 @@ export default function SalePage() {
         </div>
         <div className="grid gap-3  sm:grid-cols-3 xl:grid-cols-4">
           {!!productsLoading && <Loading />}
-          {filteredProducts?.map((p) => (
-            <ProductCard
-              disabled={!selectedCounter?.nhanVienTruc?.id}
-              soLuong={
-                (ton[p.id] || 0) -
-                (items?.find((item) => item.id.toString() === p.id.toString())
-                  ?.count || 0)
-              }
-              {...p}
-              onAdd={(id, tenMH, count, giaBan, khuyenMai) =>
-                setItems((prev) => {
-                  let found = false;
-                  const updatedList = prev.map((item) => {
-                    if (item.id === id) {
-                      found = true;
-                      return { ...item, count: item.count + count };
-                    }
-                    return item;
-                  });
-                  if (found) {
-                    return updatedList;
-                  } else {
-                    return prev.concat({
-                      id,
-                      tenMH,
-                      count,
-                      giaBan,
-                      khuyenMai,
-                      money: giaBan - khuyenMai,
-                    });
-                  }
-                })
-              }
-            />
-          ))}
+          {filteredProducts?.map((p) => renderProductCard(p))}
         </div>
       </div>
       <Bill
