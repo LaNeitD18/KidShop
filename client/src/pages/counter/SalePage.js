@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useLayoutContext } from '../../context/LayoutContext';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutContext } from "../../context/LayoutContext";
 import {
   Button,
   Card,
@@ -17,7 +17,7 @@ import {
   message,
   Form,
   Affix,
-} from 'antd';
+} from "antd";
 import {
   UserOutlined,
   UserAddOutlined,
@@ -27,47 +27,47 @@ import {
   BarcodeOutlined,
   QrcodeOutlined,
   CloseCircleOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import { IoIosCash } from 'react-icons/io';
-import { BsCheckCircleFill } from 'react-icons/bs';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { SelectInput } from '../../components/Inputs';
-import AppButton from '../../components/AppButton';
-import { HorizontalDivider, VerticalDivider } from '../../components/Divider';
-import { currency, currencyShort, date, idString } from '../../utils/string';
-import moment from 'moment';
-import Moment from 'react-moment';
-import AppTable from '../../components/AppTable';
-import { StatusIndicator } from '../../components/Decorative';
-import { ProductCard } from '../../components/Card';
-import BarcodeScannerComponent from 'react-qr-barcode-scanner';
-import { fireError, fireSuccessModal } from '../../utils/feedback';
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import { sha256 } from 'js-sha256';
-import useApiFeedback from '../../hooks/useApiFeedback';
-import { getStore, getStoreList } from '../../api/store';
-import { editCounter, getCounter, getCounterList } from '../../api/counter';
-import { arrayFind } from '../../utils/array';
-import { getProductList } from '../../api/product';
-import Loading from '../../components/Loading';
-import { fetchExportReceipt, fetchExportReceipts } from '../../api/warehouse';
-import { createBill } from '../../api/bill';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import Bill from '../../components/Bill';
-import { useRoles } from '../../context/RolesContext';
-import Search from 'antd/lib/input/Search';
-import { fetchCustomers } from '../../api/customer';
+import { IoIosCash } from "react-icons/io";
+import { BsCheckCircleFill } from "react-icons/bs";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import { SelectInput } from "../../components/Inputs";
+import AppButton from "../../components/AppButton";
+import { HorizontalDivider, VerticalDivider } from "../../components/Divider";
+import { currency, currencyShort, date, idString } from "../../utils/string";
+import moment from "moment";
+import Moment from "react-moment";
+import AppTable from "../../components/AppTable";
+import { StatusIndicator } from "../../components/Decorative";
+import { ProductCard } from "../../components/Card";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
+import { fireError, fireSuccessModal } from "../../utils/feedback";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { sha256 } from "js-sha256";
+import useApiFeedback from "../../hooks/useApiFeedback";
+import { getStore, getStoreList } from "../../api/store";
+import { editCounter, getCounter, getCounterList } from "../../api/counter";
+import { arrayFind } from "../../utils/array";
+import { getProductList } from "../../api/product";
+import Loading from "../../components/Loading";
+import { fetchExportReceipt, fetchExportReceipts } from "../../api/warehouse";
+import { createBill, getBills } from "../../api/bill";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import Bill from "../../components/Bill";
+import { useRoles } from "../../context/RolesContext";
+import Search from "antd/lib/input/Search";
+import { fetchCustomers } from "../../api/customer";
 
 const momoAPI = axios.create({
-  baseURL: 'https://test-payment.momo.vn/v2/gateway/api/create',
-  headers: { 'Access-Control-Allow-Origin': true },
+  baseURL: "https://test-payment.momo.vn/v2/gateway/api/create",
+  headers: { "Access-Control-Allow-Origin": true },
 });
 
 export default function SalePage() {
   const [layout, setLayout] = useLayoutContext();
-  const [scannedCode, setScannedCode] = useState('Đang nhận diện...');
+  const [scannedCode, setScannedCode] = useState("Đang nhận diện...");
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [momoModal, setMomoModal] = useState(null);
   const [selectedStore, setSelectedStore] = useState();
@@ -122,20 +122,29 @@ export default function SalePage() {
   const fetchTon = async () => {
     const tonResult = {};
     if (selectedStore?.id) {
-      const exps = await fetchExportReceipts('store', selectedStore?.id);
+      const exps = await fetchExportReceipts("store", selectedStore?.id);
       exps.data.forEach(async (exp) => {
         const receipt = await fetchExportReceipt(exp.id);
-        if (receipt.data.trangThai?.toString() === '2') {
+        if (receipt.data.trangThai?.toString() === "2") {
           receipt.data.dsCTPhieuXuat.forEach((item, i, arr) => {
             tonResult[item.matHang.id] =
               parseInt(tonResult[item.matHang.id] || 0) + item.soLuong;
-            if (i === arr.length - 1) {
-              setTon(tonResult);
-            }
           });
-        } else {
         }
       });
+
+      const listBills = await getBills(selectedStore?.id);
+      for (const bill of listBills.data) {
+        bill?.dsCTHoaDon.forEach((item, i) => {
+          tonResult[item.matHang.id] =
+            parseInt(tonResult[item.matHang.id] || 0) - item.soLuong;
+          if (tonResult[item.matHang.id] < 0) {
+            tonResult[item.matHang.id] = 0;
+          }
+        });
+      }
+
+      setTon(tonResult);
     }
   };
   useEffect(() => {
@@ -195,11 +204,11 @@ export default function SalePage() {
 
   const searchProducts = (e) => {
     const searchText = e.target.value;
-    if (searchText !== '') {
+    if (searchText !== "") {
       const newData = products.filter((prod) => {
         const itemData = prod.tenMH
           ? prod.tenMH.toUpperCase()
-          : ''.toUpperCase();
+          : "".toUpperCase();
         const textData = searchText?.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -223,12 +232,12 @@ export default function SalePage() {
                   label: selectedStore?.diaChi,
                 },
               ]}
-              idFormat={['CH', 4]}
+              idFormat={["CH", 4]}
               className="flex-1"
               placeholder="Cửa hàng"
             />
             <SelectInput
-              style={{ minWidth: '144px' }}
+              style={{ minWidth: "144px" }}
               disabled={!selectedStore?.id}
               data={selectedStore?.dsQuay?.map((q) => ({
                 value: q.id,
@@ -240,7 +249,7 @@ export default function SalePage() {
                   setSelectedCounter(data)
                 )
               }
-              idFormat={['Q', 4]}
+              idFormat={["Q", 4]}
               className="flex-1"
               placeholder="Quầy"
             />
@@ -256,7 +265,7 @@ export default function SalePage() {
                   label: u.hoTen,
                 }))}
               value={selectedCounter?.nhanVienTruc?.id}
-              idFormat={['NV', 4]}
+              idFormat={["NV", 4]}
               onSelect={(v) => {
                 manuallySelectCounterAssignee(v);
               }}
@@ -267,15 +276,15 @@ export default function SalePage() {
               type="delete"
               icon={<CloseCircleOutlined />}
               confirm={{
-                title: 'Xác nhận đóng quầy',
-                content: 'Bạn sẽ xóa nhân viên trực ra khỏi quầy',
+                title: "Xác nhận đóng quầy",
+                content: "Bạn sẽ xóa nhân viên trực ra khỏi quầy",
               }}
               loading={updateCounterLoading}
               onClick={() => {
                 manuallySelectCounterAssignee(null);
               }}
             >
-              {selectedCounter?.nhanVienTruc?.id ? 'Đóng quầy' : 'Đang đóng'}
+              {selectedCounter?.nhanVienTruc?.id ? "Đóng quầy" : "Đang đóng"}
             </AppButton>
           </div>
         </div>
@@ -292,19 +301,19 @@ export default function SalePage() {
             icon={<BarcodeOutlined />}
             onClick={() =>
               Modal.info({
-                title: 'Quét mã QR/Barcode',
+                title: "Quét mã QR/Barcode",
                 icon: null,
                 centered: true,
                 width: 640,
                 maskClosable: true,
-                okText: 'Hoàn tất',
+                okText: "Hoàn tất",
                 content: (
                   <BarcodeScannerComponent
                     delay={5000}
                     onUpdate={(err, result) => {
                       if (result) {
-                        message.success('Đã thêm ' + result.text);
-                      } else setScannedCode('Đang nhận diện...');
+                        message.success("Đã thêm " + result.text);
+                      } else setScannedCode("Đang nhận diện...");
                     }}
                   />
                 ),
@@ -377,7 +386,7 @@ export default function SalePage() {
         <iframe
           className="w-full h-full"
           style={{
-            height: 'calc(100vh - 256px)',
+            height: "calc(100vh - 256px)",
           }}
           title="payment-url"
           src={momoModal?.url}
@@ -394,26 +403,26 @@ export default function SalePage() {
         title="Chọn hình thức thanh toán"
         onOk={() => {
           const selectedMethod =
-            paymentMethodRef.current.elements['payment-method'].value;
-          if (selectedMethod === '2') {
-            const info = 'KidsShop Mua Hang';
+            paymentMethodRef.current.elements["payment-method"].value;
+          if (selectedMethod === "2") {
+            const info = "KidsShop Mua Hang";
             const uuid = uuidv4();
             const signature = sha256.hmac(
               process.env.REACT_APP_MOMO_SECRET,
               `accessKey=${process.env.REACT_APP_MOMO_ACCESS}&amount=${total}&extraData=&ipnUrl=https://momo.vn&orderId=${uuid}&orderInfo=${info}&partnerCode=${process.env.REACT_APP_MOMO_PARTNER_CODE}&redirectUrl=https://momo.vn&requestId=${uuid}&requestType=captureWallet`
             );
             momoAPI
-              .post('https://test-payment.momo.vn/v2/gateway/api/create', {
+              .post("https://test-payment.momo.vn/v2/gateway/api/create", {
                 partnerCode: process.env.REACT_APP_MOMO_PARTNER_CODE,
-                requestType: 'captureWallet',
-                ipnUrl: 'https://momo.vn',
-                redirectUrl: 'https://momo.vn',
+                requestType: "captureWallet",
+                ipnUrl: "https://momo.vn",
+                redirectUrl: "https://momo.vn",
                 orderId: uuid,
                 amount: total,
-                lang: 'vi',
+                lang: "vi",
                 orderInfo: info,
                 requestId: uuid,
-                extraData: '',
+                extraData: "",
                 signature: signature,
               })
               .then(({ data }) => {
@@ -421,7 +430,7 @@ export default function SalePage() {
               })
               .catch((err) => fireError(err));
           } else {
-            console.log('idkhachhang', khId);
+            console.log("idkhachhang", khId);
             billCall(
               createBill({
                 idNguoiLap: selectedCounter?.nhanVienTruc?.id,
@@ -437,8 +446,9 @@ export default function SalePage() {
                   };
                 }),
               }),
-              () => {
-                message.success('Đã tạo hóa đơn thành công');
+              async () => {
+                message.success("Đã tạo hóa đơn thành công");
+                await fetchTon();
                 setItems([]);
               }
             );

@@ -18,7 +18,7 @@ export class BillService {
 
   findAll(storeId: number) {
     return this.billRepo.find({
-      relations: ['quay', 'nguoiLap', 'khachHang', 'dsCTHoaDon'],
+      relations: ['quay', 'nguoiLap', 'khachHang', 'dsCTHoaDon', 'dsCTHoaDon.matHang'],
       where: {
         quay: {
           cuaHang: {
