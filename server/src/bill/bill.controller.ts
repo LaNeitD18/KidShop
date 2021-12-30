@@ -58,6 +58,7 @@ export class BillController {
       }
 
       const customer = await this.customerService.findOne(data.idKhachHang);
+      console.log(data.idKhachHang)
 
       const counter = await this.counterService.findOne(data.idQuay.toString());
       if (!counter) {
@@ -70,7 +71,7 @@ export class BillController {
         tongHoaDon: data.tongHoaDon,
         nguoiLap: creator,
         quay: counter,
-        khachHang: customer,
+        khachHang: data.idKhachHang ? customer : null,
       };
       const newBill = await this.billService.create(billData);
 
