@@ -53,6 +53,19 @@ export class UserService {
     }
   }
 
+  async getUserPassword(id: string) {
+    try {
+      const data = await this.userRepository.findOne(id, {
+        select: [
+          'matKhau'
+        ]
+      })
+      return data.matKhau
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   async findByUsername(username: string) {
     try {
       const user = await this.userRepository.find({

@@ -1,15 +1,15 @@
-import { Form, Input, message } from 'antd';
-import { editUser } from '../../../api/user';
-import AppButton from '../../../components/AppButton';
-import { ContentHeader } from '../../../components/Content';
-import { FormGrid, OneColumnFormContainer } from '../../../components/Grid';
-import useApiFeedback from '../../../hooks/useApiFeedback';
-import useLocalStorage from '../../../hooks/useLocalStorage';
-import { fireError } from '../../../utils/feedback';
+import { Form, Input, message } from "antd";
+import { editUser } from "../../../api/user";
+import AppButton from "../../../components/AppButton";
+import { ContentHeader } from "../../../components/Content";
+import { FormGrid, OneColumnFormContainer } from "../../../components/Grid";
+import useApiFeedback from "../../../hooks/useApiFeedback";
+import useLocalStorage from "../../../hooks/useLocalStorage";
+import { fireError } from "../../../utils/feedback";
 
 export default function UserPasswordPage() {
   const [form] = Form.useForm();
-  const [user] = useLocalStorage('user');
+  const [user] = useLocalStorage("user");
   const [editUserCall, editLoad] = useApiFeedback();
   return (
     <FormGrid>
@@ -22,7 +22,7 @@ export default function UserPasswordPage() {
           onFinish={({ mkCu, mkMoi, mkLai }) => {
             if (mkMoi !== mkLai) {
               fireError({
-                message: 'Mật khẩu nhập lại không trùng mật khẩu mới',
+                message: "Mật khẩu nhập lại không trùng mật khẩu mới",
               });
               return;
             }
@@ -30,9 +30,11 @@ export default function UserPasswordPage() {
               editUserCall(
                 editUser(user?.id, {
                   matKhau: mkMoi,
+                  matKhauCu: mkCu,
                 }),
                 () => {
-                  message.success('Thay đổi mật khẩu thành công');
+                  form.resetFields();
+                  message.success("Thay đổi mật khẩu thành công");
                 }
               );
             }
@@ -45,7 +47,7 @@ export default function UserPasswordPage() {
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập mật khẩu cũ',
+                message: "Vui lòng nhập mật khẩu cũ",
               },
             ]}
           >
@@ -57,7 +59,7 @@ export default function UserPasswordPage() {
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập mật khẩu mới',
+                message: "Vui lòng nhập mật khẩu mới",
               },
             ]}
           >
@@ -69,7 +71,7 @@ export default function UserPasswordPage() {
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập lại mật khẩu',
+                message: "Vui lòng nhập lại mật khẩu",
               },
             ]}
           >

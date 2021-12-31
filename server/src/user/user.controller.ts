@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -126,7 +127,7 @@ export class UserController {
   @Patch(':id')
   async updateUser(
     @Param('id') id: string,
-    @Body() data: NguoiDung,
+    @Body() data: UpdateUserDto,
     @Res() res: Response,
   ) {
     if (!data) {
@@ -136,6 +137,8 @@ export class UserController {
     }
 
     try {
+      const {matKhauCu, ...userData} = data
+
       const user = await this.userService.findOne(id);
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -153,12 +156,27 @@ export class UserController {
         return res.status(HttpStatus.CONFLICT).send(`Username taken`);
       }
 
+      const oldPassword = await this.userService.getUserPassword(id)
+      const isOldPasswordRight = await bcrypt.compare(matKhauCu, oldPassword)
+      if (!isOldPasswordRight) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: `Old password is wrong`,
+        });
+      }
+
+      const isNewPasswordLikeOld = await bcrypt.compare(data.matKhau, oldPassword)
+      if(isNewPasswordLikeOld) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: `The new password cannot be the same as the old password`,
+        });
+      }
+
       const salt = await bcrypt.genSalt();
-      const hash = await bcrypt.hash(data.matKhau, salt);
+      const hashNewPassword = await bcrypt.hash(data.matKhau, salt);
 
       const dataWithHash: NguoiDung = {
-        ...data,
-        matKhau: hash,
+        ...userData,
+        matKhau: hashNewPassword,
       };
 
       const updatedUser = await this.userService.update(id, dataWithHash);
